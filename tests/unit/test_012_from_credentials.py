@@ -8,9 +8,11 @@ and error propagation on invalid credentials.
 """
 
 import json
+
 import httpx
 import pytest
 import respx
+
 from netdoc_sdk.client import NetDocClient
 from netdoc_sdk.exceptions import AuthenticationError
 

@@ -4,7 +4,13 @@ from datetime import datetime
 from uuid import UUID
 from enum import Enum
 from typing import Any, Generic, TypeVar
+from collections.abc import Mapping
 from pydantic import BaseModel, ConfigDict, Field
+
+
+T = TypeVar('T')
+
+JsonMapping = Mapping[str, Any] | BaseModel
 
 
 class Severity(str, Enum):
@@ -20,10 +26,20 @@ class APIModel(BaseModel):
     model_config = ConfigDict(extra='forbid', populate_by_name=True)
 
 
+class PaginatedResponse(APIModel, Generic[T]):
+    """DRF-style paginated response."""
+
+    count: int
+    next: str | None = None
+    previous: str | None = None
+    results: list[T]
+
+
 class LogMessage(APIModel):
     message: str
     severity: Severity
     timestamp: datetime
+
 
 class MetadataModel(BaseModel):
     metadata: dict[str, Any] = Field(default_factory=dict)
@@ -53,6 +69,9 @@ class TenantList(APIModel):
     # Metadata
     created_at: datetime
     updated_at: datetime
+
+
+PaginatedTenantList = PaginatedResponse[TenantList]
 
 
 class TenantCreate(APIModel):
@@ -110,6 +129,9 @@ class UserList(APIModel):
     updated_at: datetime
 
 
+PaginatedUserList = PaginatedResponse[UserList]
+
+
 class UserCreate(APIModel):
     username: str
     password: str
@@ -165,3 +187,6 @@ class AuditLogList(APIModel):
     status_code: int = 0
     # Metadata
     created_at: datetime
+
+
+PaginatedAuditLogList = PaginatedResponse[AuditLogList]
