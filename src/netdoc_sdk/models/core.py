@@ -10,8 +10,6 @@ from pydantic import BaseModel, ConfigDict, Field
 
 T = TypeVar('T')
 
-JsonMapping = Mapping[str, Any] | BaseModel
-
 
 class Severity(str, Enum):
     DEBUG = "DEBUG"
@@ -154,6 +152,20 @@ class UserUpdate(APIModel):
     is_active: bool | None = None
     # Metadata
     metadata: dict[str, Any] | None = None
+
+
+# ---------------------------------------------------------------------------
+# core.Token
+# ---------------------------------------------------------------------------
+
+
+class TokenDetail(APIModel):
+    token: str
+
+
+class TokenRequest(APIModel):
+    username: str
+    password: str
 
 
 # ---------------------------------------------------------------------------
