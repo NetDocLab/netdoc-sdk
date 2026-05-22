@@ -308,12 +308,12 @@ class NetDocClient:
     # ---------------------------------------------------------------------------
 
 
-    async def token_create(self, data: JsonMapping | None = None, **fields: Any) -> AuthToken:
+    async def token_add(self, data: JsonMapping | TokenRequest | None = None, **fields: Any) -> TokenDetail:
         return await self._request(
             'POST',
             'tokens/',
             json=self._serialize_body(data, **fields),
-            response_model=AuthToken,
+            response_model=TokenDetail,
         )
 
 
