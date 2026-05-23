@@ -51,11 +51,13 @@ make check
 ```
 ├── src/
 │   └── netdoc_sdk/         # Production package
-│       ├── __init__.py
-│       ├── builders.py
-│       ├── client.py
-│       ├── exceptions.py
-│       └── models.py
+│       ├── __init__.py
+│       ├── client.py
+│       ├── exceptions.py
+│       ├── models
+│           ├── __init__.py
+│           ├── core.py
+│           └── snapshots.py
 ├── tests/
 │   ├── conftest.py
 │   ├── factories.py
