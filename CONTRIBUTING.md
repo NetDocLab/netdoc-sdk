@@ -48,7 +48,7 @@ make check
 
 ## Project Structure
 
-```
+```text
 ├── src/
 │   └── netdoc_sdk/         # Production package
 │       ├── __init__.py
@@ -124,6 +124,7 @@ The branch is deleted after merge.
 ### 7. Release
 
 `release-please` analyses commits on `main` after each merge and either:
+
 - Updates the pending release pull request, or
 - Creates a new one if none exists.
 
@@ -137,7 +138,7 @@ creates the git tag, publishes the GitHub Release, and uploads to PyPI.
 This project follows [Conventional Commits](https://www.conventionalcommits.org/).
 The format is:
 
-```
+```text
 <type>[optional scope]: <short description>
 
 [optional body]
@@ -163,7 +164,7 @@ The format is:
 
 Use the module name as scope:
 
-```
+```text
 feat(client):     src/netdoc_sdk/client.py
 fix(models):      src/netdoc_sdk/models.py
 fix(exceptions):  src/netdoc_sdk/exceptions.py

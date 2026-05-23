@@ -31,13 +31,13 @@ jobs:
 
       - name: Display Poetry version
         run: poetry --version
-      
+
       - name: Configure Poetry
         run: poetry config virtualenvs.in-project true
-      
+
       - name: Install
         run: make install
-      
+
       - name: Run pre-commit
         run: make check
 
