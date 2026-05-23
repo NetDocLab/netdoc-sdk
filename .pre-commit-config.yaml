@@ -45,9 +45,9 @@ repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.11.13
     hooks:
-      - id: ruff          # linter with autofix
-        args: [--fix]
-      - id: ruff-format   # formatter
+    - id: ruff-check
+      name: ruff (check)
+      args: [--output-format=full]
 
   # --------------------------------------------------------------------------
   # Security: static analysis for common vulnerabilities.

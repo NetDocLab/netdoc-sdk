@@ -20,7 +20,7 @@ fmt:   ## Code formatting
 	poetry run ruff format .
 
 lint:  ## Code linting (check only)
-	poetry run ruff check . --no-fix
+	poetry run ruff check . --output-format=full
 	poetry run mypy src/
 
 tests:  ## Run tests (pytest only)
