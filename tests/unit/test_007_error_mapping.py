@@ -40,7 +40,7 @@ class TestErrorMapping:
             return_value=httpx.Response(400, json={'name': ['This field is required.']})
         )
         with pytest.raises(ValidationError) as exc:
-            await client.sites_list()
+            await client.site_list()
         assert exc.value.errors is not None
 
     @respx.mock
@@ -51,7 +51,7 @@ class TestErrorMapping:
             )
         )
         with pytest.raises(AuthenticationError):
-            await client.sites_list()
+            await client.site_list()
 
     @respx.mock
     async def test_403_raises_permission_denied_error(self, client):
@@ -59,7 +59,7 @@ class TestErrorMapping:
             return_value=httpx.Response(403, json={'detail': 'You do not have permission.'})
         )
         with pytest.raises(PermissionDeniedError):
-            await client.sites_list()
+            await client.site_list()
 
     @respx.mock
     async def test_404_raises_not_found_error(self, client):
@@ -67,7 +67,7 @@ class TestErrorMapping:
             return_value=httpx.Response(404, json={'detail': 'Not found.'})
         )
         with pytest.raises(NotFoundError):
-            await client.sites_retrieve('999')
+            await client.site_get('999')
 
     @respx.mock
     async def test_404_error_message_comes_from_detail_field(self, client):
@@ -75,7 +75,7 @@ class TestErrorMapping:
             return_value=httpx.Response(404, json={'detail': 'Site not found.'})
         )
         with pytest.raises(NotFoundError) as exc:
-            await client.sites_retrieve('999')
+            await client.site_get('999')
         assert 'Site not found' in str(exc.value)
 
     @respx.mock
@@ -84,7 +84,7 @@ class TestErrorMapping:
             return_value=httpx.Response(405, json={'detail': 'Method not allowed.'})
         )
         with pytest.raises(MethodNotAllowedError):
-            await client.sites_list()
+            await client.site_list()
 
     @respx.mock
     async def test_429_raises_rate_limit_error_with_retry_after(self, client):
@@ -96,7 +96,7 @@ class TestErrorMapping:
             )
         )
         with pytest.raises(RateLimitError) as exc:
-            await client.sites_list()
+            await client.site_list()
         assert exc.value.retry_after == 60
 
     @respx.mock
@@ -105,7 +105,7 @@ class TestErrorMapping:
             return_value=httpx.Response(429, json={'detail': 'Too many requests.'})
         )
         with pytest.raises(RateLimitError) as exc:
-            await client.sites_list()
+            await client.site_list()
         assert exc.value.retry_after is None
 
     @respx.mock
@@ -114,7 +114,7 @@ class TestErrorMapping:
             return_value=httpx.Response(500, json={'detail': 'Internal server error.'})
         )
         with pytest.raises(ServerError) as exc:
-            await client.sites_list()
+            await client.site_list()
         assert exc.value.status_code == 500
 
     @respx.mock
@@ -124,4 +124,4 @@ class TestErrorMapping:
             return_value=httpx.Response(503, content=b'Service Unavailable')
         )
         with pytest.raises(ServerError):
-            await client.sites_list()
+            await client.site_list()

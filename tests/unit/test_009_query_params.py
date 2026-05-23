@@ -31,7 +31,7 @@ class TestQueryParams:
         route = respx.get(f'{BASE}/api/v1/sites/').mock(
             return_value=httpx.Response(200, json=_EMPTY_PAGE)
         )
-        await client.sites_list(name='milan')
+        await client.site_list(name='milan')
         assert 'name=milan' in str(route.calls[0].request.url)
 
     @respx.mock
@@ -39,7 +39,7 @@ class TestQueryParams:
         route = respx.get(f'{BASE}/api/v1/sites/').mock(
             return_value=httpx.Response(200, json=_EMPTY_PAGE)
         )
-        await client.sites_list(name='milan', page=2)
+        await client.site_list(name='milan', page=2)
         url = str(route.calls[0].request.url)
         assert 'name=milan' in url
         assert 'page=2' in url
@@ -49,7 +49,7 @@ class TestQueryParams:
         route = respx.get(f'{BASE}/api/v1/sites/').mock(
             return_value=httpx.Response(200, json=_EMPTY_PAGE)
         )
-        await client.sites_list(name=None)
+        await client.site_list(name=None)
         assert 'name' not in str(route.calls[0].request.url)
 
     @respx.mock
@@ -57,5 +57,5 @@ class TestQueryParams:
         route = respx.get(f'{BASE}/api/v1/sites/').mock(
             return_value=httpx.Response(200, json=_EMPTY_PAGE)
         )
-        await client.sites_list()
+        await client.site_list()
         assert '?' not in str(route.calls[0].request.url)

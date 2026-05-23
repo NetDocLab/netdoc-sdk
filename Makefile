@@ -1,5 +1,5 @@
 # Makefile
-.PHONY: install uninstall check coverage fmt lint test
+.PHONY: install uninstall check coverage fmt lint tests
 
 install:
 	poetry install
@@ -23,5 +23,5 @@ lint:  ## Code linting (check only)
 	poetry run ruff check . --no-fix
 	poetry run mypy src/
 
-test:  ## Run tests (pytest only)
+tests:  ## Run tests (pytest only)
 	poetry run pytest tests/ -v --tb=short

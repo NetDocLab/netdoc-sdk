@@ -2,8 +2,10 @@
 
 from collections.abc import Iterable, Mapping
 from typing import Any
+
 import httpx
 from pydantic import BaseModel, TypeAdapter
+
 from netdoc_sdk.exceptions import (
     AuthenticationError,
     ConnectionError,
@@ -29,12 +31,27 @@ from netdoc_sdk.models.core import (
     UserDetail,
     UserUpdate,
 )
+from netdoc_sdk.models.discovery import (
+    CollectorDetail,
+    CollectorHeartbeat,
+    CollectorUpdate,
+    CredentialCreate,
+    CredentialDetail,
+    CredentialUpdate,
+    PaginatedCollectorList,
+    PaginatedCredentialList,
+)
+from netdoc_sdk.models.inventory import (
+    PaginatedSiteList,
+    SiteCreate,
+    SiteDetail,
+    SiteUpdate,
+)
 from netdoc_sdk.models.snapshots import (
     PaginatedSnapshotList,
     SnapshotDetail,
     SnapshotUpdate,
 )
-
 
 JsonMapping = Mapping[str, Any] | BaseModel
 
@@ -84,7 +101,7 @@ class NetDocClient:
         """Create a token with `/api/v1/tokens/` and return an authenticated client."""
 
         async with cls(base_url=base_url, **kwargs) as bootstrap:
-            token = await bootstrap.tokens_create(username=username, password=password)
+            token = await bootstrap.token_add(username=username, password=password)
         return cls(base_url=base_url, token=token.token, **kwargs)
 
     @staticmethod
@@ -223,11 +240,9 @@ class NetDocClient:
             raise ServerError(message, status_code=response.status_code, detail=detail, body=body)
         raise NetDocError(message, status_code=response.status_code, detail=detail, body=body)
 
-
     # ---------------------------------------------------------------------------
     # core.Tenant
     # ---------------------------------------------------------------------------
-
 
     async def tenant_add(
         self, data: JsonMapping | TenantCreate | None = None, **fields: Any
@@ -264,11 +279,9 @@ class NetDocClient:
     async def tenant_current(self) -> TenantDetail:
         return await self._request('GET', 'tenants/current/', response_model=TenantDetail)
 
-
     # ---------------------------------------------------------------------------
     # core.User
     # ---------------------------------------------------------------------------
-
 
     async def user_add(
         self, data: JsonMapping | UserCreate | None = None, **fields: Any
@@ -282,9 +295,7 @@ class NetDocClient:
         )
 
     async def user_list(self, **params: Any) -> PaginatedUserList:
-        return await self._request(
-            'GET', 'users/', params=params, response_model=PaginatedUserList
-        )
+        return await self._request('GET', 'users/', params=params, response_model=PaginatedUserList)
 
     async def user_get(self, id: str) -> UserDetail:
         return await self._request('GET', f'users/{id}/', response_model=UserDetail)
@@ -302,13 +313,13 @@ class NetDocClient:
     async def user_rm(self, id: str) -> None:
         return await self._request('DELETE', f'users/{id}/', expected_status=204)
 
-
     # ---------------------------------------------------------------------------
     # core.Token
     # ---------------------------------------------------------------------------
 
-
-    async def token_add(self, data: JsonMapping | TokenRequest | None = None, **fields: Any) -> TokenDetail:
+    async def token_add(
+        self, data: JsonMapping | TokenRequest | None = None, **fields: Any
+    ) -> TokenDetail:
         return await self._request(
             'POST',
             'tokens/',
@@ -316,11 +327,9 @@ class NetDocClient:
             response_model=TokenDetail,
         )
 
-
     # ---------------------------------------------------------------------------
     # core.AuditLog
     # ---------------------------------------------------------------------------
-
 
     async def auditlog_list(self, **params: Any) -> PaginatedAuditLogList:
         return await self._request(
@@ -330,21 +339,19 @@ class NetDocClient:
     async def auditlog_get(self, id: str) -> AuditLogDetail:
         return await self._request('GET', f'audit-logs/{id}/', response_model=AuditLogDetail)
 
-
     # ---------------------------------------------------------------------------
     # snapshots.Snapshot
     # ---------------------------------------------------------------------------
 
-
-    async def snapshots_list(self, **params: Any) -> PaginatedSnapshotList:
+    async def snapshot_list(self, **params: Any) -> PaginatedSnapshotList:
         return await self._request(
             'GET', 'snapshots/', params=params, response_model=PaginatedSnapshotList
         )
 
-    async def snapshots_get(self, id: str) -> SnapshotDetail:
+    async def snapshot_get(self, id: str) -> SnapshotDetail:
         return await self._request('GET', f'snapshots/{id}/', response_model=SnapshotDetail)
 
-    async def snapshots_update(
+    async def snapshot_update(
         self, id: str, data: JsonMapping | SnapshotUpdate | None = None, **fields: Any
     ) -> SnapshotDetail:
         return await self._request(
@@ -354,10 +361,10 @@ class NetDocClient:
             response_model=SnapshotDetail,
         )
 
-    async def snapshots_rm(self, id: str) -> None:
+    async def snapshot_rm(self, id: str) -> None:
         return await self._request('DELETE', f'snapshots/{id}/', expected_status=204)
 
-    async def snapshots_pin(
+    async def snapshot_pin(
         self, id: str, data: JsonMapping | None = None, **fields: Any
     ) -> SnapshotDetail:
         return await self._request(
@@ -367,7 +374,7 @@ class NetDocClient:
             response_model=SnapshotDetail,
         )
 
-    async def snapshots_unpin(
+    async def snapshot_unpin(
         self, id: str, data: JsonMapping | None = None, **fields: Any
     ) -> SnapshotDetail:
         return await self._request(
@@ -377,8 +384,114 @@ class NetDocClient:
             response_model=SnapshotDetail,
         )
 
-    async def snapshots_stats(self, id: str) -> SnapshotDetail:
+    async def snapshot_stats(self, id: str) -> SnapshotDetail:
         return await self._request('GET', f'snapshots/{id}/stats/', response_model=SnapshotDetail)
 
-    async def snapshots_latest(self) -> SnapshotDetail:
+    async def snapshot_latest(self) -> SnapshotDetail:
         return await self._request('GET', 'snapshots/latest/', response_model=SnapshotDetail)
+
+    # ---------------------------------------------------------------------------
+    # discovery.Collector
+    # ---------------------------------------------------------------------------
+
+    async def collector_list(self, **params: Any) -> PaginatedCollectorList:
+        return await self._request(
+            'GET', 'collectors/', params=params, response_model=PaginatedCollectorList
+        )
+
+    async def collector_get(self, id: str) -> CollectorDetail:
+        return await self._request('GET', f'collectors/{id}/', response_model=CollectorDetail)
+
+    async def collector_update(
+        self, id: str, data: JsonMapping | CollectorUpdate | None = None, **fields: Any
+    ) -> CollectorDetail:
+        return await self._request(
+            'PATCH',
+            f'collectors/{id}/',
+            json=self._serialize_body(data, **fields),
+            response_model=CollectorDetail,
+        )
+
+    async def collector_rm(self, id: str) -> None:
+        return await self._request('DELETE', f'collectors/{id}/', expected_status=204)
+
+    async def collector_heartbeat(
+        self, data: JsonMapping | CollectorHeartbeat | None = None, **fields: Any
+    ) -> None:
+        return await self._request(
+            'POST',
+            'collectors/heartbeat',
+            json=self._serialize_body(data, **fields),
+            expected_status=201,
+            response_model=CollectorDetail,
+        )
+
+    # ---------------------------------------------------------------------------
+    # discovery.Credential
+    # ---------------------------------------------------------------------------
+
+    async def credential_add(
+        self, data: JsonMapping | CredentialCreate | None = None, **fields: Any
+    ) -> CredentialDetail:
+        return await self._request(
+            'POST',
+            'users/',
+            json=self._serialize_body(data, **fields),
+            expected_status=201,
+            response_model=CredentialDetail,
+        )
+
+    async def credential_list(self, **params: Any) -> PaginatedCredentialList:
+        return await self._request(
+            'GET', 'credentials/', params=params, response_model=PaginatedCredentialList
+        )
+
+    async def credential_get(self, id: str) -> CredentialDetail:
+        return await self._request('GET', f'credentials/{id}/', response_model=CredentialDetail)
+
+    async def credential_update(
+        self, id: str, data: JsonMapping | CredentialUpdate | None = None, **fields: Any
+    ) -> CredentialDetail:
+        return await self._request(
+            'PATCH',
+            f'snapshots/{id}/',
+            json=self._serialize_body(data, **fields),
+            response_model=CredentialDetail,
+        )
+
+    async def credential_rm(self, id: str) -> None:
+        return await self._request('DELETE', f'credentials/{id}/', expected_status=204)
+
+    # ---------------------------------------------------------------------------
+    # inventory.Site
+    # ---------------------------------------------------------------------------
+
+    async def site_add(
+        self, data: JsonMapping | SiteCreate | None = None, **fields: Any
+    ) -> SiteDetail:
+        return await self._request(
+            'POST',
+            'sites/',
+            json=self._serialize_body(data, **fields),
+            expected_status=201,
+            response_model=SiteDetail,
+        )
+
+    async def site_list(self, **params: Any) -> PaginatedSiteList:
+        return await self._request('GET', 'sites/', params=params, response_model=PaginatedSiteList)
+
+    async def site_get(self, id: str) -> SiteDetail:
+        return await self._request('GET', f'sites/{id}/', response_model=SiteDetail)
+
+    async def site_update(
+        self, id: str, data: JsonMapping | SiteUpdate | None = None, **fields: Any
+    ) -> SiteDetail:
+        return await self._request(
+            'PATCH',
+            f'sites/{id}/',
+            json=self._serialize_body(data, **fields),
+            response_model=SiteDetail,
+        )
+
+    async def site_rm(self, id: str) -> None:
+        return await self._request('DELETE', f'sites/{id}/', expected_status=204)

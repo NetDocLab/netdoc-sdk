@@ -7,8 +7,9 @@ keyword fields, dropping None values from the keyword side. An empty
 result is returned as None so no body is sent for empty requests.
 """
 
+import uuid
 from netdoc_sdk.client import NetDocClient
-from netdoc_sdk.models import Site
+from netdoc_sdk.models.inventory import SiteCreate
 
 
 class TestSerializeBody:
@@ -17,7 +18,7 @@ class TestSerializeBody:
         assert result == {'name': 'site-a'}
 
     def test_pydantic_model_is_serialised_to_dict(self):
-        site = Site(id='1', name='rome')
+        site = SiteCreate(name='rome')
         result = NetDocClient._serialize_body(site)
         assert result['name'] == 'rome'
 

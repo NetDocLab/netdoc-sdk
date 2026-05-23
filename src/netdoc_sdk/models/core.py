@@ -1,21 +1,21 @@
-"""Pydantic models matching the public NetDoc OpenAPI core contract."""
+"""Pydantic models matching the public NetDoc OpenAPI core contracts."""
 
 from datetime import datetime
-from uuid import UUID
 from enum import Enum
+from typing import Annotated
 from typing import Any, Generic, TypeVar
-from collections.abc import Mapping
+from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field
-
+from pydantic.functional_validators import AfterValidator
 
 T = TypeVar('T')
 
 
 class Severity(str, Enum):
-    DEBUG = "DEBUG"
-    ERROR = "ERROR"
-    INFO = "INFO"
-    WARNING = "WARNING"
+    DEBUG = 'DEBUG'
+    ERROR = 'ERROR'
+    INFO = 'INFO'
+    WARNING = 'WARNING'
 
 
 class APIModel(BaseModel):
@@ -33,25 +33,35 @@ class PaginatedResponse(APIModel, Generic[T]):
     results: list[T]
 
 
+# ---------------------------------------------------------------------------
+# Validators
+# ---------------------------------------------------------------------------
+
+
+def validate_uuid4_str(v: str) -> str:
+    u = UUID(v)
+
+    if u.version != 4:
+        raise ValueError("UUID must be v4")
+
+    return v
+
+
+UUID4Str = Annotated[str, AfterValidator(validate_uuid4_str)]
+
+
 class LogMessage(APIModel):
     message: str
     severity: Severity
     timestamp: datetime
-
-
-class MetadataModel(BaseModel):
-    metadata: dict[str, Any] = Field(default_factory=dict)
-
-    model_config = ConfigDict(extra="forbid")
-
-
+    
 # ---------------------------------------------------------------------------
 # core.Tenant
 # ---------------------------------------------------------------------------
 
 
 class TenantDetail(APIModel):
-    id: UUID
+    id: UUID4Str
     name: str = ''
     is_active: bool = False
     # Metadata
@@ -61,7 +71,7 @@ class TenantDetail(APIModel):
 
 
 class TenantList(APIModel):
-    id: UUID
+    id: UUID4Str
     name: str = ''
     is_active: bool = False
     # Metadata
@@ -99,7 +109,7 @@ class RoleEnum(str, Enum):
 
 
 class UserDetail(APIModel):
-    id: UUID
+    id: UUID4Str
     username: str = ''
     role: RoleEnum = RoleEnum.VIEWER
     email: str = ''
@@ -114,7 +124,7 @@ class UserDetail(APIModel):
 
 
 class UserList(APIModel):
-    id: UUID
+    id: UUID4Str
     username: str = ''
     role: RoleEnum = RoleEnum.VIEWER
     email: str = ''
@@ -174,7 +184,7 @@ class TokenRequest(APIModel):
 
 
 class AuditLogDetail(APIModel):
-    id: UUID
+    id: UUID4Str
     source_ip: str = ''
     user: str = ''
     username: str = ''
@@ -189,7 +199,7 @@ class AuditLogDetail(APIModel):
 
 
 class AuditLogList(APIModel):
-    id: UUID
+    id: UUID4Str
     source_ip: str = ''
     user: str = ''
     username: str = ''

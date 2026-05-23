@@ -1,11 +1,11 @@
-"""Pydantic models matching the public NetDoc OpenAPI snapshot contract."""
+"""Pydantic models matching the public NetDoc OpenAPI snapshot contracts."""
 
 from datetime import datetime
-from uuid import UUID
 from enum import Enum
-from typing import Any, List
+from typing import Any
+from uuid import UUID
 from pydantic import Field
-from netdoc_sdk.models.core import APIModel, LogMessage, PaginatedResponse
+from netdoc_sdk.models.core import APIModel, LogMessage, PaginatedResponse, UUID4Str
 
 
 class StatusEnum(str, Enum):
@@ -17,12 +17,12 @@ class StatusEnum(str, Enum):
 
 
 class SnapshotDetail(APIModel):
-    id: UUID
+    id: UUID4Str
     label: str = ''
     description: str = ''
     pinned: bool = False
     status: StatusEnum
-    log_messages: List[LogMessage]
+    log_messages: list[LogMessage]
     # Metadata
     metadata: dict[str, Any] = Field(default_factory=dict)
     completed_at: datetime | None = None
@@ -32,7 +32,7 @@ class SnapshotDetail(APIModel):
 
 
 class SnapshotList(APIModel):
-    id: UUID
+    id: UUID4Str
     label: str = ''
     pinned: bool = False
     status: StatusEnum
