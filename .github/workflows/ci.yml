@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint-and-types:
+  tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
