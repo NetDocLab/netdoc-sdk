@@ -2,16 +2,14 @@
 
 from datetime import datetime
 from enum import Enum
-from typing import Annotated, Any, Generic, TypeVar
+from typing import Annotated, Any
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.functional_validators import AfterValidator
 
-T = TypeVar('T')
 
-
-class Severity(str, Enum):
+class Severity(Enum):
     DEBUG = 'DEBUG'
     ERROR = 'ERROR'
     INFO = 'INFO'
@@ -24,7 +22,7 @@ class APIModel(BaseModel):
     model_config = ConfigDict(extra='forbid', populate_by_name=True)
 
 
-class PaginatedResponse(APIModel, Generic[T]):
+class PaginatedResponse[T](APIModel):
     """DRF-style paginated response."""
 
     count: int
