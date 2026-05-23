@@ -67,8 +67,8 @@ class CollectorHeartbeat(APIModel):
 
 class CredentialDetail(APIModel):
     id: UUID4Str
-    username: str = ''
-    label: str
+    username: str | None = None
+    label: str | None = None
     description: str = ''
     verify_cert: bool = True
     # Metadata
@@ -79,7 +79,7 @@ class CredentialDetail(APIModel):
 
 class CredentialList(APIModel):
     id: UUID4Str
-    username: str = ''
+    username: str | None = None
     label: str
     verify_cert: bool = True
     # Metadata
@@ -92,22 +92,22 @@ PaginatedCredentialList = PaginatedResponse[CredentialList]
 
 class CredentialCreate(APIModel):
     label: str
-    description: str = ''
-    username: str = ''
+    description: str | None = None
+    username: str | None = None
     verify_cert: bool = True
-    password: str
-    secret: str
+    password: str | None = None
+    secret: str | None = None
     # Metadata
     metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class CredentialUpdate(APIModel):
-    label: str
-    description: str = ''
-    username: str = ''
+    label: str | None = None
+    description: str | None = None
+    username: str | None = None
     verify_cert: bool = True
-    password: str
-    secret: str
+    password: str | None = None
+    secret: str | None = None
     # Metadata
     metadata: dict[str, Any] = Field(default_factory=dict)
 
