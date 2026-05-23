@@ -263,7 +263,7 @@ class NetDocClient:
     async def tenant_get(self, id: str) -> TenantDetail:
         return await self._request('GET', f'tenants/{id}/', response_model=TenantDetail)
 
-    async def tenants_update(
+    async def tenant_update(
         self, id: str, data: JsonMapping | TenantUpdate | None = None, **fields: Any
     ) -> TenantDetail:
         return await self._request(
@@ -273,7 +273,7 @@ class NetDocClient:
             response_model=TenantDetail,
         )
 
-    async def tenant_rm(self, id: str) -> None:
+    async def tenant_delete(self, id: str) -> None:
         return await self._request('DELETE', f'tenants/{id}/', expected_status=204)
 
     async def tenant_current(self) -> TenantDetail:
@@ -310,7 +310,7 @@ class NetDocClient:
             response_model=UserDetail,
         )
 
-    async def user_rm(self, id: str) -> None:
+    async def user_delete(self, id: str) -> None:
         return await self._request('DELETE', f'users/{id}/', expected_status=204)
 
     # ---------------------------------------------------------------------------
@@ -361,7 +361,7 @@ class NetDocClient:
             response_model=SnapshotDetail,
         )
 
-    async def snapshot_rm(self, id: str) -> None:
+    async def snapshot_delete(self, id: str) -> None:
         return await self._request('DELETE', f'snapshots/{id}/', expected_status=204)
 
     async def snapshot_pin(
@@ -412,7 +412,7 @@ class NetDocClient:
             response_model=CollectorDetail,
         )
 
-    async def collector_rm(self, id: str) -> None:
+    async def collector_delete(self, id: str) -> None:
         return await self._request('DELETE', f'collectors/{id}/', expected_status=204)
 
     async def collector_heartbeat(
@@ -459,7 +459,7 @@ class NetDocClient:
             response_model=CredentialDetail,
         )
 
-    async def credential_rm(self, id: str) -> None:
+    async def credential_delete(self, id: str) -> None:
         return await self._request('DELETE', f'credentials/{id}/', expected_status=204)
 
     # ---------------------------------------------------------------------------
@@ -493,5 +493,5 @@ class NetDocClient:
             response_model=SiteDetail,
         )
 
-    async def site_rm(self, id: str) -> None:
+    async def site_delete(self, id: str) -> None:
         return await self._request('DELETE', f'sites/{id}/', expected_status=204)
