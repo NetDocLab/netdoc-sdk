@@ -2,7 +2,7 @@ import pytest
 
 
 @pytest.mark.django_db
-class TestUser:
+class TestAuditLog:
     @pytest.mark.django_db(transaction=True)
     async def test_audit_log(self, admin_client):
         # Generate a log
