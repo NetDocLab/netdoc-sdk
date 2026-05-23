@@ -7,7 +7,6 @@ keyword fields, dropping None values from the keyword side. An empty
 result is returned as None so no body is sent for empty requests.
 """
 
-import uuid
 from netdoc_sdk.client import NetDocClient
 from netdoc_sdk.models.inventory import SiteCreate
 

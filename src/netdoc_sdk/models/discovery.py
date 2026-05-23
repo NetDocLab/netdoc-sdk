@@ -1,12 +1,12 @@
 """Pydantic models matching the public NetDoc OpenAPI discovery contracts."""
 
 from datetime import datetime
+from typing import Any
 from uuid import UUID
-from enum import Enum
-from typing import Any, List
-from pydantic import Field
-from netdoc_sdk.models.core import APIModel, PaginatedResponse, UUID4Str
 
+from pydantic import Field
+
+from netdoc_sdk.models.core import APIModel, PaginatedResponse, UUID4Str
 
 # ---------------------------------------------------------------------------
 # inventory.Collector

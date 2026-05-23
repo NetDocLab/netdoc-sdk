@@ -6,6 +6,7 @@ response_model and that edge cases (204, empty body) return None.
 """
 
 import uuid
+
 import httpx
 import pytest
 import respx

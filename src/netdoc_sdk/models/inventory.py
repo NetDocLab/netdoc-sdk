@@ -1,19 +1,19 @@
 """Pydantic models matching the public NetDoc OpenAPI inventory contracts."""
 
 from datetime import datetime
-from uuid import UUID
 from enum import Enum
-from typing import Any, List
-from pydantic import Field
-from netdoc_sdk.models.core import APIModel, PaginatedResponse, UUID4Str
+from typing import Any
 
+from pydantic import Field
+
+from netdoc_sdk.models.core import APIModel, PaginatedResponse, UUID4Str
 
 # ---------------------------------------------------------------------------
 # inventory.Site
 # ---------------------------------------------------------------------------
 
 
-class SiteTypeEnum(str, Enum):
+class SiteTypeEnum(Enum):
     DATACENTER = 'datacenter'
     CAMPUS = 'campus'
     CLOUD = 'cloud'

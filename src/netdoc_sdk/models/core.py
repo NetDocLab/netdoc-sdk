@@ -2,9 +2,9 @@
 
 from datetime import datetime
 from enum import Enum
-from typing import Annotated
-from typing import Any, Generic, TypeVar
+from typing import Annotated, Any, Generic, TypeVar
 from uuid import UUID
+
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.functional_validators import AfterValidator
 
@@ -102,7 +102,7 @@ class TenantUpdate(APIModel):
 # ---------------------------------------------------------------------------
 
 
-class RoleEnum(str, Enum):
+class RoleEnum(Enum):
     ADMIN = 'admin'
     COLLECTOR = 'collector'
     OPERATOR = 'operator'
