@@ -11,7 +11,7 @@ from netdoc_sdk.client import NetDocClient
 
 @pytest.fixture
 def superuser_client(db, live_server):
-    username='test-user'
+    username='conftest-superuser'
     password='986629a7ca89202a3ef2ae1dd9d5fb37'
     User = get_user_model()
 
@@ -26,13 +26,13 @@ def superuser_client(db, live_server):
 
 @pytest.fixture
 def admin_client(db, live_server):
-    username='test-user'
+    username='conftest-admin'
     password='986629a7ca89202a3ef2ae1dd9d5fb37'
     User = get_user_model()
 
     # Create user within a tenant
-    tenant = Tenant.objects.create()
-    user = User.objects.create_user(username=username, password=password, tenant=str(tenant.id))
+    tenant = Tenant.objects.create(name="conftest-tenant")
+    user = User.objects.create_user(username=username, password=password, tenant=tenant, role="admin")
 
     # Create token
     token, _ = Token.objects.get_or_create(user=user)
@@ -42,18 +42,19 @@ def admin_client(db, live_server):
 
 @pytest.fixture
 async def admin_client_by_password(db, live_server):
-    username='test-user'
+    username='conftest-admin'
     password='986629a7ca89202a3ef2ae1dd9d5fb37'
     User = get_user_model()
 
     # Create user within a tenant
-    tenant = await sync_to_async(Tenant.objects.create)()
+    tenant = await sync_to_async(Tenant.objects.create)(name="conftest-tenant")
     await sync_to_async(User.objects.create_user)(
         username=username,
         password=password,
         tenant=tenant,
+        role="admin",
     )
-    
+
     client = await NetDocClient.from_credentials(
         base_url=live_server.url,
         username=username,
