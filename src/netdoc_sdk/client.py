@@ -64,7 +64,7 @@ class NetDocClient:
     def __init__(
         self,
         base_url: str,
-        token: str,
+        token: str | None = None,
         *,
         client_kwargs: Mapping[str, Any] | None = None,
         cookies: Mapping[str, str] | None = None,

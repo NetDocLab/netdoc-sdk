@@ -1,29 +1,63 @@
 """Shared fixtures for NetDocClient unit tests."""
 
+from asgiref.sync import sync_to_async
 import pytest
 from django.contrib.auth import get_user_model
 from rest_framework.authtoken.models import Token
+from apps.core.models import Tenant
 from netdoc_sdk.client import NetDocClient
 
 
-@pytest.fixture(scope='session')
-def live_server_url(live_server):
-    return live_server.url
-
 
 @pytest.fixture
-def user(db):
+def superuser_client(db, live_server):
+    username='test-user'
+    password='986629a7ca89202a3ef2ae1dd9d5fb37'
     User = get_user_model()
-    return User.objects.create_user(username='testuser', password='testpass123')
+
+    # Create superuser
+    user = User.objects.create_user(username=username, password=password, is_superuser=True)
+
+    # Create token
+    token, _ = Token.objects.get_or_create(user=user)
+
+    return NetDocClient(base_url=live_server.url, token=token.key)
 
 
 @pytest.fixture
-def token(user):
-    t, _ = Token.objects.get_or_create(user=user)
-    return t.key
+def admin_client(db, live_server):
+    username='test-user'
+    password='986629a7ca89202a3ef2ae1dd9d5fb37'
+    User = get_user_model()
+
+    # Create user within a tenant
+    tenant = Tenant.objects.create()
+    user = User.objects.create_user(username=username, password=password, tenant=str(tenant.id))
+
+    # Create token
+    token, _ = Token.objects.get_or_create(user=user)
+
+    return NetDocClient(base_url=live_server.url, token=token.key)
 
 
 @pytest.fixture
-async def sdk(live_server, token):
-    async with NetDocClient(base_url=live_server.url, token=token) as c:
-        yield c
+async def admin_client_by_password(db, live_server):
+    username='test-user'
+    password='986629a7ca89202a3ef2ae1dd9d5fb37'
+    User = get_user_model()
+
+    # Create user within a tenant
+    tenant = await sync_to_async(Tenant.objects.create)()
+    await sync_to_async(User.objects.create_user)(
+        username=username,
+        password=password,
+        tenant=tenant,
+    )
+    
+    client = await NetDocClient.from_credentials(
+        base_url=live_server.url,
+        username=username,
+        password=password,
+    )
+    async with client:
+        yield client
