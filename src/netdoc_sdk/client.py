@@ -435,7 +435,7 @@ class NetDocClient:
     ) -> CredentialDetail:
         return await self._request(
             'POST',
-            'users/',
+            'credentials/',
             json=self._serialize_body(data, **fields),
             expected_status=201,
             response_model=CredentialDetail,
@@ -454,7 +454,7 @@ class NetDocClient:
     ) -> CredentialDetail:
         return await self._request(
             'PATCH',
-            f'snapshots/{id}/',
+            f'credentials/{id}/',
             json=self._serialize_body(data, **fields),
             response_model=CredentialDetail,
         )
