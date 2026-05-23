@@ -42,7 +42,7 @@ def validate_uuid4_str(v: str) -> str:
     u = UUID(v)
 
     if u.version != 4:
-        raise ValueError("UUID must be v4")
+        raise ValueError('UUID must be v4')
 
     return v
 
@@ -54,7 +54,8 @@ class LogMessage(APIModel):
     message: str
     severity: Severity
     timestamp: datetime
-    
+
+
 # ---------------------------------------------------------------------------
 # core.Tenant
 # ---------------------------------------------------------------------------

@@ -42,7 +42,6 @@ class CollectorList(APIModel):
     updated_at: datetime
 
 
-
 PaginatedCollectorList = PaginatedResponse[CollectorList]
 
 

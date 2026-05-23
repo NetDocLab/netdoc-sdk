@@ -28,7 +28,14 @@ class TestResponseParsing:
                     'count': 1,
                     'next': None,
                     'previous': None,
-                    'results': [{'id': str(uuid.uuid4()), 'name': 'milan', 'created_at': '2026-05-23 06:37:34.246550', "updated_at": '2026-05-23 06:37:34.246550'}],
+                    'results': [
+                        {
+                            'id': str(uuid.uuid4()),
+                            'name': 'milan',
+                            'created_at': '2026-05-23 06:37:34.246550',
+                            'updated_at': '2026-05-23 06:37:34.246550',
+                        }
+                    ],
                 },
             )
         )
@@ -41,7 +48,15 @@ class TestResponseParsing:
     async def test_retrieve_endpoint_returns_model_instance(self, client):
         site_id = str(uuid.uuid4())
         respx.get(f'{BASE}/api/v1/sites/1/').mock(
-            return_value=httpx.Response(200, json={'id': site_id, 'name': 'milan', 'created_at': '2026-05-23 06:37:34.246550', "updated_at": '2026-05-23 06:37:34.246550'})
+            return_value=httpx.Response(
+                200,
+                json={
+                    'id': site_id,
+                    'name': 'milan',
+                    'created_at': '2026-05-23 06:37:34.246550',
+                    'updated_at': '2026-05-23 06:37:34.246550',
+                },
+            )
         )
         result = await client.site_get('1')
         assert isinstance(result, SiteDetail)
