@@ -67,7 +67,7 @@ class TestResponseParsing:
     @respx.mock
     async def test_204_no_content_returns_none(self, client):
         respx.delete(f'{BASE}/api/v1/sites/1/').mock(return_value=httpx.Response(204))
-        result = await client.site_rm('1')
+        result = await client.site_delete('1')
         assert result is None
 
     @respx.mock

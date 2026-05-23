@@ -163,6 +163,10 @@ class UserUpdate(APIModel):
     metadata: dict[str, Any] | None = None
 
 
+class UserProfileUpdate(APIModel):
+    password: str | None = None
+
+
 # ---------------------------------------------------------------------------
 # core.Token
 # ---------------------------------------------------------------------------
