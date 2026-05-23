@@ -25,10 +25,10 @@ class TestAuthentication:
         password = '986629a7ca89202a3ef2ae1dd9d5fb37'
         User = get_user_model()
 
-        # Create tenant
+        # Add tenant
         tenant = await sync_to_async(Tenant.objects.create)(name='test-tenant')
 
-        # Create superuser
+        # Add superuser
         user = await sync_to_async(User.objects.create_user)(
             username=username,
             password=password,
@@ -36,7 +36,7 @@ class TestAuthentication:
             role='admin',
         )
 
-        # Create token
+        # Generate token
         token, _ = await sync_to_async(Token.objects.get_or_create)(user=user)
 
         client = NetDocClient(base_url=live_server.url, token=token.key)

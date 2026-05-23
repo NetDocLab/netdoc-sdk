@@ -434,7 +434,7 @@ class NetDocClient:
     ) -> None:
         return await self._request(
             'POST',
-            'collectors/heartbeat',
+            'collectors/heartbeat/',
             json=self._serialize_body(data, **fields),
             expected_status=201,
             response_model=CollectorDetail,
