@@ -7,7 +7,7 @@ from uuid import UUID
 
 from pydantic import Field
 
-from netdoc_sdk.models.core import APIModel, PaginatedResponse, UUID4Str
+from netdoc_sdk.models.core import APIModel, LogMessage, PaginatedResponse, UUID4Str
 
 # ---------------------------------------------------------------------------
 # inventory.Collector
@@ -127,67 +127,104 @@ class DiscoveryRunStatusEnum(Enum):
     RUNNING = 'running'
 
 
-# class DiscoveryRunDetail(APIModel):
-#     id: str
-#     snapshot_id: str
-#     status: DiscoveryRunStatusEnum
-#     origin: str = 'manual'
-#     requested_by: int | None = None
-#     schedule: str | None = None
-#     command_profile: dict[str, Any] = Field(default_factory=dict)
-#     parser_hints: dict[str, Any] = Field(default_factory=dict)
-#     metadata: dict[str, Any] = Field(default_factory=dict)
-#     job_count: int = 0
-#     completed_job_count: int = 0
-#     failed_job_count: int = 0
-#     raw_output_count: int = 0
-#     error_message: str = ''
-#     cancellation_requested_at: datetime | None = None
-#     created_at: datetime
-#     started_at: datetime | None = None
-#     completed_at: datetime | None = None
-#     updated_at: datetime | None = None
+class DiscoveryRunDetail(APIModel):
+    id: str
+    snapshot_id: str
+    status: DiscoveryRunStatusEnum
+    origin: str
+    requested_by: UUID4Str | None
+    schedule: UUID4Str | None
+    log_messages: list[LogMessage]
+    # Metadata
+    metadata: dict[str, Any] = Field(default_factory=dict)
+    completed_job_count: int
+    failed_job_count: int
+    job_count: int
+    raw_output_count: int
+    cancellation_requested_at: datetime | None
+    completed_at: datetime | None
+    created_at: datetime
+    started_at: datetime | None
+    updated_at: datetime
 
 
-# class DiscoveryRunCreate(APIModel):
-#     collector_ids: list[str] = Field(default_factory=list)
-#     command_profile: dict[str, Any] = Field(default_factory=dict)
-#     parser_hints: dict[str, Any] = Field(default_factory=dict)
-#     metadata: dict[str, Any] = Field(default_factory=dict)
+class DiscoveryRunList(APIModel):
+    id: str
+    snapshot_id: str
+    status: DiscoveryRunStatusEnum
+    origin: str
+    requested_by: UUID4Str | None
+    schedule: UUID4Str | None
+    # Metadata
+    completed_job_count: int
+    failed_job_count: int
+    job_count: int
+    raw_output_count: int
+    cancellation_requested_at: datetime | None
+    completed_at: datetime | None
+    created_at: datetime
+    started_at: datetime | None
+    updated_at: datetime
+
+
+PaginatedDiscoveryRunList = PaginatedResponse[DiscoveryRunList]
 
 
 # ---------------------------------------------------------------------------
 # inventory.DiscoveryJob
 # ---------------------------------------------------------------------------
 
-
-# class DiscoveryJob(APIModel):
-#     id: str
-#     run: str
-#     collector: str
-#     collector_name: str = ''
-#     target_device: str | None = None
-#     site: str | None = None
-#     site_name: str | None = None
-#     status: DiscoveryJobStatusEnum | str = DiscoveryJobStatusEnum.QUEUED
-#     payload: dict[str, Any] = Field(default_factory=dict)
-#     command_profile: dict[str, Any] = Field(default_factory=dict)
-#     parser_hints: dict[str, Any] = Field(default_factory=dict)
-#     claim_token: str | None = None
-#     claimed_at: datetime | None = None
-#     last_heartbeat_at: datetime | None = None
-#     lease_expires_at: datetime | None = None
-#     timeout_at: datetime | None = None
-#     attempts: int = 0
-#     max_attempts: int = 3
-#     idempotency_key: str = ''
-#     log_messages: list = []
-#     created_at: datetime
-#     updated_at: datetime | None = None
+# claim
+# heartbeat
+# push_discovered_device
+# status
+# complete
 
 
-# class DiscoveryJobClaim(APIModel):
-#     lease_seconds: int = 300
+class DiscoveryJobDetail(APIModel):
+    id: str
+    run: UUID4Str
+    collector: UUID4Str
+    collector_name: str
+    snapshot: UUID4Str
+    status: str
+    attempt: int
+    max_attempts: int
+    idempotency_key: str
+    log_messages: list[LogMessage]
+    # Metadata
+    metadata: dict[str, Any]
+    claimed_at: datetime | None
+    last_heartbeat_at: datetime | None
+    lease_expires_at: datetime | None
+    timeout_at: datetime | None
+    created_at: datetime
+    updated_at: datetime
+
+
+PaginatedDiscoveryJobList = PaginatedResponse[DiscoveryJobDetail]
+
+
+class DiscoveryJobClaim(APIModel):
+    id: str
+    run: UUID4Str
+    collector: UUID4Str
+    collector_name: str
+    snapshot: UUID4Str
+    status: str
+    attempt: int
+    max_attempts: int
+    idempotency_key: str
+    log_messages: list[LogMessage]
+    inventory: dict
+    # Metadata
+    metadata: dict[str, Any]
+    claimed_at: datetime | None
+    last_heartbeat_at: datetime | None
+    lease_expires_at: datetime | None
+    timeout_at: datetime | None
+    created_at: datetime
+    updated_at: datetime
 
 
 # class DiscoveryJobHeartbeat(APIModel):

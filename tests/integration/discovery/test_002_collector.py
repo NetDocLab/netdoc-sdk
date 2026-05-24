@@ -24,7 +24,7 @@ class TestCanonicalDevice:
             name='collector@host.example.com', version='0.1.0'
         )
 
-        # Test admin functions
+        # Test functions
         res = await admin_client.collector_list()
         assert res.count == 1
         await admin_client.collector_get(id=collector.id)

@@ -39,8 +39,13 @@ from netdoc_sdk.models.discovery import (
     CredentialCreate,
     CredentialDetail,
     CredentialUpdate,
+    DiscoveryJobClaim,
+    DiscoveryJobDetail,
+    DiscoveryRunDetail,
     PaginatedCollectorList,
     PaginatedCredentialList,
+    PaginatedDiscoveryJobList,
+    PaginatedDiscoveryRunList,
 )
 from netdoc_sdk.models.inventory import (
     CanonicalDeviceCreate,
@@ -407,6 +412,50 @@ class NetDocClient:
 
     async def snapshot_latest(self) -> SnapshotDetail:
         return await self._request('GET', 'snapshots/latest/', response_model=SnapshotDetail)
+
+    # ---------------------------------------------------------------------------
+    # discovery.DiscoveryRun
+    # ---------------------------------------------------------------------------
+
+    async def discovery_add(self) -> DiscoveryRunDetail:
+        return await self._request(
+            'POST',
+            'discoveries/',
+            expected_status=201,
+            response_model=DiscoveryRunDetail,
+        )
+
+    async def discovery_list(self, **params: Any) -> PaginatedDiscoveryRunList:
+        return await self._request(
+            'GET', 'discoveries/', params=params, response_model=PaginatedDiscoveryRunList
+        )
+
+    async def discovery_get(self, id: str) -> DiscoveryRunDetail:
+        return await self._request('GET', f'discoveries/{id}/', response_model=DiscoveryRunDetail)
+
+    async def discovery_cancel(self, id: str) -> DiscoveryRunDetail:
+        return await self._request(
+            'POST', f'discoveries/{id}/cancel/', response_model=DiscoveryRunDetail
+        )
+
+    async def discovery_jobs(self, id: str) -> PaginatedDiscoveryJobList:
+        return await self._request(
+            'GET', f'discoveries/{id}/jobs/', response_model=PaginatedDiscoveryJobList
+        )
+
+    # ---------------------------------------------------------------------------
+    # discovery.DiscoveryJob
+    # ---------------------------------------------------------------------------
+
+    async def discoveryjob_claim(self) -> DiscoveryJobClaim:
+        return await self._request('POST', 'discovery-jobs/claim/', response_model=DiscoveryJobClaim)
+
+    # TODO
+    # claim
+    # heartbeat
+    # push_discovered_device
+    # status
+    # complete
 
     # ---------------------------------------------------------------------------
     # discovery.Collector
