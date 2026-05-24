@@ -22,7 +22,7 @@ class CollectorDetail(APIModel):
     sites: list[UUID] = Field(default_factory=list)
     domain_ranges: list[str] = Field(default_factory=list)
     network_ranges: list[str] = Field(default_factory=list)
-    is_active: bool = True
+    is_active: bool
     # Metadata
     metadata: dict[str, Any] = Field(default_factory=dict)
     last_heartbeat_at: datetime | None = None
@@ -35,7 +35,7 @@ class CollectorList(APIModel):
     user: UUID
     name: str
     version: str
-    is_active: bool = True
+    is_active: bool
     # Metadata
     last_heartbeat_at: datetime | None = None
     created_at: datetime
@@ -50,7 +50,7 @@ class CollectorUpdate(APIModel):
     sites: list[UUID] = Field(default_factory=list)
     domain_range: list[str] = Field(default_factory=list)
     network_range: list[str] = Field(default_factory=list)
-    is_active: bool = True
+    is_active: bool | None = None
     # Metadata
     metadata: dict[str, Any] = Field(default_factory=dict)
 
@@ -70,7 +70,7 @@ class CredentialDetail(APIModel):
     username: str | None = None
     label: str | None = None
     description: str = ''
-    verify_cert: bool = True
+    verify_cert: bool
     # Metadata
     metadata: dict[str, Any] = Field(default_factory=dict)
     created_at: datetime
@@ -81,7 +81,7 @@ class CredentialList(APIModel):
     id: UUID4Str
     username: str | None = None
     label: str
-    verify_cert: bool = True
+    verify_cert: bool
     # Metadata
     created_at: datetime
     updated_at: datetime
@@ -94,7 +94,7 @@ class CredentialCreate(APIModel):
     label: str
     description: str | None = None
     username: str | None = None
-    verify_cert: bool = True
+    verify_cert: bool | None = None
     password: str | None = None
     secret: str | None = None
     # Metadata
@@ -105,7 +105,7 @@ class CredentialUpdate(APIModel):
     label: str | None = None
     description: str | None = None
     username: str | None = None
-    verify_cert: bool = True
+    verify_cert: bool | None = None
     password: str | None = None
     secret: str | None = None
     # Metadata

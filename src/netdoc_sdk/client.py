@@ -43,6 +43,10 @@ from netdoc_sdk.models.discovery import (
     PaginatedCredentialList,
 )
 from netdoc_sdk.models.inventory import (
+    CanonicalDeviceCreate,
+    CanonicalDeviceDetail,
+    CanonicalDeviceUpdate,
+    PaginatedCanonicalDeviceList,
     PaginatedSiteList,
     SiteCreate,
     SiteDetail,
@@ -475,6 +479,48 @@ class NetDocClient:
 
     async def credential_delete(self, id: str) -> None:
         return await self._request('DELETE', f'credentials/{id}/', expected_status=204)
+
+    # ---------------------------------------------------------------------------
+    # inventory.CanonicalDevice
+    # ---------------------------------------------------------------------------
+
+    async def canonicaldevice_add(
+        self, data: JsonMapping | CanonicalDeviceCreate | None = None, **fields: Any
+    ) -> CanonicalDeviceDetail:
+        return await self._request(
+            'POST',
+            'canonical-devices/',
+            json=self._serialize_body(data, **fields),
+            expected_status=201,
+            response_model=CanonicalDeviceDetail,
+        )
+
+    async def canonicaldevice_list(self, **params: Any) -> PaginatedCanonicalDeviceList:
+        return await self._request(
+            'GET', 'canonical-devices/', params=params, response_model=PaginatedCanonicalDeviceList
+        )
+
+    async def canonicaldevice_get(self, id: str) -> CanonicalDeviceDetail:
+        return await self._request(
+            'GET', f'canonical-devices/{id}/', response_model=CanonicalDeviceDetail
+        )
+
+    async def canonicaldevice_update(
+        self, id: str, data: JsonMapping | CanonicalDeviceUpdate | None = None, **fields: Any
+    ) -> CanonicalDeviceDetail:
+        return await self._request(
+            'PATCH',
+            f'canonical-devices/{id}/',
+            json=self._serialize_body(data, **fields),
+            response_model=CanonicalDeviceDetail,
+        )
+
+    async def canonicaldevice_delete(self, id: str) -> None:
+        return await self._request('DELETE', f'canonical-devices/{id}/', expected_status=204)
+
+    # async def canonicaldevice_history(self, id: str) -> PaginatedDeviceList:
+    # TODO
+    # return await self._request('GET', f'canonical-devices/{id}/history/', response_model=PaginatedDeviceList)
 
     # ---------------------------------------------------------------------------
     # inventory.Site

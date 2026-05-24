@@ -62,7 +62,7 @@ class LogMessage(APIModel):
 class TenantDetail(APIModel):
     id: UUID4Str
     name: str = ''
-    is_active: bool = False
+    is_active: bool
     # Metadata
     metadata: dict[str, Any] = Field(default_factory=dict)
     created_at: datetime
@@ -72,7 +72,7 @@ class TenantDetail(APIModel):
 class TenantList(APIModel):
     id: UUID4Str
     name: str = ''
-    is_active: bool = False
+    is_active: bool
     # Metadata
     created_at: datetime
     updated_at: datetime
@@ -83,7 +83,7 @@ PaginatedTenantList = PaginatedResponse[TenantList]
 
 class TenantCreate(APIModel):
     name: str
-    is_active: bool = True
+    is_active: bool | None = None
     # Metadata
     metadata: dict[str, Any] = Field(default_factory=dict)
 
@@ -114,7 +114,7 @@ class UserDetail(APIModel):
     email: str = ''
     first_name: str = ''
     last_name: str = ''
-    is_active: bool = False
+    is_active: bool
     # Metadata
     metadata: dict[str, Any] = Field(default_factory=dict)
     created_at: datetime
@@ -129,7 +129,7 @@ class UserList(APIModel):
     email: str = ''
     first_name: str = ''
     last_name: str = ''
-    is_active: bool = False
+    is_active: bool
     # Metadata
     created_at: datetime
     last_login: datetime | None = None
@@ -146,7 +146,7 @@ class UserCreate(APIModel):
     email: str = ''
     first_name: str = ''
     last_name: str = ''
-    is_active: bool = True
+    is_active: bool | None = None
     # Metadata
     metadata: dict[str, Any] = Field(default_factory=dict)
 

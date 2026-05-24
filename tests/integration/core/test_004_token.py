@@ -9,8 +9,8 @@ class TestToken:
         username = 'conftest-admin'
         password = '986629a7ca89202a3ef2ae1dd9d5fb37'
         client = await NetDocClient.from_credentials(
-                base_url=live_server.url,
-                username=username,
-                password=password,
-            )
+            base_url=live_server.url,
+            username=username,
+            password=password,
+        )
         await client.token_add(username=username, password=password)
