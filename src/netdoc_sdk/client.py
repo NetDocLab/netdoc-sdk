@@ -436,7 +436,7 @@ class NetDocClient:
             'POST',
             'collectors/heartbeat/',
             json=self._serialize_body(data, **fields),
-            expected_status=201,
+            expected_status=200,
             response_model=CollectorDetail,
         )
 

@@ -20,8 +20,8 @@ class CollectorDetail(APIModel):
     version: str
     canonical_devices: list[UUID] = Field(default_factory=list)
     sites: list[UUID] = Field(default_factory=list)
-    domain_range: list[str] = Field(default_factory=list)
-    network_range: list[str] = Field(default_factory=list)
+    domain_ranges: list[str] = Field(default_factory=list)
+    network_ranges: list[str] = Field(default_factory=list)
     is_active: bool = True
     # Metadata
     metadata: dict[str, Any] = Field(default_factory=dict)
@@ -56,8 +56,8 @@ class CollectorUpdate(APIModel):
 
 
 class CollectorHeartbeat(APIModel):
-    name: str = ''
-    version: str = ''
+    name: str
+    version: str
 
 
 # ---------------------------------------------------------------------------
