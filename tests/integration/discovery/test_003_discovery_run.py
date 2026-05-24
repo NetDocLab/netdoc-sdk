@@ -3,7 +3,7 @@ from netdoc_sdk.client import NetDocClient
 
 
 @pytest.mark.django_db
-class TestCanonicalDevice:
+class TestDiscoveryRun:
     @pytest.mark.django_db(transaction=True)
     async def test_collector(self, admin_client, live_server):
         collector_username = 'test-collector-user'

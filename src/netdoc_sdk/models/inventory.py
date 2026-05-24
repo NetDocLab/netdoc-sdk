@@ -18,39 +18,38 @@ from pydantic_core.core_schema import UuidSchema
 class CanonicalDeviceDetail(APIModel):
     id: UUID4Str
     label: str
-    mgmt_address: str | None = None
-    discovery_mode: str | None = None
+    mgmt_address: str | None
+    discovery_mode: str | None
     is_discoverable: bool
     identifiers: dict
-    credential: UUID4Str | None = None
-    parent: UUID4Str | None = None
-    role: str | None = None
-    site: UUID4Str | None = None
-    site_name: str | None = None
+    credential: UUID4Str | None
+    parent: UUID4Str | None
+    role: str | None
+    site: UUID4Str | None
+    site_name: str | None
     # Metadata
-    metadata: dict[str, Any] = Field(default_factory=dict)
+    metadata: dict[str, Any]
     is_active: bool
     created_at: datetime
-    first_seen: datetime | None = None
-    last_seen: datetime | None = None
+    first_seen: datetime | None
+    last_seen: datetime | None
     updated_at: datetime
 
 
 class CanonicalDeviceList(APIModel):
     id: UUID4Str
     label: str
-    mgmt_address: str | None = None
-    discovery_mode: str | None = None
+    mgmt_address: str | None
+    discovery_mode: str | None
     is_discoverable: bool
-    credential: UUID4Str | None = None
-    parent: UUID4Str | None = None
-    site: UUID4Str | None = None
-    site_name: str | None = None
+    parent: UUID4Str | None
+    site: UUID4Str | None
+    site_name: str | None
     # Metadata
     is_active: bool
     created_at: datetime
-    first_seen: datetime | None = None
-    last_seen: datetime | None = None
+    first_seen: datetime | None
+    last_seen: datetime | None
     updated_at: datetime
 
 
@@ -99,13 +98,13 @@ class SiteTypeEnum(Enum):
 class SiteDetail(APIModel):
     id: UUID4Str
     name: str
-    site_type: SiteTypeEnum | str = SiteTypeEnum.OTHER
-    address: str = ''
-    city: str = ''
-    region: str = ''
-    country: str = ''
+    site_type: SiteTypeEnum
+    address: str
+    city: str
+    region: str
+    country: str
     # Metadata
-    metadata: dict[str, Any] = Field(default_factory=dict)
+    metadata: dict[str, Any]
     created_at: datetime
     updated_at: datetime
 
@@ -113,11 +112,11 @@ class SiteDetail(APIModel):
 class SiteList(APIModel):
     id: UUID4Str
     name: str
-    site_type: SiteTypeEnum | str = SiteTypeEnum.OTHER
-    address: str = ''
-    city: str = ''
-    region: str = ''
-    country: str = ''
+    site_type: SiteTypeEnum | None
+    address: str
+    city: str
+    region: str
+    country: str
     # Metadata
     created_at: datetime
     updated_at: datetime
@@ -128,7 +127,7 @@ PaginatedSiteList = PaginatedResponse[SiteList]
 
 class SiteCreate(APIModel):
     name: str
-    site_type: SiteTypeEnum | str = SiteTypeEnum.OTHER
+    site_type: SiteTypeEnum | None = None
     address: str = ''
     city: str = ''
     region: str = ''
@@ -139,7 +138,7 @@ class SiteCreate(APIModel):
 
 class SiteUpdate(APIModel):
     name: str
-    site_type: SiteTypeEnum | str = SiteTypeEnum.OTHER
+    site_type: SiteTypeEnum | None = None
     address: str = ''
     city: str = ''
     region: str = ''

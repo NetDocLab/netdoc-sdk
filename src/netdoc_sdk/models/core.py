@@ -61,17 +61,17 @@ class LogMessage(APIModel):
 
 class TenantDetail(APIModel):
     id: UUID4Str
-    name: str = ''
+    name: str
     is_active: bool
     # Metadata
-    metadata: dict[str, Any] = Field(default_factory=dict)
+    metadata: dict[str, Any]
     created_at: datetime
     updated_at: datetime
 
 
 class TenantList(APIModel):
     id: UUID4Str
-    name: str = ''
+    name: str
     is_active: bool
     # Metadata
     created_at: datetime
@@ -109,30 +109,30 @@ class RoleEnum(Enum):
 
 class UserDetail(APIModel):
     id: UUID4Str
-    username: str = ''
-    role: RoleEnum = RoleEnum.VIEWER
-    email: str = ''
-    first_name: str = ''
-    last_name: str = ''
+    username: str
+    role: RoleEnum | None
+    email: str
+    first_name: str
+    last_name: str
     is_active: bool
     # Metadata
     metadata: dict[str, Any] = Field(default_factory=dict)
     created_at: datetime
-    last_login: datetime | None = None
+    last_login: datetime | None
     updated_at: datetime
 
 
 class UserList(APIModel):
     id: UUID4Str
-    username: str = ''
-    role: RoleEnum = RoleEnum.VIEWER
-    email: str = ''
-    first_name: str = ''
-    last_name: str = ''
+    username: str
+    role: RoleEnum | None
+    email: str
+    first_name: str
+    last_name: str
     is_active: bool
     # Metadata
     created_at: datetime
-    last_login: datetime | None = None
+    last_login: datetime | None
     updated_at: datetime
 
 
@@ -142,7 +142,7 @@ PaginatedUserList = PaginatedResponse[UserList]
 class UserCreate(APIModel):
     username: str
     password: str
-    role: RoleEnum = RoleEnum.VIEWER
+    role: RoleEnum | None
     email: str = ''
     first_name: str = ''
     last_name: str = ''
@@ -154,7 +154,7 @@ class UserCreate(APIModel):
 class UserUpdate(APIModel):
     username: str | None = None
     password: str | None = None
-    role: RoleEnum | str | None = None
+    role: RoleEnum | None = None
     email: str | None = None
     first_name: str | None = None
     last_name: str | None = None
@@ -188,28 +188,28 @@ class TokenRequest(APIModel):
 
 class AuditLogDetail(APIModel):
     id: UUID4Str
-    source_ip: str = ''
-    user: str = ''
-    username: str = ''
-    tenant: UUID | None = None
-    action: str = ''
-    resource_path: str = ''
-    status_code: int = 0
-    duration_ms: float = 0
+    source_ip: str
+    user: str
+    username: str
+    tenant: UUID | None
+    action: str
+    resource_path: str
+    status_code: int
+    duration_ms: float
     # Metadata
-    metadata: dict[str, Any] = Field(default_factory=dict)
+    metadata: dict[str, Any]
     created_at: datetime
 
 
 class AuditLogList(APIModel):
     id: UUID4Str
-    source_ip: str = ''
-    user: str = ''
-    username: str = ''
-    tenant: UUID | None = None
-    action: str = ''
-    resource_path: str = ''
-    status_code: int = 0
+    source_ip: str
+    user: str
+    username: str
+    tenant: UUID | None
+    action: str
+    resource_path: str
+    status_code: int
     # Metadata
     created_at: datetime
 

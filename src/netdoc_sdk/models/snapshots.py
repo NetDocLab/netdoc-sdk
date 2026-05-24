@@ -19,28 +19,28 @@ class StatusEnum(Enum):
 
 class SnapshotDetail(APIModel):
     id: UUID4Str
-    label: str = ''
-    description: str = ''
-    pinned: bool = False
+    label: str
+    description: str
+    pinned: bool
     status: StatusEnum
     log_messages: list[LogMessage]
     # Metadata
-    metadata: dict[str, Any] = Field(default_factory=dict)
-    completed_at: datetime | None = None
+    metadata: dict[str, Any]
+    completed_at: datetime | None
     created_at: datetime
-    device_count: int = 0
+    device_count: int
     updated_at: datetime
 
 
 class SnapshotList(APIModel):
     id: UUID4Str
-    label: str = ''
-    pinned: bool = False
+    label: str
+    pinned: bool
     status: StatusEnum
     # Metadata
-    completed_at: datetime | None = None
+    completed_at: datetime | None
     created_at: datetime
-    device_count: int = 0
+    device_count: int
     updated_at: datetime
 
 

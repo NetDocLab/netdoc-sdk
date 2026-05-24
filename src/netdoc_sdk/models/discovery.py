@@ -1,6 +1,7 @@
 """Pydantic models matching the public NetDoc OpenAPI discovery contracts."""
 
 from datetime import datetime
+from enum import Enum
 from typing import Any
 from uuid import UUID
 
@@ -18,14 +19,14 @@ class CollectorDetail(APIModel):
     user: UUID
     name: str
     version: str
-    canonical_devices: list[UUID] = Field(default_factory=list)
-    sites: list[UUID] = Field(default_factory=list)
-    domain_ranges: list[str] = Field(default_factory=list)
-    network_ranges: list[str] = Field(default_factory=list)
+    canonical_devices: list[UUID]
+    sites: list[UUID]
+    domain_ranges: list[str]
+    network_ranges: list[str]
     is_active: bool
     # Metadata
-    metadata: dict[str, Any] = Field(default_factory=dict)
-    last_heartbeat_at: datetime | None = None
+    metadata: dict[str, Any]
+    last_heartbeat_at: datetime | None
     created_at: datetime
     updated_at: datetime
 
@@ -37,7 +38,7 @@ class CollectorList(APIModel):
     version: str
     is_active: bool
     # Metadata
-    last_heartbeat_at: datetime | None = None
+    last_heartbeat_at: datetime | None
     created_at: datetime
     updated_at: datetime
 
@@ -67,19 +68,19 @@ class CollectorHeartbeat(APIModel):
 
 class CredentialDetail(APIModel):
     id: UUID4Str
-    username: str | None = None
-    label: str | None = None
-    description: str = ''
+    username: str | None
+    label: str | None
+    description: str
     verify_cert: bool
     # Metadata
-    metadata: dict[str, Any] = Field(default_factory=dict)
+    metadata: dict[str, Any]
     created_at: datetime
     updated_at: datetime
 
 
 class CredentialList(APIModel):
     id: UUID4Str
-    username: str | None = None
+    username: str | None
     label: str
     verify_cert: bool
     # Metadata
@@ -117,17 +118,19 @@ class CredentialUpdate(APIModel):
 # ---------------------------------------------------------------------------
 
 
-# class DiscoveryRunCreate(APIModel):
-#     collector_ids: list[str] = Field(default_factory=list)
-#     command_profile: dict[str, Any] = Field(default_factory=dict)
-#     parser_hints: dict[str, Any] = Field(default_factory=dict)
-#     metadata: dict[str, Any] = Field(default_factory=dict)
+class DiscoveryRunStatusEnum(Enum):
+    CANCELLED = 'cancelled'
+    CANCELLING = 'cancelling'
+    COMPLETED = 'completed'
+    FAILED = 'failed'
+    PENDING = 'pending'
+    RUNNING = 'running'
 
 
-# class DiscoveryRun(APIModel):
+# class DiscoveryRunDetail(APIModel):
 #     id: str
 #     snapshot_id: str
-#     status: DiscoveryRunStatusEnum | str = DiscoveryRunStatusEnum.PENDING
+#     status: DiscoveryRunStatusEnum
 #     origin: str = 'manual'
 #     requested_by: int | None = None
 #     schedule: str | None = None
@@ -144,6 +147,18 @@ class CredentialUpdate(APIModel):
 #     started_at: datetime | None = None
 #     completed_at: datetime | None = None
 #     updated_at: datetime | None = None
+
+
+# class DiscoveryRunCreate(APIModel):
+#     collector_ids: list[str] = Field(default_factory=list)
+#     command_profile: dict[str, Any] = Field(default_factory=dict)
+#     parser_hints: dict[str, Any] = Field(default_factory=dict)
+#     metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+# ---------------------------------------------------------------------------
+# inventory.DiscoveryJob
+# ---------------------------------------------------------------------------
 
 
 # class DiscoveryJob(APIModel):
@@ -183,8 +198,3 @@ class CredentialUpdate(APIModel):
 #     claim_token: str
 #     status: DiscoveryJobStatusEnum | str
 #     log_messages: list = []
-
-
-# ---------------------------------------------------------------------------
-# inventory.DiscoveryJob
-# ---------------------------------------------------------------------------
