@@ -5,9 +5,7 @@ env:
 
 on:
   pull_request:
-    branches: [main]
-  push:
-    branches: [main]
+    types: [opened, synchronize, reopened]
 
 # Cancel any existing runs of this workflow for this same branch
 concurrency:

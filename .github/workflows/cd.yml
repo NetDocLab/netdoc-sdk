@@ -33,4 +33,5 @@ jobs:
       - run: python -m build
       - run: twine upload dist/*
         env:
+          TWINE_USERNAME: __token__
           TWINE_TOKEN: ${{ secrets.PYPI_TOKEN }}
