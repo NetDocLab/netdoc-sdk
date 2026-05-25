@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/NetDocLab/netdoc-sdk/compare/v0.2.1...v0.2.2) (2026-05-25)
+
+
+### Bug Fixes
+
+* cd pipeline ([6854680](https://github.com/NetDocLab/netdoc-sdk/commit/6854680f3637bed779212eb618246d7a40fbca3d))
+
 ## [0.2.1](https://github.com/NetDocLab/netdoc-sdk/compare/v0.2.0...v0.2.1) (2026-05-25)
 
 
