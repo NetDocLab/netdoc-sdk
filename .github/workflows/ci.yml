@@ -26,7 +26,8 @@ jobs:
         with:
           repository: NetDocLab/netdoc
           path: netdoc
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # Permission -> Content
+          token: ${{ secrets.NETDOC_REPO_TOKEN }}
 
       - name: Setup Python3
         uses: actions/setup-python@v6
