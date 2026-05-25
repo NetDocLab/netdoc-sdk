@@ -1,4 +1,4 @@
-name: CI
+name: Tests (CI)
 
 env:
   PYTHON_VERSION: 3.12
