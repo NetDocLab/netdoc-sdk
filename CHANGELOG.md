@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/NetDocLab/netdoc-sdk/compare/v0.1.0...v0.1.1) (2026-05-25)
+
+
+### Bug Fixes
+
+* update cd ([2deae69](https://github.com/NetDocLab/netdoc-sdk/commit/2deae6939658da7d315e5d3374e05282b1381eeb))
+
 ## 0.1.0 (2026-05-25)
 
 
