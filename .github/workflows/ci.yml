@@ -20,12 +20,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          path: netdoc-sdk
 
       - name: Checkout backend
         uses: actions/checkout@v6
         with:
           repository: NetDocLab/netdoc
-          path: ../netdoc
+          path: netdoc
           # Permission -> Content
           token: ${{ secrets.NETDOC_REPO_TOKEN }}
 
@@ -36,24 +38,31 @@ jobs:
 
       - name: Install Poetry
         run: pip install --no-cache-dir poetry
+        working-directory: netdoc-sdk
 
       - name: Display Poetry version
         run: poetry --version
+        working-directory: netdoc-sdk
 
       - name: Configure Poetry
         run: poetry config virtualenvs.in-project true
+        working-directory: netdoc-sdk
 
       - name: Install
         run: make install
+        working-directory: netdoc-sdk
 
       - name: Code linting
         run: make lint
+        working-directory: netdoc-sdk
 
       - name: Run pre-commit
         run: make check
+        working-directory: netdoc-sdk
 
       - name: Tests
         run: make coverage
+        working-directory: netdoc-sdk
 
   snyk:
     needs: tests
