@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           repository: NetDocLab/netdoc
-          path: netdoc
+          path: ../netdoc
           # Permission -> Content
           token: ${{ secrets.NETDOC_REPO_TOKEN }}
 
