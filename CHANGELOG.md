@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/NetDocLab/netdoc-sdk/compare/v0.2.0...v0.2.1) (2026-05-25)
+
+
+### Bug Fixes
+
+* license ([01bb87c](https://github.com/NetDocLab/netdoc-sdk/commit/01bb87c04e6004ce2e8432fba995d97806f470c5))
+
 ## [0.2.0](https://github.com/NetDocLab/netdoc-sdk/compare/v0.1.3...v0.2.0) (2026-05-25)
 
 
