@@ -52,15 +52,15 @@ jobs:
         run: make install
         working-directory: netdoc-sdk
 
-      - name: Code linting
+      - name: Code linting (make lint)
         run: make lint
         working-directory: netdoc-sdk
 
-      - name: Run pre-commit
+      - name: Run checks (pre-commit)
         run: make check
         working-directory: netdoc-sdk
 
-      - name: Tests
+      - name: Run tests
         run: make coverage
         working-directory: netdoc-sdk
 
