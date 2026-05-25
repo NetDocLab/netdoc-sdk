@@ -33,6 +33,11 @@ class TestResponseParsing:
                         {
                             'id': str(uuid.uuid4()),
                             'name': 'milan',
+                            'site_type': 'branch',
+                            'address': '',
+                            'city': '',
+                            'region': '',
+                            'country': '',
                             'created_at': '2026-05-23 06:37:34.246550',
                             'updated_at': '2026-05-23 06:37:34.246550',
                         }
@@ -54,6 +59,12 @@ class TestResponseParsing:
                 json={
                     'id': site_id,
                     'name': 'milan',
+                    'site_type': 'branch',
+                    'address': '',
+                    'city': '',
+                    'region': '',
+                    'country': '',
+                    'metadata': {},
                     'created_at': '2026-05-23 06:37:34.246550',
                     'updated_at': '2026-05-23 06:37:34.246550',
                 },

@@ -30,4 +30,3 @@ class TestDiscoveryRun:
         # TODO push_discovered_device
         # TODO status
         # TODO complete
-    

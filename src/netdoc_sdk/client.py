@@ -448,7 +448,9 @@ class NetDocClient:
     # ---------------------------------------------------------------------------
 
     async def discoveryjob_claim(self) -> DiscoveryJobClaim:
-        return await self._request('POST', 'discovery-jobs/claim/', response_model=DiscoveryJobClaim)
+        return await self._request(
+            'POST', 'discovery-jobs/claim/', response_model=DiscoveryJobClaim
+        )
 
     # TODO
     # claim
