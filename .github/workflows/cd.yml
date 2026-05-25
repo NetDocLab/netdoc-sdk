@@ -19,6 +19,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           release-type: python
+          version-file: pyproject.toml
 
   publish:
     needs: release
