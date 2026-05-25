@@ -19,8 +19,8 @@ jobs:
           release-type: python
 
   publish:
-    needs: release-please
-    if: ${{ steps.release.outputs.release_created }}
+    needs: release
+    if: ${{ needs.release.outputs.release_created }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
