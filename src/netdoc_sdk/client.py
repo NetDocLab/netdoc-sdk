@@ -22,7 +22,6 @@ from netdoc_sdk.models.core import (
     PaginatedAuditLogList,
     PaginatedTenantList,
     PaginatedUserList,
-    UserProfileUpdate,
     TenantCreate,
     TenantDetail,
     TenantUpdate,
@@ -30,6 +29,7 @@ from netdoc_sdk.models.core import (
     TokenRequest,
     UserCreate,
     UserDetail,
+    UserProfileUpdate,
     UserUpdate,
 )
 from netdoc_sdk.models.discovery import (
@@ -40,7 +40,6 @@ from netdoc_sdk.models.discovery import (
     CredentialDetail,
     CredentialUpdate,
     DiscoveryJobClaim,
-    DiscoveryJobDetail,
     DiscoveryRunDetail,
     PaginatedCollectorList,
     PaginatedCredentialList,
@@ -324,14 +323,14 @@ class NetDocClient:
         return await self._request('DELETE', f'users/{id}/', expected_status=204)
 
     async def profile_get(self) -> UserDetail:
-        return await self._request('GET', f'users/current/', response_model=UserDetail)
+        return await self._request('GET', 'users/current/', response_model=UserDetail)
 
     async def profile_update(
         self, data: JsonMapping | UserProfileUpdate | None = None, **fields: Any
     ) -> UserDetail:
         return await self._request(
             'PATCH',
-            f'users/current/',
+            'users/current/',
             json=self._serialize_body(data, **fields),
             response_model=UserDetail,
         )

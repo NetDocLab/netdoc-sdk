@@ -7,8 +7,6 @@ from typing import Any
 from pydantic import Field
 
 from netdoc_sdk.models.core import APIModel, PaginatedResponse, UUID4Str
-from pydantic_core.core_schema import UuidSchema
-
 
 # ---------------------------------------------------------------------------
 # inventory.CanonicalDevice

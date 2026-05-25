@@ -18,6 +18,7 @@ coverage: ## Run tests and show coverage report
 
 fmt: ## Code formatting
 	poetry run ruff format .
+	poetry run ruff check --fix
 
 lint: ## Code linting (check only)
 	poetry run ruff check . --output-format=full

@@ -1,10 +1,11 @@
 """Shared fixtures for NetDocClient unit tests."""
 
-from asgiref.sync import sync_to_async
 import pytest
+from apps.core.models import Tenant
+from asgiref.sync import sync_to_async
 from django.contrib.auth import get_user_model
 from rest_framework.authtoken.models import Token
-from apps.core.models import Tenant
+
 from netdoc_sdk.client import NetDocClient
 
 
