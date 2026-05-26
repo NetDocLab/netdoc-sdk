@@ -67,7 +67,6 @@ djangorestframework = ">=3.14,<4.0"
 netdoc = {path = "../netdoc", develop = true}
 
 # Code quality
-cyclonedx-bom = "^7.2.1"
 mypy = ">=1.7"
 ruff = ">=0.1"
 

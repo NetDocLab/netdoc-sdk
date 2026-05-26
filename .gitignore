@@ -413,3 +413,8 @@ htmlcov/
 # Editor-specific (already in vscode section above, but common in root)
 *.swp
 *.swo
+
+# NetDoc example files
+inventory.json
+config.yaml
+output
