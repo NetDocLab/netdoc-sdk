@@ -92,7 +92,6 @@ class CredentialCreate(APIModel):
     verify_cert: bool | None = None
 
 
-
 class CredentialUpdate(APIModel):
     label: str | None = None
     description: str | None = None
