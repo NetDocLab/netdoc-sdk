@@ -2,12 +2,8 @@
 
 from datetime import datetime
 from enum import Enum
-from typing import Any
-
-from pydantic import Field
 
 from netdoc_sdk.models.core import APIModel, PaginatedResponse, UUID4Str
-
 
 # ---------------------------------------------------------------------------
 # inventory.Site
@@ -92,7 +88,6 @@ class CanonicalDeviceDetail(APIModel):
     is_active: bool
 
 
-
 class CanonicalDeviceList(APIModel):
     id: UUID4Str
     label: str
@@ -110,6 +105,7 @@ class CanonicalDeviceList(APIModel):
     inactive_since: datetime | None
     is_active: bool
 
+
 PaginatedCanonicalDeviceList = PaginatedResponse[CanonicalDeviceList]
 
 
@@ -124,7 +120,6 @@ class CanonicalDeviceCreate(APIModel):
     role: str | None = None
 
 
-
 class CanonicalDeviceUpdate(APIModel):
     label: str | None = None
     mgmt_address: str | None = None
@@ -134,4 +129,3 @@ class CanonicalDeviceUpdate(APIModel):
     parent: UUID4Str | None = None
     site: UUID4Str | None = None
     role: str | None = None
-

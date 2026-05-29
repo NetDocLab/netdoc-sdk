@@ -2,7 +2,6 @@
 
 from datetime import datetime
 from enum import Enum
-from typing import Any
 from uuid import UUID
 
 from pydantic import Field
@@ -92,7 +91,6 @@ class CredentialCreate(APIModel):
     verify_cert: bool | None = None
 
 
-
 class CredentialUpdate(APIModel):
     label: str | None = None
     description: str | None = None
@@ -124,8 +122,6 @@ class DiscoveryRunDetail(APIModel):
     requested_by: UUID4Str | None
     schedule: UUID4Str | None
     log_messages: list[LogMessage]
-    # Metadata
-    metadata: dict[str, Any] = Field(default_factory=dict)
     completed_job_count: int
     failed_job_count: int
     job_count: int
@@ -144,7 +140,6 @@ class DiscoveryRunList(APIModel):
     origin: str
     requested_by: UUID4Str | None
     schedule: UUID4Str | None
-    # Metadata
     completed_job_count: int
     failed_job_count: int
     job_count: int
@@ -181,8 +176,6 @@ class DiscoveryJobDetail(APIModel):
     max_attempts: int
     idempotency_key: str
     log_messages: list[LogMessage]
-    # Metadata
-    metadata: dict[str, Any]
     claimed_at: datetime | None
     last_heartbeat_at: datetime | None
     lease_expires_at: datetime | None
@@ -206,8 +199,6 @@ class DiscoveryJobClaim(APIModel):
     idempotency_key: str
     log_messages: list[LogMessage]
     inventory: dict
-    # Metadata
-    metadata: dict[str, Any]
     claimed_at: datetime | None
     last_heartbeat_at: datetime | None
     lease_expires_at: datetime | None

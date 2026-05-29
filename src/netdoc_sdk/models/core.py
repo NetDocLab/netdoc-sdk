@@ -2,10 +2,10 @@
 
 from datetime import datetime
 from enum import Enum
-from typing import Annotated, Any
+from typing import Annotated
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict
 from pydantic.functional_validators import AfterValidator
 
 
@@ -141,7 +141,6 @@ class UserCreate(APIModel):
     last_name: str | None = None
     email: str | None = None
     is_active: bool | None = None
-
 
 
 class UserUpdate(APIModel):

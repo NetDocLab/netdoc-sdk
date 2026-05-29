@@ -64,7 +64,6 @@ class TestResponseParsing:
                     'city': '',
                     'region': '',
                     'country': '',
-                    'metadata': {},
                     'created_at': '2026-05-23 06:37:34.246550',
                     'updated_at': '2026-05-23 06:37:34.246550',
                 },

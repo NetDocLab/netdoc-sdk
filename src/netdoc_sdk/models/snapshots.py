@@ -2,7 +2,6 @@
 
 from datetime import datetime
 from enum import Enum
-from typing import Any
 
 from netdoc_sdk.models.core import APIModel, LogMessage, PaginatedResponse, UUID4Str
 
@@ -19,27 +18,24 @@ class SnapshotDetail(APIModel):
     id: UUID4Str
     label: str
     description: str
-    pinned: bool
     status: StatusEnum
+    pinned: bool
     log_messages: list[LogMessage]
-    # Metadata
-    metadata: dict[str, Any]
-    completed_at: datetime | None
     created_at: datetime
-    device_count: int
     updated_at: datetime
+    completed_at: datetime | None
+    device_count: int
 
 
 class SnapshotList(APIModel):
     id: UUID4Str
     label: str
-    pinned: bool
     status: StatusEnum
-    # Metadata
-    completed_at: datetime | None
+    pinned: bool
     created_at: datetime
-    device_count: int
     updated_at: datetime
+    completed_at: datetime | None
+    device_count: int
 
 
 PaginatedSnapshotList = PaginatedResponse[SnapshotList]
@@ -49,5 +45,3 @@ class SnapshotUpdate(APIModel):
     label: str | None = None
     description: str | None = None
     pinned: bool | None = None
-    # Metadata
-    metadata: dict[str, Any] | None = None
