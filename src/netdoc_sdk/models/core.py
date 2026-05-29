@@ -63,8 +63,7 @@ class TenantDetail(APIModel):
     id: UUID4Str
     name: str
     is_active: bool
-    # Metadata
-    metadata: dict[str, Any]
+    max_snapshots: int
     created_at: datetime
     updated_at: datetime
 
@@ -73,7 +72,7 @@ class TenantList(APIModel):
     id: UUID4Str
     name: str
     is_active: bool
-    # Metadata
+    max_snapshots: int
     created_at: datetime
     updated_at: datetime
 
@@ -84,15 +83,13 @@ PaginatedTenantList = PaginatedResponse[TenantList]
 class TenantCreate(APIModel):
     name: str
     is_active: bool | None = None
-    # Metadata
-    metadata: dict[str, Any] = Field(default_factory=dict)
+    max_snapshots: int | None = None
 
 
 class TenantUpdate(APIModel):
     name: str | None = None
     is_active: bool | None = None
-    # Metadata
-    metadata: dict[str, Any] | None = None
+    max_snapshots: int | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -111,29 +108,26 @@ class UserDetail(APIModel):
     id: UUID4Str
     username: str
     role: RoleEnum | None
-    email: str
+    is_active: bool
     first_name: str
     last_name: str
-    is_active: bool
-    # Metadata
-    metadata: dict[str, Any] = Field(default_factory=dict)
+    email: str
     created_at: datetime
-    last_login: datetime | None
     updated_at: datetime
+    last_login: datetime | None
 
 
 class UserList(APIModel):
     id: UUID4Str
     username: str
+    is_active: bool
     role: RoleEnum | None
-    email: str
     first_name: str
     last_name: str
-    is_active: bool
-    # Metadata
+    email: str
     created_at: datetime
-    last_login: datetime | None
     updated_at: datetime
+    last_login: datetime | None
 
 
 PaginatedUserList = PaginatedResponse[UserList]
@@ -143,24 +137,21 @@ class UserCreate(APIModel):
     username: str
     password: str
     role: RoleEnum | None
-    email: str = ''
-    first_name: str = ''
-    last_name: str = ''
+    first_name: str | None = None
+    last_name: str | None = None
+    email: str | None = None
     is_active: bool | None = None
-    # Metadata
-    metadata: dict[str, Any] = Field(default_factory=dict)
+
 
 
 class UserUpdate(APIModel):
     username: str | None = None
     password: str | None = None
-    role: RoleEnum | None = None
-    email: str | None = None
+    role: RoleEnum | None
     first_name: str | None = None
     last_name: str | None = None
+    email: str | None = None
     is_active: bool | None = None
-    # Metadata
-    metadata: dict[str, Any] | None = None
 
 
 class UserProfileUpdate(APIModel):
@@ -188,29 +179,26 @@ class TokenRequest(APIModel):
 
 class AuditLogDetail(APIModel):
     id: UUID4Str
+    tenant: UUID | None
     source_ip: str
     user: str
     username: str
-    tenant: UUID | None
     action: str
     resource_path: str
     status_code: int
     duration_ms: float
-    # Metadata
-    metadata: dict[str, Any]
     created_at: datetime
 
 
 class AuditLogList(APIModel):
     id: UUID4Str
+    tenant: UUID | None
     source_ip: str
     user: str
     username: str
-    tenant: UUID | None
     action: str
     resource_path: str
     status_code: int
-    # Metadata
     created_at: datetime
 
 
