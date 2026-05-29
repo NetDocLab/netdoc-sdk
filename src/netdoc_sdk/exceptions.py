@@ -108,3 +108,8 @@ class ValidationError(NetDocError):
     def __init__(self, message: str, errors: Any = None, *, detail: Any = None, body: Any = None):
         super().__init__(message, status_code=400, detail=detail, body=body)
         self.errors = errors if errors is not None else body
+
+    def __str__(self) -> str:
+        if self.errors:
+            return f'{self.message}: {self.errors}'
+        return self.message

@@ -19,16 +19,14 @@ class CollectorDetail(APIModel):
     user: UUID
     name: str
     version: str
+    is_active: bool
     canonical_devices: list[UUID]
     sites: list[UUID]
     domain_ranges: list[str]
     network_ranges: list[str]
-    is_active: bool
-    # Metadata
-    metadata: dict[str, Any]
-    last_heartbeat_at: datetime | None
     created_at: datetime
     updated_at: datetime
+    last_heartbeat_at: datetime | None
 
 
 class CollectorList(APIModel):
@@ -37,10 +35,9 @@ class CollectorList(APIModel):
     name: str
     version: str
     is_active: bool
-    # Metadata
-    last_heartbeat_at: datetime | None
     created_at: datetime
     updated_at: datetime
+    last_heartbeat_at: datetime | None
 
 
 PaginatedCollectorList = PaginatedResponse[CollectorList]
@@ -52,8 +49,6 @@ class CollectorUpdate(APIModel):
     domain_range: list[str] = Field(default_factory=list)
     network_range: list[str] = Field(default_factory=list)
     is_active: bool | None = None
-    # Metadata
-    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class CollectorHeartbeat(APIModel):
@@ -68,12 +63,10 @@ class CollectorHeartbeat(APIModel):
 
 class CredentialDetail(APIModel):
     id: UUID4Str
-    username: str | None
     label: str | None
+    username: str | None
     description: str
     verify_cert: bool
-    # Metadata
-    metadata: dict[str, Any]
     created_at: datetime
     updated_at: datetime
 
@@ -83,7 +76,6 @@ class CredentialList(APIModel):
     username: str | None
     label: str
     verify_cert: bool
-    # Metadata
     created_at: datetime
     updated_at: datetime
 
@@ -95,22 +87,19 @@ class CredentialCreate(APIModel):
     label: str
     description: str | None = None
     username: str | None = None
-    verify_cert: bool | None = None
     password: str | None = None
     secret: str | None = None
-    # Metadata
-    metadata: dict[str, Any] = Field(default_factory=dict)
+    verify_cert: bool | None = None
+
 
 
 class CredentialUpdate(APIModel):
     label: str | None = None
     description: str | None = None
     username: str | None = None
-    verify_cert: bool | None = None
     password: str | None = None
     secret: str | None = None
-    # Metadata
-    metadata: dict[str, Any] = Field(default_factory=dict)
+    verify_cert: bool | None = None
 
 
 # ---------------------------------------------------------------------------

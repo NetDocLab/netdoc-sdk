@@ -13,7 +13,7 @@ class TestCanonicalDevice:
         assert res.count == 1
         await admin_client.canonicaldevice_get(id=canonical_device.id)
         await admin_client.canonicaldevice_update(
-            id=canonical_device.id, name='test-new-canmonical-device'
+            id=canonical_device.id, label='test-new-canmonical-device'
         )
         await admin_client.canonicaldevice_delete(id=canonical_device.id)
         # TODO

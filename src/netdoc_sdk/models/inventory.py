@@ -8,77 +8,6 @@ from pydantic import Field
 
 from netdoc_sdk.models.core import APIModel, PaginatedResponse, UUID4Str
 
-# ---------------------------------------------------------------------------
-# inventory.CanonicalDevice
-# ---------------------------------------------------------------------------
-
-
-class CanonicalDeviceDetail(APIModel):
-    id: UUID4Str
-    label: str
-    mgmt_address: str | None
-    discovery_mode: str | None
-    is_discoverable: bool
-    identifiers: dict
-    credential: UUID4Str | None
-    parent: UUID4Str | None
-    role: str | None
-    site: UUID4Str | None
-    site_name: str | None
-    # Metadata
-    metadata: dict[str, Any]
-    is_active: bool
-    created_at: datetime
-    first_seen: datetime | None
-    last_seen: datetime | None
-    updated_at: datetime
-
-
-class CanonicalDeviceList(APIModel):
-    id: UUID4Str
-    label: str
-    mgmt_address: str | None
-    discovery_mode: str | None
-    is_discoverable: bool
-    parent: UUID4Str | None
-    site: UUID4Str | None
-    site_name: str | None
-    # Metadata
-    is_active: bool
-    created_at: datetime
-    first_seen: datetime | None
-    last_seen: datetime | None
-    updated_at: datetime
-
-
-PaginatedCanonicalDeviceList = PaginatedResponse[CanonicalDeviceList]
-
-
-class CanonicalDeviceCreate(APIModel):
-    label: str
-    mgmt_address: str | None = None
-    is_discoverable: bool
-    identifiers: list
-    credential: UUID4Str | None = None
-    parent: UUID4Str | None = None
-    role: str | None = None
-    site: UUID4Str | None = None
-    # Metadata
-    metadata: dict[str, Any] = Field(default_factory=dict)
-
-
-class CanonicalDeviceUpdate(APIModel):
-    label: str | None = None
-    mgmt_address: str | None = None
-    is_discoverable: bool
-    identifiers: list
-    credential: UUID4Str | None = None
-    parent: UUID4Str | None = None
-    role: str | None = None
-    site: UUID4Str | None = None
-    # Metadata
-    metadata: dict[str, Any] = Field(default_factory=dict)
-
 
 # ---------------------------------------------------------------------------
 # inventory.Site
@@ -101,8 +30,6 @@ class SiteDetail(APIModel):
     city: str
     region: str
     country: str
-    # Metadata
-    metadata: dict[str, Any]
     created_at: datetime
     updated_at: datetime
 
@@ -115,7 +42,6 @@ class SiteList(APIModel):
     city: str
     region: str
     country: str
-    # Metadata
     created_at: datetime
     updated_at: datetime
 
@@ -126,20 +52,86 @@ PaginatedSiteList = PaginatedResponse[SiteList]
 class SiteCreate(APIModel):
     name: str
     site_type: SiteTypeEnum | None = None
-    address: str = ''
-    city: str = ''
-    region: str = ''
-    country: str = ''
-    # Metadata
-    metadata: dict[str, Any] = Field(default_factory=dict)
+    address: str | None = None
+    city: str | None = None
+    region: str | None = None
+    country: str | None = None
 
 
 class SiteUpdate(APIModel):
     name: str
     site_type: SiteTypeEnum | None = None
-    address: str = ''
-    city: str = ''
-    region: str = ''
-    country: str = ''
-    # Metadata
-    metadata: dict[str, Any] = Field(default_factory=dict)
+    address: str | None = None
+    city: str | None = None
+    region: str | None = None
+    country: str | None = None
+
+
+# ---------------------------------------------------------------------------
+# inventory.CanonicalDevice
+# ---------------------------------------------------------------------------
+
+
+class CanonicalDeviceDetail(APIModel):
+    id: UUID4Str
+    label: str
+    mgmt_address: str | None
+    discovery_mode: str | None
+    is_discoverable: bool
+    identifiers: dict
+    credential: UUID4Str | None
+    parent: UUID4Str | None
+    site: UUID4Str | None
+    site_name: str | None
+    role: str | None
+    created_at: datetime
+    updated_at: datetime
+    first_seen: datetime | None
+    last_seen: datetime | None
+    inactive_since: datetime | None
+    is_active: bool
+
+
+
+class CanonicalDeviceList(APIModel):
+    id: UUID4Str
+    label: str
+    mgmt_address: str | None
+    discovery_mode: str | None
+    is_discoverable: bool
+    parent: UUID4Str | None
+    site: UUID4Str | None
+    site_name: str | None
+    role: str | None
+    created_at: datetime
+    updated_at: datetime
+    first_seen: datetime | None
+    last_seen: datetime | None
+    inactive_since: datetime | None
+    is_active: bool
+
+PaginatedCanonicalDeviceList = PaginatedResponse[CanonicalDeviceList]
+
+
+class CanonicalDeviceCreate(APIModel):
+    label: str
+    mgmt_address: str | None = None
+    is_discoverable: bool
+    identifiers: list
+    credential: UUID4Str | None = None
+    parent: UUID4Str | None = None
+    site: UUID4Str | None = None
+    role: str | None = None
+
+
+
+class CanonicalDeviceUpdate(APIModel):
+    label: str | None = None
+    mgmt_address: str | None = None
+    is_discoverable: bool
+    identifiers: list | None = None
+    credential: UUID4Str | None = None
+    parent: UUID4Str | None = None
+    site: UUID4Str | None = None
+    role: str | None = None
+
