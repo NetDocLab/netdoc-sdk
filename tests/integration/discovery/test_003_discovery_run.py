@@ -21,9 +21,12 @@ class TestDiscoveryRun:
         )
 
         # Create collector (heartbeat)
-        await collector_client.collector_heartbeat(
+        collector = await collector_client.collector_heartbeat(
             name='collector@host.example.com', version='0.1.0'
         )
+
+        # Activate collector
+        await admin_client.collector_update(collector.id, is_active=True)
 
         # Test functions
         discovery_run = await admin_client.discovery_add()

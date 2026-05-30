@@ -184,6 +184,12 @@ class NetDocClient:
         params: Mapping[str, Any] | None = None,
         response_model: Any = None,
     ) -> Any:
+        request_headers = {}
+        if method.upper() in ('POST', 'PUT', 'PATCH'):
+            request_headers['Content-Type'] = 'application/json'
+        if headers:
+            request_headers.update(headers)
+
         expected = None
         if expected_status is not None:
             expected = (
@@ -193,7 +199,7 @@ class NetDocClient:
         try:
             response = await self.client.request(
                 content=content,
-                headers=dict(headers or {}),
+                headers=request_headers,
                 json=self._serialize_body(json) if json is not None else None,
                 method=method,
                 params=self._clean_params(params),
