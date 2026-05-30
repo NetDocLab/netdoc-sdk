@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.4](https://github.com/NetDocLab/netdoc-sdk/compare/v0.2.3...v0.2.4) (2026-05-30)
+
+
+### Bug Fixes
+
+* add content-type to post/put/patch methods / fix tests on collector ([a3d99d4](https://github.com/NetDocLab/netdoc-sdk/commit/a3d99d460486ff45d34496be15a013583ed6295c))
+
 ## [0.2.3](https://github.com/NetDocLab/netdoc-sdk/compare/v0.2.2...v0.2.3) (2026-05-29)
 
 
