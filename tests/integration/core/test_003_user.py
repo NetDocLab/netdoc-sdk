@@ -16,7 +16,8 @@ class TestUser:
         )
         res = await admin_client.user_list()
         assert res.count == 2
-        await admin_client.user_get(id=user.id)
+        await admin_client.user_get(user.id)
+        await admin_client.user_get(user.username)
         await admin_client.user_update(
             id=user.id,
             username='test-new-user',
