@@ -126,6 +126,7 @@ class DiscoveryRunDetail(APIModel):
     failed_job_count: int
     job_count: int
     raw_output_count: int
+    parsed_output_count: int
     cancellation_requested_at: datetime | None
     completed_at: datetime | None
     created_at: datetime
@@ -144,6 +145,7 @@ class DiscoveryRunList(APIModel):
     failed_job_count: int
     job_count: int
     raw_output_count: int
+    parsed_output_count: int
     cancellation_requested_at: datetime | None
     completed_at: datetime | None
     created_at: datetime
