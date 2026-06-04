@@ -4,8 +4,6 @@ from datetime import datetime
 from enum import Enum
 from uuid import UUID
 
-from pydantic import Field
-
 from netdoc_sdk.models.core import APIModel, LogMessage, PaginatedResponse, UUID4Str
 
 # ---------------------------------------------------------------------------
@@ -43,10 +41,10 @@ PaginatedCollectorList = PaginatedResponse[CollectorList]
 
 
 class CollectorUpdate(APIModel):
-    canonical_devices: list[UUID] = Field(default_factory=list)
-    sites: list[UUID] = Field(default_factory=list)
-    domain_range: list[str] = Field(default_factory=list)
-    network_range: list[str] = Field(default_factory=list)
+    canonical_devices: list[UUID] | None = None
+    sites: list[UUID] | None = None
+    domain_range: list[str] | None = None
+    network_range: list[str] | None = None
     is_active: bool | None = None
 
 

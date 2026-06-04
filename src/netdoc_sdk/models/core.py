@@ -63,7 +63,9 @@ class TenantDetail(APIModel):
     id: UUID4Str
     name: str
     is_active: bool
+    log_retention_days: int
     max_snapshots: int
+    snapshot_retention_days: int
     created_at: datetime
     updated_at: datetime
 
@@ -72,7 +74,9 @@ class TenantList(APIModel):
     id: UUID4Str
     name: str
     is_active: bool
+    log_retention_days: int
     max_snapshots: int
+    snapshot_retention_days: int
     created_at: datetime
     updated_at: datetime
 
@@ -83,13 +87,17 @@ PaginatedTenantList = PaginatedResponse[TenantList]
 class TenantCreate(APIModel):
     name: str
     is_active: bool | None = None
+    log_retention_days: int | None = None
     max_snapshots: int | None = None
+    snapshot_retention_days: int | None = None
 
 
 class TenantUpdate(APIModel):
     name: str | None = None
     is_active: bool | None = None
+    log_retention_days: int | None = None
     max_snapshots: int | None = None
+    snapshot_retention_days: int | None = None
 
 
 # ---------------------------------------------------------------------------

@@ -10,7 +10,8 @@ class TestTenant:
         )
         res = await superuser_client.tenant_list()
         assert res.count == 1
-        await superuser_client.tenant_get(id=tenant.id)
+        await superuser_client.tenant_get(tenant.id)
+        await superuser_client.tenant_get(tenant.name)
         await superuser_client.tenant_update(
             id=tenant.id, name='test-new-tenant', is_active=False, max_snapshots=1
         )

@@ -55,7 +55,7 @@ class SiteCreate(APIModel):
 
 
 class SiteUpdate(APIModel):
-    name: str
+    name: str | None = None
     site_type: SiteTypeEnum | None = None
     address: str | None = None
     city: str | None = None
