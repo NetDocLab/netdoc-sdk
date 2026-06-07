@@ -172,6 +172,8 @@ class DiscoveryJobDetail(APIModel):
     collector_name: str
     snapshot: UUID4Str
     status: str
+    canonical_devices: list[dict]  # TODO should be part of the inventory
+    claim_token: str | None  # TODO should be on claim only
     attempt: int
     max_attempts: int
     idempotency_key: str
@@ -194,6 +196,8 @@ class DiscoveryJobClaim(APIModel):
     collector_name: str
     snapshot: UUID4Str
     status: str
+    canonical_devices: list[dict]  # TODO should be part of the inventory
+    claim_token: str
     attempt: int
     max_attempts: int
     idempotency_key: str
