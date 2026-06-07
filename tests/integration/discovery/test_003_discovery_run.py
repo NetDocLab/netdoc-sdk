@@ -28,10 +28,14 @@ class TestDiscoveryRun:
         # Activate collector
         await admin_client.collector_update(collector.id, is_active=True)
 
-        # Test functions
+        # Create run
         discovery_run = await admin_client.discovery_add()
         res = await admin_client.discovery_list()
         assert res.count == 1
         await admin_client.discovery_get(id=discovery_run.id)
-        # TODO: await admin_client.discovery_jobs(id=discovery_run.id)
+
+        # Verify jobs
+        await admin_client.discovery_jobs(id=discovery_run.id)
+
+        # Cancel the run
         await admin_client.discovery_cancel(id=discovery_run.id)

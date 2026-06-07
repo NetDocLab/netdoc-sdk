@@ -40,6 +40,7 @@ from netdoc_sdk.models.discovery import (
     CredentialDetail,
     CredentialUpdate,
     DiscoveryJobClaim,
+    DiscoveryJobDetail,
     DiscoveryRunDetail,
     PaginatedCollectorList,
     PaginatedCredentialList,
@@ -457,9 +458,56 @@ class NetDocClient:
             'POST', 'discovery-jobs/claim/', response_model=DiscoveryJobClaim
         )
 
+    async def discoveryjob_complete(
+        self,
+        id: str,
+        claim_token: str,
+        data: JsonMapping | CollectorUpdate | None = None,
+        **fields: Any,
+    ) -> DiscoveryJobDetail:
+        # TODO: could be no content
+        headers = {'X-Claim-Token': claim_token}
+        return await self._request(
+            'POST',
+            f'discovery-jobs/{id}/complete/',
+            json=self._serialize_body(data, **fields),
+            headers=headers,
+            response_model=DiscoveryJobDetail,
+        )
+
+    async def discoveryjob_heartbeat(self, id: str, claim_token: str) -> DiscoveryJobDetail:
+        # TODO: could be no content
+        headers = {'X-Claim-Token': claim_token}
+        return await self._request(
+            'POST',
+            f'discovery-jobs/{id}/heartbeat/',
+            headers=headers,
+            response_model=DiscoveryJobDetail,
+        )
+
+    async def discoveryjob_push(
+        self,
+        id: str,
+        claim_token: str,
+        data: JsonMapping | CollectorUpdate | None = None,
+        **fields: Any,
+    ) -> DiscoveryJobDetail:
+        # TODO: could be no content
+        headers = {'X-Claim-Token': claim_token}
+        return await self._request(
+            'POST',
+            f'discovery-jobs/{id}/push-discovered-device/',
+            json=self._serialize_body(data, **fields),
+            headers=headers,
+            response_model=DiscoveryJobDetail,
+        )
+
+    async def discoveryjob_status(self, id: str) -> DiscoveryJobDetail:
+        return await self._request(
+            'GET', f'discovery-jobs/{id}/status/', response_model=DiscoveryJobDetail
+        )
+
     # TODO
-    # claim
-    # heartbeat
     # push_discovered_device
     # status
     # complete
