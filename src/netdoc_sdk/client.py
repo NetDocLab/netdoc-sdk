@@ -41,6 +41,7 @@ from netdoc_sdk.models.discovery import (
     CredentialUpdate,
     DiscoveryJobClaim,
     DiscoveryJobDetail,
+    DiscoveryJobStatusEnum,
     DiscoveryRunDetail,
     PaginatedCollectorList,
     PaginatedCredentialList,
@@ -457,6 +458,11 @@ class NetDocClient:
         return await self._request(
             'POST', 'discovery-jobs/claim/', response_model=DiscoveryJobClaim
         )
+    
+    async def discoveryjob_heartbeat(self, id: str) -> DiscoveryRunDetail:
+        return await self._request(
+            'POST', f'discovery-jobs/{id}/heartbeat/', response_model=DiscoveryRunDetail
+        )
 
     async def discoveryjob_complete(
         self,
@@ -502,14 +508,20 @@ class NetDocClient:
             response_model=DiscoveryJobDetail,
         )
 
-    async def discoveryjob_status(self, id: str) -> DiscoveryJobDetail:
+    async def discoveryjob_status(self, id: str, claim_token: str, status: DiscoveryJobStatusEnum | str = None) -> DiscoveryJobDetail:
+        headers = {'X-Claim-Token': claim_token}
+        if status is not None:
+
+            return await self._request(
+            'PATCH', f'discovery-jobs/{id}/status/',headers=headers, json={'status': status}, response_model=DiscoveryJobDetail
+        )
         return await self._request(
-            'GET', f'discovery-jobs/{id}/status/', response_model=DiscoveryJobDetail
+            'GET', f'discovery-jobs/{id}/status/',headers=headers, response_model=DiscoveryJobDetail
         )
 
     # TODO
     # push_discovered_device
-    # status
+    # status --> implement both GET and PATCH to update the status (e.g. to mark complete or failed)
     # complete
 
     # ---------------------------------------------------------------------------

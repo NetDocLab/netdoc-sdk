@@ -165,13 +165,26 @@ PaginatedDiscoveryRunList = PaginatedResponse[DiscoveryRunList]
 # complete
 
 
+class DiscoveryJobStatusEnum(Enum):
+    """Discovery job lifecycle statuses."""
+
+    QUEUED = 'queued'
+    CLAIMED = 'claimed'
+    RUNNING = 'running'
+    CANCELLING = 'cancelling'
+    CANCELLED = 'cancelled'
+    COMPLETED = 'completed'
+    FAILED = 'failed'
+    EXPIRED = 'expired'
+
+
 class DiscoveryJobDetail(APIModel):
     id: str
     run: UUID4Str
     collector: UUID4Str
     collector_name: str
     snapshot: UUID4Str
-    status: str
+    status: DiscoveryJobStatusEnum
     canonical_devices: list[dict]  # TODO should be part of the inventory
     claim_token: str | None  # TODO should be on claim only
     attempt: int
@@ -184,6 +197,9 @@ class DiscoveryJobDetail(APIModel):
     timeout_at: datetime | None
     created_at: datetime
     updated_at: datetime
+    claim_token: str | None = (
+        None  # TODO: if this isn't passed back, in case of crash/restart of a collector, there's no way to get back the claim token --> maybe re-think the workflow to not require the claim token for heartbeats and completion updates? Or have a way to retrieve the claim token for active jobs for a collector?
+    )
 
 
 PaginatedDiscoveryJobList = PaginatedResponse[DiscoveryJobDetail]
