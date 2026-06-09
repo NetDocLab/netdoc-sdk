@@ -228,23 +228,27 @@ class NetDocClient:
 
             if response.status_code == 429 and attempt < self.max_retries:
                 # Retry with rate limit
-                default_retry_after = "1.0"
+                default_retry_after = '1.0'
                 retry_after = response.headers.get('Retry-After')
                 if not retry_after:
-                    logging.warning(f"Retry value not set, using {default_retry_after}")
+                    logging.warning(f'Retry value not set, using {default_retry_after}')
                     retry_after = default_retry_after
                 try:
                     wait = float(retry_after)
                 except (ValueError, TypeError):
-                    logging.warning(f"Retry value of {retry_after} is not valid, using {default_retry_after}")
+                    logging.warning(
+                        f'Retry value of {retry_after} is not valid, using {default_retry_after}'
+                    )
                     wait = float(default_retry_after)
                 logging.warning(
                     'Rate limited (attempt %d/%d), retrying in %.1fs',
-                    attempt + 1, self.max_retries, wait,
+                    attempt + 1,
+                    self.max_retries,
+                    wait,
                 )
                 await asyncio.sleep(wait)
                 continue
-        
+
             self._raise_for_error(response)
 
         if response.status_code == 204 or not response.content:

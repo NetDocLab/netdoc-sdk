@@ -240,11 +240,12 @@ class DiscoveryJobClaim(APIModel):
     created_at: datetime
     updated_at: datetime
 
-    @field_validator("inventory")
+    @field_validator('inventory')
     @classmethod
     def validate_inventory(cls, inventory: dict) -> dict:
         DiscoveryJobInventory.model_validate(inventory)
-        return inventory # Return original inventory
+        return inventory  # Return original inventory
+
 
 class DiscoveredDeviceSubmit(APIModel):
     raw_payload: dict | None = None
