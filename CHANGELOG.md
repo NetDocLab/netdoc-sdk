@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/NetDocLab/netdoc-sdk/compare/v0.2.5...v0.3.0) (2026-06-09)
+
+
+### Bug Fixes
+
+* intercept 429 and retry ([06c2e59](https://github.com/NetDocLab/netdoc-sdk/commit/06c2e590203cee937247b0bbc068c4ff165c053e))
+
 ## [0.2.5](https://github.com/NetDocLab/netdoc-sdk/compare/v0.2.4...v0.2.5) (2026-06-01)
 
 
