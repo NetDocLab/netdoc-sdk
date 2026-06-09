@@ -17,7 +17,7 @@ class Severity(Enum):
 
 
 class APIModel(BaseModel):
-    """Base model that tolerates additive API fields without dropping them."""
+    """Base model that doesn't tolerates additive API fields without dropping them."""
 
     model_config = ConfigDict(extra='forbid', populate_by_name=True)
 

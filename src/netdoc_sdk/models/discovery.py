@@ -4,6 +4,8 @@ from datetime import datetime
 from enum import Enum
 from uuid import UUID
 
+from pydantic import BaseModel
+
 from netdoc_sdk.models.core import APIModel, LogMessage, PaginatedResponse, UUID4Str
 
 # ---------------------------------------------------------------------------
@@ -186,7 +188,6 @@ class DiscoveryJobDetail(APIModel):
     snapshot: UUID4Str
     status: DiscoveryJobStatusEnum
     canonical_devices: list[dict]  # TODO should be part of the inventory
-    claim_token: str | None  # TODO should be on claim only
     attempt: int
     max_attempts: int
     idempotency_key: str
@@ -198,11 +199,24 @@ class DiscoveryJobDetail(APIModel):
     created_at: datetime
     updated_at: datetime
     claim_token: str | None = (
-        None  # TODO: if this isn't passed back, in case of crash/restart of a collector, there's no way to get back the claim token --> maybe re-think the workflow to not require the claim token for heartbeats and completion updates? Or have a way to retrieve the claim token for active jobs for a collector?
+        None  # TODO: should be on claim only | if this isn't passed back, in case of crash/restart of a collector, there's no way to get back the claim token --> maybe re-think the workflow to not require the claim token for heartbeats and completion updates? Or have a way to retrieve the claim token for active jobs for a collector?
     )
 
 
 PaginatedDiscoveryJobList = PaginatedResponse[DiscoveryJobDetail]
+
+
+class InventoryMeta(BaseModel):
+    hostvars: dict[str, dict]
+
+
+class InventoryAll(BaseModel):
+    hosts: list[str]
+
+
+class DiscoveryJobInventory(BaseModel):
+    _meta: InventoryMeta
+    all: InventoryAll
 
 
 class DiscoveryJobClaim(APIModel):
@@ -218,7 +232,7 @@ class DiscoveryJobClaim(APIModel):
     max_attempts: int
     idempotency_key: str
     log_messages: list[LogMessage]
-    inventory: dict
+    inventory: DiscoveryJobInventory
     claimed_at: datetime | None
     last_heartbeat_at: datetime | None
     lease_expires_at: datetime | None
