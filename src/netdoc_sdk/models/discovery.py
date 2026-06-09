@@ -4,7 +4,7 @@ from datetime import datetime
 from enum import Enum
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 
 from netdoc_sdk.models.core import APIModel, LogMessage, PaginatedResponse, UUID4Str
 
@@ -232,7 +232,7 @@ class DiscoveryJobClaim(APIModel):
     max_attempts: int
     idempotency_key: str
     log_messages: list[LogMessage]
-    inventory: DiscoveryJobInventory
+    inventory: dict
     claimed_at: datetime | None
     last_heartbeat_at: datetime | None
     lease_expires_at: datetime | None
@@ -240,6 +240,11 @@ class DiscoveryJobClaim(APIModel):
     created_at: datetime
     updated_at: datetime
 
+    @field_validator("inventory")
+    @classmethod
+    def validate_inventory(cls, inventory: dict) -> dict:
+        DiscoveryJobInventory.model_validate(inventory)
+        return inventory # Return original inventory
 
 class DiscoveredDeviceSubmit(APIModel):
     raw_payload: dict | None = None

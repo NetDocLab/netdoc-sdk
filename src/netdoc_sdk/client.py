@@ -1,5 +1,7 @@
 """Async HTTP client for the NetDoc OpenAPI surface."""
 
+import asyncio
+import logging
 from collections.abc import Iterable, Mapping
 from typing import Any
 
@@ -82,6 +84,7 @@ class NetDocClient:
         cookies: Mapping[str, str] | None = None,
         headers: Mapping[str, str] | None = None,
         tenant_id: str | None = None,
+        max_retries: int = 5,
         timeout: float = 30.0,
         transport: httpx.AsyncBaseTransport | None = None,
     ):
@@ -91,6 +94,7 @@ class NetDocClient:
         self.cookies = dict(cookies or {})
         self.extra_headers = dict(headers or {})
         self.tenant_id = tenant_id
+        self.max_retries = max_retries
         self.timeout = timeout
         self.token = token
         self.transport = transport
@@ -199,25 +203,48 @@ class NetDocClient:
                 {expected_status} if isinstance(expected_status, int) else set(expected_status)
             )
 
-        try:
-            response = await self.client.request(
-                content=content,
-                headers=request_headers,
-                json=self._serialize_body(json) if json is not None else None,
-                method=method,
-                params=self._clean_params(params),
-                url=self._api_path(path),
-            )
-        except (httpx.ConnectError, httpx.NetworkError) as exc:
-            raise ConnectionError(f'Failed to connect: {exc}') from exc
-        except httpx.TimeoutException as exc:
-            raise ConnectionError(f'Request timed out: {exc}') from exc
+        for attempt in range(self.max_retries + 1):
+            try:
+                response = await self.client.request(
+                    content=content,
+                    headers=request_headers,
+                    json=self._serialize_body(json) if json is not None else None,
+                    method=method,
+                    params=self._clean_params(params),
+                    url=self._api_path(path),
+                )
+            except (httpx.ConnectError, httpx.NetworkError) as exc:
+                raise ConnectionError(f'Failed to connect: {exc}') from exc
+            except httpx.TimeoutException as exc:
+                raise ConnectionError(f'Request timed out: {exc}') from exc
 
-        if expected is None:
-            ok = 200 <= response.status_code < 300
-        else:
-            ok = response.status_code in expected
-        if not ok:
+            if expected is None:
+                ok = 200 <= response.status_code < 300
+            else:
+                ok = response.status_code in expected
+
+            if ok:
+                break
+
+            if response.status_code == 429 and attempt < self.max_retries:
+                # Retry with rate limit
+                default_retry_after = "1.0"
+                retry_after = response.headers.get('Retry-After')
+                if not retry_after:
+                    logging.warning(f"Retry value not set, using {default_retry_after}")
+                    retry_after = default_retry_after
+                try:
+                    wait = float(retry_after)
+                except (ValueError, TypeError):
+                    logging.warning(f"Retry value of {retry_after} is not valid, using {default_retry_after}")
+                    wait = float(default_retry_after)
+                logging.warning(
+                    'Rate limited (attempt %d/%d), retrying in %.1fs',
+                    attempt + 1, self.max_retries, wait,
+                )
+                await asyncio.sleep(wait)
+                continue
+        
             self._raise_for_error(response)
 
         if response.status_code == 204 or not response.content:
