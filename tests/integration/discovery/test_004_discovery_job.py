@@ -363,7 +363,9 @@ class TestDiscoveryRun:
             },
             'idempotency_key': idempotency_key,
         }
-        await collector_client.discoveryjob_push(id=job_id, claim_token=claim_token, **payload)
+        await collector_client.discoveryjob_push_discovered_device(
+            id=job_id, claim_token=claim_token, **payload
+        )
 
         # Complete job
         payload = {
