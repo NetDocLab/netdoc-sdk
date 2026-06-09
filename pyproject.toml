@@ -180,6 +180,7 @@ exclude = [
     "dist",
     "env",
     "migrations",
+    "scripts",
     "venv",
 ]
 
