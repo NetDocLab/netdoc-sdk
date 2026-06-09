@@ -39,6 +39,7 @@ from netdoc_sdk.models.discovery import (
     CredentialCreate,
     CredentialDetail,
     CredentialUpdate,
+    DiscoveredDeviceSubmit,
     DiscoveryJobClaim,
     DiscoveryJobDetail,
     DiscoveryJobStatusEnum,
@@ -522,6 +523,22 @@ class NetDocClient:
             response_model=DiscoveryJobDetail,
         )
 
+    async def discoveryjob_push_discovered_device(
+        self,
+        id: str,
+        claim_token: str,
+        data: JsonMapping | DiscoveredDeviceSubmit | None = None,
+        **fields: Any,
+    ) -> DiscoveryJobDetail:
+        # TODO: could be no content
+        headers = {'X-Claim-Token': claim_token}
+        return await self._request(
+            'POST',
+            f'discovery-jobs/{id}/push-discovered-device/',
+            json=self._serialize_body(data, **fields),
+            headers=headers,
+            response_model=DiscoveryJobDetail,
+        )
     # TODO
     # push_discovered_device
     # status --> implement both GET and PATCH to update the status (e.g. to mark complete or failed)

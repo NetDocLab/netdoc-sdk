@@ -241,6 +241,15 @@ class DiscoveryJobClaim(APIModel):
     updated_at: datetime
 
 
+class DiscoveredDeviceSubmit(APIModel):
+
+    raw_payload: dict | None = None
+    idempotency_key: str
+    canonical_device: UUID4Str
+    attempt : int
+
+
+
 # class DiscoveryJobHeartbeat(APIModel):
 #     claim_token: str
 
