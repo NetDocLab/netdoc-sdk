@@ -54,6 +54,23 @@ class CollectorHeartbeat(APIModel):
     name: str
     version: str
 
+class CollectorJobStatusEnum(Enum):
+    """Collector job lifecycle statuses."""
+
+    QUEUED = 'queued'
+    CLAIMED = 'claimed'
+    RUNNING = 'running'
+    CANCELLING = 'cancelling'
+    CANCELLED = 'cancelled'
+    COMPLETED = 'completed'
+    FAILED = 'failed'
+    EXPIRED = 'expired'
+
+class CollectorJobCompleted(APIModel):
+
+    status: CollectorJobStatusEnum
+    log_messages: list |None = None
+
 
 # ---------------------------------------------------------------------------
 # inventory.Credential

@@ -37,6 +37,7 @@ from netdoc_sdk.models.core import (
 from netdoc_sdk.models.discovery import (
     CollectorDetail,
     CollectorHeartbeat,
+    CollectorJobCompleted,
     CollectorUpdate,
     CredentialCreate,
     CredentialDetail,
@@ -495,7 +496,7 @@ class NetDocClient:
         self,
         id: str,
         claim_token: str,
-        data: JsonMapping | CollectorUpdate | None = None,
+        data: JsonMapping | CollectorJobCompleted | None = None,
         **fields: Any,
     ) -> DiscoveryJobDetail:
         # TODO: could be no content
