@@ -54,6 +54,23 @@ class CollectorHeartbeat(APIModel):
     name: str
     version: str
 
+class CollectorJobStatusEnum(Enum):
+    """Collector job lifecycle statuses."""
+
+    QUEUED = 'queued'
+    CLAIMED = 'claimed'
+    RUNNING = 'running'
+    CANCELLING = 'cancelling'
+    CANCELLED = 'cancelled'
+    COMPLETED = 'completed'
+    FAILED = 'failed'
+    EXPIRED = 'expired'
+
+class CollectorJobCompleted(APIModel):
+
+    status: CollectorJobStatusEnum
+    log_messages: list |None = None
+
 
 # ---------------------------------------------------------------------------
 # inventory.Credential
@@ -136,7 +153,7 @@ class DiscoveryRunDetail(APIModel):
 
 class DiscoveryRunList(APIModel):
     id: str
-    snapshot_id: str
+    snapshot_id: str | None
     status: DiscoveryRunStatusEnum
     origin: str
     requested_by: UUID4Str | None
@@ -249,7 +266,6 @@ class DiscoveryJobClaim(APIModel):
 
 class DiscoveredDeviceSubmit(APIModel):
     raw_payload: dict | None = None
-    # TODO: send also parsed_payload
     idempotency_key: str
     canonical_device: UUID4Str
     attempt: int
