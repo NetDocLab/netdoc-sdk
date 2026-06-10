@@ -136,7 +136,7 @@ class DiscoveryRunDetail(APIModel):
 
 class DiscoveryRunList(APIModel):
     id: str
-    snapshot_id: str
+    snapshot_id: str | None
     status: DiscoveryRunStatusEnum
     origin: str
     requested_by: UUID4Str | None
