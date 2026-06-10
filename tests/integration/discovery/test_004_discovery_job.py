@@ -782,14 +782,15 @@ class TestDiscoveryRun:
         # Push discovered devices
         payload = {
             'canonical_device': canonical_device.id,
-            'command_name': 'show version',
             'raw_payload': {
-                'show version': RAW_SHOW_VERSION,
-                'show interfaces': RAW_SHOW_INTERFACES,
-            },
-            'parsed_payload': {
-                'show version': PARSED_SHOW_VERSION,
-                'show interfaces': PARSED_SHOW_INTERFACES,
+                'raw_output': {
+                    'show version': RAW_SHOW_VERSION,
+                    'show interfaces': RAW_SHOW_INTERFACES,
+                },
+                'parsed_output': {
+                    'show version': PARSED_SHOW_VERSION,
+                    'show interfaces': PARSED_SHOW_INTERFACES,
+                },
             },
             'idempotency_key': idempotency_key,
         }
@@ -797,14 +798,17 @@ class TestDiscoveryRun:
             id=job_id, claim_token=claim_token, **payload
         )
 
-        # Test
+        # Verify raw logs
         raw_output = await sync_to_async(RawOutput.objects.unfiltered().first)()
         assert raw_output is not None
-        assert raw_output.raw_payload is not None
-        assert 'show version' in raw_output.raw_payload
-        assert len(raw_output.raw_payload['show version']) > 10
-        assert raw_output.parsed_payload is not None
-        assert 'show version' in raw_output.parsed_payload
+        raw_payload = raw_output.raw_payload
+        # Check raw output
+        assert 'raw_output' in raw_payload
+        assert 'show version' in raw_payload['raw_output']
+        assert len(raw_payload['raw_output']['show version']) > 10
+        # Check parsed output
+        assert 'parsed_output' in raw_payload
+        assert 'show version' in raw_payload['parsed_output']
 
         # Complete job
         payload = {

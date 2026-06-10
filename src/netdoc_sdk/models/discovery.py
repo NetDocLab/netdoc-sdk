@@ -249,7 +249,6 @@ class DiscoveryJobClaim(APIModel):
 
 class DiscoveredDeviceSubmit(APIModel):
     raw_payload: dict | None = None
-    # TODO: send also parsed_payload
     idempotency_key: str
     canonical_device: UUID4Str
     attempt: int
