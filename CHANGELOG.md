@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.1](https://github.com/NetDocLab/netdoc-sdk/compare/v0.3.0...v0.3.1) (2026-06-10)
+
+
+### Bug Fixes
+
+* allow snapshot_id to be optional in DiscoveryRunList ([ff567ad](https://github.com/NetDocLab/netdoc-sdk/commit/ff567adf23eca5117b90da599806a0802f126ab8))
+* update sdk for parsed output ([85ae85a](https://github.com/NetDocLab/netdoc-sdk/commit/85ae85a0f52da99dc61bec5598cb5b3c0ae756b4))
+
 ## [0.3.0](https://github.com/NetDocLab/netdoc-sdk/compare/v0.2.5...v0.3.0) (2026-06-09)
 
 
