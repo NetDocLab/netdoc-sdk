@@ -54,6 +54,7 @@ class CollectorHeartbeat(APIModel):
     name: str
     version: str
 
+
 class CollectorJobStatusEnum(Enum):
     """Collector job lifecycle statuses."""
 
@@ -66,10 +67,10 @@ class CollectorJobStatusEnum(Enum):
     FAILED = 'failed'
     EXPIRED = 'expired'
 
-class CollectorJobCompleted(APIModel):
 
+class CollectorJobCompleted(APIModel):
     status: CollectorJobStatusEnum
-    log_messages: list |None = None
+    log_messages: list | None = None
 
 
 # ---------------------------------------------------------------------------
