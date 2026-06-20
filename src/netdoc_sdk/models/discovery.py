@@ -238,7 +238,7 @@ class RawOutputList(APIModel):
     canonical_device: UUID4Str
     idempotency_key: str
     job: UUID4Str
-    log_messages: list[LogMessage]
+    log_messages: list[str]
     run: UUID4Str
     status: RawOutputStatusEnum
     created_at: datetime
