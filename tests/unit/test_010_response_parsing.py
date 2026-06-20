@@ -11,6 +11,7 @@ import httpx
 import pytest
 import respx
 
+from netdoc_sdk.exceptions import ValidationError
 from netdoc_sdk.models.inventory import PaginatedSiteList, SiteDetail
 
 BASE = 'http://fake-netdoc'
@@ -81,8 +82,8 @@ class TestResponseParsing:
         assert result is None
 
     @respx.mock
-    async def test_empty_body_returns_none(self, client):
-        # Some endpoints may return 200 with no body; must not raise.
+    async def test_empty_body_raises(self, client):
+        # A 200 response with no body is unexpected and must raise ServerError.
         respx.get(f'{BASE}/api/v1/sites/').mock(return_value=httpx.Response(200, content=b''))
-        result = await client.site_list()
-        assert result is None
+        with pytest.raises(ValidationError):
+            await client.site_list()
