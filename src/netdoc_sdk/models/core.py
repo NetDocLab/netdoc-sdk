@@ -1,12 +1,18 @@
 """Pydantic models matching the public NetDoc OpenAPI core contracts."""
 
+import logging
+import os
 from datetime import datetime
 from enum import Enum
-from typing import Annotated
+from typing import Annotated, Any
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, model_validator
 from pydantic.functional_validators import AfterValidator
+
+_STRICT_EXTRA = os.getenv('DJANGO_ENV') == 'test'
+
+logger = logging.getLogger('netdoc_sdk')
 
 
 class Severity(Enum):
@@ -17,9 +23,23 @@ class Severity(Enum):
 
 
 class APIModel(BaseModel):
-    """Base model that doesn't tolerates additive API fields without dropping them."""
+    """Base model that tolerates additive API fields logging them."""
 
-    model_config = ConfigDict(extra='forbid', populate_by_name=True)
+    model_config = ConfigDict(extra='forbid' if _STRICT_EXTRA else 'ignore', populate_by_name=True)
+
+    @model_validator(mode='before')
+    @classmethod
+    def _warn_extra_fields(cls, values: Any) -> Any:
+        if isinstance(values, dict):
+            known = cls.model_fields.keys()
+            for key in values:
+                if key not in known:
+                    logger.warning(
+                        'Unexpected field %r in %s response (SDK may be outdated)',
+                        key,
+                        cls.__name__,
+                    )
+        return values
 
 
 class PaginatedResponse[T](APIModel):
@@ -70,18 +90,7 @@ class TenantDetail(APIModel):
     updated_at: datetime
 
 
-class TenantList(APIModel):
-    id: UUID4Str
-    name: str
-    is_active: bool
-    log_retention_days: int
-    max_snapshots: int
-    snapshot_retention_days: int
-    created_at: datetime
-    updated_at: datetime
-
-
-PaginatedTenantList = PaginatedResponse[TenantList]
+PaginatedTenantList = PaginatedResponse[TenantDetail]
 
 
 class TenantCreate(APIModel):
@@ -125,20 +134,7 @@ class UserDetail(APIModel):
     last_login: datetime | None
 
 
-class UserList(APIModel):
-    id: UUID4Str
-    username: str
-    is_active: bool
-    role: RoleEnum | None
-    first_name: str
-    last_name: str
-    email: str
-    created_at: datetime
-    updated_at: datetime
-    last_login: datetime | None
-
-
-PaginatedUserList = PaginatedResponse[UserList]
+PaginatedUserList = PaginatedResponse[UserDetail]
 
 
 class UserCreate(APIModel):
@@ -197,16 +193,4 @@ class AuditLogDetail(APIModel):
     created_at: datetime
 
 
-class AuditLogList(APIModel):
-    id: UUID4Str
-    tenant: UUID | None
-    source_ip: str
-    user: str
-    username: str
-    action: str
-    resource_path: str
-    status_code: int
-    created_at: datetime
-
-
-PaginatedAuditLogList = PaginatedResponse[AuditLogList]
+PaginatedAuditLogList = PaginatedResponse[AuditLogDetail]

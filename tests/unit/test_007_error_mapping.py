@@ -29,7 +29,7 @@ pytestmark = pytest.mark.asyncio
 
 @pytest.fixture
 async def client():
-    async with NetDocClient(base_url=BASE, token=TOKEN) as c:
+    async with NetDocClient(base_url=BASE, token=TOKEN, max_retries=0) as c:
         yield c
 
 

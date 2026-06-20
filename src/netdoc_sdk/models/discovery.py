@@ -9,7 +9,7 @@ from pydantic import BaseModel, field_validator
 from netdoc_sdk.models.core import APIModel, LogMessage, PaginatedResponse, UUID4Str
 
 # ---------------------------------------------------------------------------
-# inventory.Collector
+# discovery.Collector
 # ---------------------------------------------------------------------------
 
 
@@ -28,18 +28,7 @@ class CollectorDetail(APIModel):
     last_heartbeat_at: datetime | None
 
 
-class CollectorList(APIModel):
-    id: UUID4Str
-    user: UUID
-    name: str
-    version: str
-    is_active: bool
-    created_at: datetime
-    updated_at: datetime
-    last_heartbeat_at: datetime | None
-
-
-PaginatedCollectorList = PaginatedResponse[CollectorList]
+PaginatedCollectorList = PaginatedResponse[CollectorDetail]
 
 
 class CollectorUpdate(APIModel):
@@ -74,7 +63,7 @@ class CollectorJobCompleted(APIModel):
 
 
 # ---------------------------------------------------------------------------
-# inventory.Credential
+# discovery.Credential
 # ---------------------------------------------------------------------------
 
 
@@ -88,16 +77,7 @@ class CredentialDetail(APIModel):
     updated_at: datetime
 
 
-class CredentialList(APIModel):
-    id: UUID4Str
-    username: str | None
-    label: str
-    verify_cert: bool
-    created_at: datetime
-    updated_at: datetime
-
-
-PaginatedCredentialList = PaginatedResponse[CredentialList]
+PaginatedCredentialList = PaginatedResponse[CredentialDetail]
 
 
 class CredentialCreate(APIModel):
@@ -119,7 +99,7 @@ class CredentialUpdate(APIModel):
 
 
 # ---------------------------------------------------------------------------
-# inventory.DiscoveryRun
+# discovery.DiscoveryRun
 # ---------------------------------------------------------------------------
 
 
@@ -133,8 +113,8 @@ class DiscoveryRunStatusEnum(Enum):
 
 
 class DiscoveryRunDetail(APIModel):
-    id: str
-    snapshot_id: str
+    id: UUID4Str
+    snapshot: UUID4Str
     status: DiscoveryRunStatusEnum
     origin: str
     requested_by: UUID4Str | None
@@ -152,37 +132,12 @@ class DiscoveryRunDetail(APIModel):
     updated_at: datetime
 
 
-class DiscoveryRunList(APIModel):
-    id: str
-    snapshot_id: str | None
-    status: DiscoveryRunStatusEnum
-    origin: str
-    requested_by: UUID4Str | None
-    schedule: UUID4Str | None
-    completed_job_count: int
-    failed_job_count: int
-    job_count: int
-    raw_output_count: int
-    parsed_output_count: int
-    cancellation_requested_at: datetime | None
-    completed_at: datetime | None
-    created_at: datetime
-    started_at: datetime | None
-    updated_at: datetime
-
-
-PaginatedDiscoveryRunList = PaginatedResponse[DiscoveryRunList]
+PaginatedDiscoveryRunList = PaginatedResponse[DiscoveryRunDetail]
 
 
 # ---------------------------------------------------------------------------
-# inventory.DiscoveryJob
+# discovery.DiscoveryJob
 # ---------------------------------------------------------------------------
-
-# claim
-# heartbeat
-# push_discovered_device
-# status
-# complete
 
 
 class DiscoveryJobStatusEnum(Enum):
@@ -199,13 +154,12 @@ class DiscoveryJobStatusEnum(Enum):
 
 
 class DiscoveryJobDetail(APIModel):
-    id: str
+    id: UUID4Str
     run: UUID4Str
     collector: UUID4Str
     collector_name: str
-    snapshot: UUID4Str
     status: DiscoveryJobStatusEnum
-    canonical_devices: list[dict]  # TODO should be part of the inventory
+    canonical_devices: list[dict]
     attempt: int
     max_attempts: int
     idempotency_key: str
@@ -216,9 +170,7 @@ class DiscoveryJobDetail(APIModel):
     timeout_at: datetime | None
     created_at: datetime
     updated_at: datetime
-    claim_token: str | None = (
-        None  # TODO: should be on claim only | if this isn't passed back, in case of crash/restart of a collector, there's no way to get back the claim token --> maybe re-think the workflow to not require the claim token for heartbeats and completion updates? Or have a way to retrieve the claim token for active jobs for a collector?
-    )
+    cancellation_acknowledged_at: datetime | None
 
 
 PaginatedDiscoveryJobList = PaginatedResponse[DiscoveryJobDetail]
@@ -238,25 +190,11 @@ class DiscoveryJobInventory(BaseModel):
 
 
 class DiscoveryJobClaim(APIModel):
-    id: str
+    id: UUID4Str
     run: UUID4Str
-    collector: UUID4Str
-    collector_name: str
-    snapshot: UUID4Str
-    status: str
-    canonical_devices: list[dict]  # TODO should be part of the inventory
     claim_token: str
-    attempt: int
-    max_attempts: int
     idempotency_key: str
-    log_messages: list[LogMessage]
     inventory: dict
-    claimed_at: datetime | None
-    last_heartbeat_at: datetime | None
-    lease_expires_at: datetime | None
-    timeout_at: datetime | None
-    created_at: datetime
-    updated_at: datetime
 
     @field_validator('inventory')
     @classmethod
@@ -265,18 +203,47 @@ class DiscoveryJobClaim(APIModel):
         return inventory  # Return original inventory
 
 
-class DiscoveredDeviceSubmit(APIModel):
-    raw_payload: dict | None = None
-    idempotency_key: str
-    canonical_device: UUID4Str
+class DiscoveryJobPush(APIModel):
+    status: DiscoveryJobStatusEnum
     attempt: int
+    max_attempts: int
+    claimed_at: datetime | None
+    last_heartbeat_at: datetime | None
+    lease_expires_at: datetime | None
+    timeout_at: datetime | None
+    created_at: datetime
+    updated_at: datetime
+    cancellation_acknowledged_at: datetime | None
 
 
-# class DiscoveryJobHeartbeat(APIModel):
-#     claim_token: str
+# ---------------------------------------------------------------------------
+# discovery.RawOutput
+# ---------------------------------------------------------------------------
 
 
-# class DiscoveryJobComplete(APIModel):
-#     claim_token: str
-#     status: DiscoveryJobStatusEnum | str
-#     log_messages: list = []
+class RawOutputStatusEnum(Enum):
+    """Discovery job lifecycle statuses."""
+
+    FAILED = 'failed'
+    IGNORED_AFTER_CANCEL = 'ignored_after_cancel'
+    PARSED = 'parsed'
+    QUEUED = 'queued'
+    RECEIVED = 'received'
+    STALE = 'stale'
+
+
+class RawOutputList(APIModel):
+    id: UUID4Str
+    attempt: int
+    canonical_device: UUID4Str
+    idempotency_key: str
+    job: UUID4Str
+    log_messages: list[LogMessage]
+    run: UUID4Str
+    status: RawOutputStatusEnum
+    created_at: datetime
+    processed_at: datetime | None
+    updated_at: datetime
+
+
+PaginatedRawOutputList = PaginatedResponse[RawOutputList]
