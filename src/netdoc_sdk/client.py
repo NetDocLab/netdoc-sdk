@@ -322,11 +322,17 @@ class NetDocClient:
 
     async def tenant_list(self, **params: Any) -> PaginatedTenantList:
         return await self._request(
-            'GET', 'tenants/', params=params, response_model=PaginatedTenantList
+            'GET',
+            'tenants/',
+            params=params,
+            expected_status=200,
+            response_model=PaginatedTenantList,
         )
 
     async def tenant_get(self, id: str) -> TenantDetail:
-        return await self._request('GET', f'tenants/{id}/', response_model=TenantDetail)
+        return await self._request(
+            'GET', f'tenants/{id}/', expected_status=200, response_model=TenantDetail
+        )
 
     async def tenant_update(
         self, id: str, data: JsonMapping | TenantUpdate | None = None, **fields: Any
@@ -335,6 +341,7 @@ class NetDocClient:
             'PATCH',
             f'tenants/{id}/',
             json=self._serialize_body(data, **fields),
+            expected_status=200,
             response_model=TenantDetail,
         )
 
