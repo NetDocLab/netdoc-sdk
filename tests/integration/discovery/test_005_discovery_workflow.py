@@ -1,4 +1,6 @@
 import pytest
+from apps.discovery.models import RawOutput
+from asgiref.sync import sync_to_async
 
 from netdoc_sdk.client import NetDocClient
 
@@ -820,3 +822,30 @@ class TestDiscoveryRun:
         jobs = await admin_client.discovery_jobs(id=discovery_run.id)
         assert jobs.count == 1
         assert jobs.results[0].status.value == 'completed'
+
+        # Get logs
+        logs = await admin_client.discoveryjob_logs(id=job_id)
+        assert logs.count == 1
+        assert logs.results[0].status.value == 'parsed'
+
+        # Verify raw logs
+        raw_output = await sync_to_async(RawOutput.objects.unfiltered().first)()
+        assert raw_output is not None
+        assert raw_output.status == 'parsed'
+        raw_payload = raw_output.raw_payload
+
+        # Check raw output
+        assert 'raw_outputs' in raw_payload
+        assert 'show version' in raw_payload['raw_outputs']
+        assert len(raw_payload['raw_outputs']['show version']) > 10
+
+        # Check parsed output
+        assert 'parsed_outputs' in raw_payload
+        assert 'show version' in raw_payload['parsed_outputs']
+
+        # Get snapshot list
+        snapshots = await admin_client.snapshot_list()
+        assert snapshots.count == 1
+
+        # Get single snapshot
+        await admin_client.snapshot_get(snapshots.results[0].id)
