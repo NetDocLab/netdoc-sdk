@@ -68,6 +68,8 @@ from netdoc_sdk.models.snapshots import (
     SnapshotUpdate,
 )
 
+logger = logging.getLogger('netdoc_sdk')
+
 JsonMapping = Mapping[str, Any] | BaseModel
 
 
@@ -232,16 +234,16 @@ class NetDocClient:
                 default_retry_after = '1.0'
                 retry_after = response.headers.get('Retry-After')
                 if not retry_after:
-                    logging.warning(f'Retry value not set, using {default_retry_after}')
+                    logger.warning(f'Retry value not set, using {default_retry_after}')
                     retry_after = default_retry_after
                 try:
                     wait = float(retry_after)
                 except (ValueError, TypeError):
-                    logging.warning(
+                    logger.warning(
                         f'Retry value of {retry_after} is not valid, using {default_retry_after}'
                     )
                     wait = float(default_retry_after)
-                logging.warning(
+                logger.warning(
                     'Rate limited (attempt %d/%d), retrying in %.1fs',
                     attempt + 1,
                     self.max_retries,
@@ -252,12 +254,21 @@ class NetDocClient:
 
             self._raise_for_error(response)
 
-        if response.status_code == 204 or not response.content:
+        if not response_model and not response.content:
             return None
 
+        if response_model and not response.content:
+            # Expected an output but got nothing
+            request = response.request
+            raise ValidationError(
+                f'Expected {response_model.__name__} but got nothing',
+                errors='',
+                detail=f'{request.method} {request.url}',
+                body='',
+            )
+
         data = response.json()
-        if response_model is None:
-            return data
+
         return TypeAdapter(response_model).validate_python(data)
 
     def _raise_for_error(self, response: httpx.Response) -> None:
@@ -345,10 +356,14 @@ class NetDocClient:
         )
 
     async def user_list(self, **params: Any) -> PaginatedUserList:
-        return await self._request('GET', 'users/', params=params, response_model=PaginatedUserList)
+        return await self._request(
+            'GET', 'users/', params=params, expected_status=200, response_model=PaginatedUserList
+        )
 
     async def user_get(self, id: str) -> UserDetail:
-        return await self._request('GET', f'users/{id}/', response_model=UserDetail)
+        return await self._request(
+            'GET', f'users/{id}/', expected_status=200, response_model=UserDetail
+        )
 
     async def user_update(
         self, id: str, data: JsonMapping | UserUpdate | None = None, **fields: Any
@@ -357,6 +372,7 @@ class NetDocClient:
             'PATCH',
             f'users/{id}/',
             json=self._serialize_body(data, **fields),
+            expected_status=200,
             response_model=UserDetail,
         )
 
@@ -364,7 +380,9 @@ class NetDocClient:
         return await self._request('DELETE', f'users/{id}/', expected_status=204)
 
     async def profile_get(self) -> UserDetail:
-        return await self._request('GET', 'users/current/', response_model=UserDetail)
+        return await self._request(
+            'GET', 'users/current/', expected_status=200, response_model=UserDetail
+        )
 
     async def profile_update(
         self, data: JsonMapping | UserProfileUpdate | None = None, **fields: Any
@@ -373,6 +391,7 @@ class NetDocClient:
             'PATCH',
             'users/current/',
             json=self._serialize_body(data, **fields),
+            expected_status=200,
             response_model=UserDetail,
         )
 
@@ -387,6 +406,7 @@ class NetDocClient:
             'POST',
             'tokens/',
             json=self._serialize_body(data, **fields),
+            expected_status=200,
             response_model=TokenDetail,
         )
 
@@ -396,11 +416,17 @@ class NetDocClient:
 
     async def auditlog_list(self, **params: Any) -> PaginatedAuditLogList:
         return await self._request(
-            'GET', 'audit-logs/', params=params, response_model=PaginatedAuditLogList
+            'GET',
+            'audit-logs/',
+            params=params,
+            expected_status=200,
+            response_model=PaginatedAuditLogList,
         )
 
     async def auditlog_get(self, id: str) -> AuditLogDetail:
-        return await self._request('GET', f'audit-logs/{id}/', response_model=AuditLogDetail)
+        return await self._request(
+            'GET', f'audit-logs/{id}/', expected_status=200, response_model=AuditLogDetail
+        )
 
     # ---------------------------------------------------------------------------
     # snapshots.Snapshot
@@ -408,11 +434,17 @@ class NetDocClient:
 
     async def snapshot_list(self, **params: Any) -> PaginatedSnapshotList:
         return await self._request(
-            'GET', 'snapshots/', params=params, response_model=PaginatedSnapshotList
+            'GET',
+            'snapshots/',
+            params=params,
+            expected_status=200,
+            response_model=PaginatedSnapshotList,
         )
 
     async def snapshot_get(self, id: str) -> SnapshotDetail:
-        return await self._request('GET', f'snapshots/{id}/', response_model=SnapshotDetail)
+        return await self._request(
+            'GET', f'snapshots/{id}/', expected_status=200, response_model=SnapshotDetail
+        )
 
     async def snapshot_update(
         self, id: str, data: JsonMapping | SnapshotUpdate | None = None, **fields: Any
@@ -421,6 +453,7 @@ class NetDocClient:
             'PATCH',
             f'snapshots/{id}/',
             json=self._serialize_body(data, **fields),
+            expected_status=200,
             response_model=SnapshotDetail,
         )
 
@@ -434,6 +467,7 @@ class NetDocClient:
             'POST',
             f'snapshots/{id}/pin/',
             json=self._serialize_body(data, **fields),
+            expected_status=200,
             response_model=SnapshotDetail,
         )
 
@@ -444,14 +478,19 @@ class NetDocClient:
             'POST',
             f'snapshots/{id}/unpin/',
             json=self._serialize_body(data, **fields),
+            expected_status=200,
             response_model=SnapshotDetail,
         )
 
     async def snapshot_stats(self, id: str) -> SnapshotDetail:
-        return await self._request('GET', f'snapshots/{id}/stats/', response_model=SnapshotDetail)
+        return await self._request(
+            'GET', f'snapshots/{id}/stats/', expected_status=200, response_model=SnapshotDetail
+        )
 
     async def snapshot_latest(self) -> SnapshotDetail:
-        return await self._request('GET', 'snapshots/latest/', response_model=SnapshotDetail)
+        return await self._request(
+            'GET', 'snapshots/latest/', expected_status=200, response_model=SnapshotDetail
+        )
 
     # ---------------------------------------------------------------------------
     # discovery.DiscoveryRun
@@ -467,20 +506,31 @@ class NetDocClient:
 
     async def discovery_list(self, **params: Any) -> PaginatedDiscoveryRunList:
         return await self._request(
-            'GET', 'discoveries/', params=params, response_model=PaginatedDiscoveryRunList
+            'GET',
+            'discoveries/',
+            params=params,
+            expected_status=200,
+            response_model=PaginatedDiscoveryRunList,
         )
 
     async def discovery_get(self, id: str) -> DiscoveryRunDetail:
-        return await self._request('GET', f'discoveries/{id}/', response_model=DiscoveryRunDetail)
+        return await self._request(
+            'GET', f'discoveries/{id}/', expected_status=200, response_model=DiscoveryRunDetail
+        )
 
     async def discovery_cancel(self, id: str) -> DiscoveryRunDetail:
         return await self._request(
-            'POST', f'discoveries/{id}/cancel/', response_model=DiscoveryRunDetail
+            'POST',
+            f'discoveries/{id}/cancel/',
+            expected_status=204,
         )
 
     async def discovery_jobs(self, id: str) -> PaginatedDiscoveryJobList:
         return await self._request(
-            'GET', f'discoveries/{id}/jobs/', response_model=PaginatedDiscoveryJobList
+            'GET',
+            f'discoveries/{id}/jobs/',
+            expected_status=200,
+            response_model=PaginatedDiscoveryJobList,
         )
 
     # ---------------------------------------------------------------------------
@@ -489,7 +539,7 @@ class NetDocClient:
 
     async def discoveryjob_claim(self) -> DiscoveryJobClaim:
         return await self._request(
-            'POST', 'discovery-jobs/claim/', response_model=DiscoveryJobClaim
+            'POST', 'discovery-jobs/claim/', expected_status=200, response_model=DiscoveryJobClaim
         )
 
     async def discoveryjob_complete(
@@ -499,14 +549,13 @@ class NetDocClient:
         data: JsonMapping | CollectorJobCompleted | None = None,
         **fields: Any,
     ) -> DiscoveryJobDetail:
-        # TODO: could be no content
         headers = {'X-Claim-Token': claim_token}
         return await self._request(
             'POST',
             f'discovery-jobs/{id}/complete/',
             json=self._serialize_body(data, **fields),
             headers=headers,
-            response_model=DiscoveryJobDetail,
+            expected_status=204,
         )
 
     async def discoveryjob_push_discovered_device(
@@ -522,12 +571,16 @@ class NetDocClient:
             f'discovery-jobs/{id}/push-discovered-device/',
             json=self._serialize_body(data, **fields),
             headers=headers,
+            expected_status=200,
             response_model=DiscoveryJobPush,
         )
 
     async def discoveryjob_logs(self, id: str) -> PaginatedRawOutputList:
         return await self._request(
-            'GET', f'discovery-jobs/{id}/logs/', response_model=PaginatedRawOutputList
+            'GET',
+            f'discovery-jobs/{id}/logs/',
+            expected_status=200,
+            response_model=PaginatedRawOutputList,
         )
 
     # ---------------------------------------------------------------------------
@@ -536,11 +589,17 @@ class NetDocClient:
 
     async def collector_list(self, **params: Any) -> PaginatedCollectorList:
         return await self._request(
-            'GET', 'collectors/', params=params, response_model=PaginatedCollectorList
+            'GET',
+            'collectors/',
+            params=params,
+            expected_status=200,
+            response_model=PaginatedCollectorList,
         )
 
     async def collector_get(self, id: str) -> CollectorDetail:
-        return await self._request('GET', f'collectors/{id}/', response_model=CollectorDetail)
+        return await self._request(
+            'GET', f'collectors/{id}/', expected_status=200, response_model=CollectorDetail
+        )
 
     async def collector_update(
         self, id: str, data: JsonMapping | CollectorUpdate | None = None, **fields: Any
@@ -549,6 +608,7 @@ class NetDocClient:
             'PATCH',
             f'collectors/{id}/',
             json=self._serialize_body(data, **fields),
+            expected_status=200,
             response_model=CollectorDetail,
         )
 
@@ -583,11 +643,17 @@ class NetDocClient:
 
     async def credential_list(self, **params: Any) -> PaginatedCredentialList:
         return await self._request(
-            'GET', 'credentials/', params=params, response_model=PaginatedCredentialList
+            'GET',
+            'credentials/',
+            params=params,
+            expected_status=200,
+            response_model=PaginatedCredentialList,
         )
 
     async def credential_get(self, id: str) -> CredentialDetail:
-        return await self._request('GET', f'credentials/{id}/', response_model=CredentialDetail)
+        return await self._request(
+            'GET', f'credentials/{id}/', expected_status=200, response_model=CredentialDetail
+        )
 
     async def credential_update(
         self, id: str, data: JsonMapping | CredentialUpdate | None = None, **fields: Any
@@ -596,6 +662,7 @@ class NetDocClient:
             'PATCH',
             f'credentials/{id}/',
             json=self._serialize_body(data, **fields),
+            expected_status=200,
             response_model=CredentialDetail,
         )
 
@@ -619,12 +686,19 @@ class NetDocClient:
 
     async def canonicaldevice_list(self, **params: Any) -> PaginatedCanonicalDeviceList:
         return await self._request(
-            'GET', 'canonical-devices/', params=params, response_model=PaginatedCanonicalDeviceList
+            'GET',
+            'canonical-devices/',
+            params=params,
+            expected_status=200,
+            response_model=PaginatedCanonicalDeviceList,
         )
 
     async def canonicaldevice_get(self, id: str) -> CanonicalDeviceDetail:
         return await self._request(
-            'GET', f'canonical-devices/{id}/', response_model=CanonicalDeviceDetail
+            'GET',
+            f'canonical-devices/{id}/',
+            expected_status=200,
+            response_model=CanonicalDeviceDetail,
         )
 
     async def canonicaldevice_update(
@@ -634,6 +708,7 @@ class NetDocClient:
             'PATCH',
             f'canonical-devices/{id}/',
             json=self._serialize_body(data, **fields),
+            expected_status=200,
             response_model=CanonicalDeviceDetail,
         )
 
@@ -660,10 +735,14 @@ class NetDocClient:
         )
 
     async def site_list(self, **params: Any) -> PaginatedSiteList:
-        return await self._request('GET', 'sites/', params=params, response_model=PaginatedSiteList)
+        return await self._request(
+            'GET', 'sites/', params=params, expected_status=200, response_model=PaginatedSiteList
+        )
 
     async def site_get(self, id: str) -> SiteDetail:
-        return await self._request('GET', f'sites/{id}/', response_model=SiteDetail)
+        return await self._request(
+            'GET', f'sites/{id}/', expected_status=200, response_model=SiteDetail
+        )
 
     async def site_update(
         self, id: str, data: JsonMapping | SiteUpdate | None = None, **fields: Any
@@ -672,6 +751,7 @@ class NetDocClient:
             'PATCH',
             f'sites/{id}/',
             json=self._serialize_body(data, **fields),
+            expected_status=200,
             response_model=SiteDetail,
         )
 
