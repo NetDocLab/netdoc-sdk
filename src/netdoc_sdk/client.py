@@ -200,7 +200,7 @@ class NetDocClient:
         if headers:
             request_headers.update(headers)
 
-        expected = None
+        expected = set()
         if expected_status is not None:
             expected = (
                 {expected_status} if isinstance(expected_status, int) else set(expected_status)
