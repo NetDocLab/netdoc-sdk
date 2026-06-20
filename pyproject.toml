@@ -63,9 +63,9 @@ responses = "^0.26.0"
 respx = "^0.23.1"
 
 # Testing (integration tests)
-pytest-django = "^4.12.0"
 djangorestframework = ">=3.14,<4.0"
 netdoc = {path = "../netdoc", develop = true}
+pytest-django = "^4.12.0"
 
 # Code quality
 mypy = ">=1.7"
@@ -73,6 +73,7 @@ ruff = ">=0.1"
 
 # Development tools
 ipython = ">=8.18"
+netutils = "1.17.2"
 watchdog = ">=3.0"
 
 # Documentation

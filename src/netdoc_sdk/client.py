@@ -42,15 +42,15 @@ from netdoc_sdk.models.discovery import (
     CredentialCreate,
     CredentialDetail,
     CredentialUpdate,
-    DiscoveredDeviceSubmit,
     DiscoveryJobClaim,
     DiscoveryJobDetail,
-    DiscoveryJobStatusEnum,
+    DiscoveryJobPush,
     DiscoveryRunDetail,
     PaginatedCollectorList,
     PaginatedCredentialList,
     PaginatedDiscoveryJobList,
     PaginatedDiscoveryRunList,
+    PaginatedRawOutputList,
 )
 from netdoc_sdk.models.inventory import (
     CanonicalDeviceCreate,
@@ -509,56 +509,26 @@ class NetDocClient:
             response_model=DiscoveryJobDetail,
         )
 
-    async def discoveryjob_heartbeat(self, id: str, claim_token: str) -> DiscoveryJobDetail:
-        # TODO: could be no content
-        headers = {'X-Claim-Token': claim_token}
-        return await self._request(
-            'POST',
-            f'discovery-jobs/{id}/heartbeat/',
-            headers=headers,
-            response_model=DiscoveryJobDetail,
-        )
-
     async def discoveryjob_push_discovered_device(
         self,
         id: str,
         claim_token: str,
-        data: JsonMapping | DiscoveredDeviceSubmit | None = None,
+        data: JsonMapping | DiscoveryJobPush | None = None,
         **fields: Any,
     ) -> DiscoveryJobDetail:
-        # TODO: could be no content
         headers = {'X-Claim-Token': claim_token}
         return await self._request(
             'POST',
             f'discovery-jobs/{id}/push-discovered-device/',
             json=self._serialize_body(data, **fields),
             headers=headers,
-            response_model=DiscoveryJobDetail,
+            response_model=DiscoveryJobPush,
         )
 
-    async def discoveryjob_status(
-        self, id: str, claim_token: str, status: DiscoveryJobStatusEnum | None = None
-    ) -> DiscoveryJobDetail:
-        headers = {'X-Claim-Token': claim_token}
-        if status is not None:
-            return await self._request(
-                'PATCH',
-                f'discovery-jobs/{id}/status/',
-                headers=headers,
-                json={'status': status},
-                response_model=DiscoveryJobDetail,
-            )
+    async def discoveryjob_logs(self, id: str) -> PaginatedRawOutputList:
         return await self._request(
-            'GET',
-            f'discovery-jobs/{id}/status/',
-            headers=headers,
-            response_model=DiscoveryJobDetail,
+            'GET', f'discovery-jobs/{id}/logs/', response_model=PaginatedRawOutputList
         )
-
-    # TODO
-    # push_discovered_device
-    # status --> implement both GET and PATCH to update the status (e.g. to mark complete or failed)
-    # complete
 
     # ---------------------------------------------------------------------------
     # discovery.Collector

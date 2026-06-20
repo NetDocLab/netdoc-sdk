@@ -27,18 +27,7 @@ class SnapshotDetail(APIModel):
     device_count: int
 
 
-class SnapshotList(APIModel):
-    id: UUID4Str
-    label: str
-    status: StatusEnum
-    pinned: bool
-    created_at: datetime
-    updated_at: datetime
-    completed_at: datetime | None
-    device_count: int
-
-
-PaginatedSnapshotList = PaginatedResponse[SnapshotList]
+PaginatedSnapshotList = PaginatedResponse[SnapshotDetail]
 
 
 class SnapshotUpdate(APIModel):

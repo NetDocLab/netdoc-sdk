@@ -772,9 +772,6 @@ class TestDiscoveryRun:
         inventory = res.inventory
         assert len(inventory['all']['hosts']) == 1
 
-        # Job heartbeat
-        await collector_client.discoveryjob_heartbeat(id=job_id, claim_token=claim_token)
-
         # Get job status
         # TODO: await admin_client.discoveryjob_status(id=job_id)
         # TODO: should be GET only (not PATCH)
@@ -783,11 +780,11 @@ class TestDiscoveryRun:
         payload = {
             'canonical_device': canonical_device.id,
             'raw_payload': {
-                'raw_output': {
+                'raw_outputs': {
                     'show version': RAW_SHOW_VERSION,
                     'show interfaces': RAW_SHOW_INTERFACES,
                 },
-                'parsed_output': {
+                'parsed_outputs': {
                     'show version': PARSED_SHOW_VERSION,
                     'show interfaces': PARSED_SHOW_INTERFACES,
                 },
@@ -798,17 +795,20 @@ class TestDiscoveryRun:
             id=job_id, claim_token=claim_token, **payload
         )
 
+        # Get log list
+        await admin_client.discoveryjob_logs(id=job_id)
+
         # Verify raw logs
         raw_output = await sync_to_async(RawOutput.objects.unfiltered().first)()
         assert raw_output is not None
         raw_payload = raw_output.raw_payload
         # Check raw output
-        assert 'raw_output' in raw_payload
-        assert 'show version' in raw_payload['raw_output']
-        assert len(raw_payload['raw_output']['show version']) > 10
+        assert 'raw_outputs' in raw_payload
+        assert 'show version' in raw_payload['raw_outputs']
+        assert len(raw_payload['raw_outputs']['show version']) > 10
         # Check parsed output
-        assert 'parsed_output' in raw_payload
-        assert 'show version' in raw_payload['parsed_output']
+        assert 'parsed_outputs' in raw_payload
+        assert 'show version' in raw_payload['parsed_outputs']
 
         # Complete job
         payload = {
@@ -832,3 +832,5 @@ class TestDiscoveryRun:
             ],
         }
         await collector_client.discoveryjob_complete(id=job_id, claim_token=claim_token, **payload)
+
+        # TODO verify snapshot
