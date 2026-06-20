@@ -833,4 +833,9 @@ class TestDiscoveryRun:
         }
         await collector_client.discoveryjob_complete(id=job_id, claim_token=claim_token, **payload)
 
-        # TODO verify snapshot
+        # Get snapshot list
+        snapshots = await admin_client.snapshot_list()
+        assert snapshots.count == 1
+
+        # Get single snapshot
+        await admin_client.snapshot_get(snapshots.results[0].id)
