@@ -772,10 +772,6 @@ class TestDiscoveryRun:
         inventory = res.inventory
         assert len(inventory['all']['hosts']) == 1
 
-        # Get job status
-        # TODO: await admin_client.discoveryjob_status(id=job_id)
-        # TODO: should be GET only (not PATCH)
-
         # Push discovered devices
         payload = {
             'canonical_device': canonical_device.id,
@@ -796,7 +792,8 @@ class TestDiscoveryRun:
         )
 
         # Get log list
-        await admin_client.discoveryjob_logs(id=job_id)
+        logs = await admin_client.discoveryjob_logs(id=job_id)
+        assert logs.count == 1
 
         # Verify raw logs
         raw_output = await sync_to_async(RawOutput.objects.unfiltered().first)()
