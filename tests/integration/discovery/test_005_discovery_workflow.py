@@ -831,6 +831,7 @@ class TestDiscoveryRun:
         # Verify raw logs
         raw_output = await sync_to_async(RawOutput.objects.unfiltered().first)()
         assert raw_output is not None
+        assert raw_output.status == 'parsed'
         raw_payload = raw_output.raw_payload
 
         # Check raw output

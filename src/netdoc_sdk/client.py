@@ -257,7 +257,7 @@ class NetDocClient:
         if not response_model and not response.content:
             return None
 
-        if response.status_code == 204  and len(expected) > 1:
+        if response.status_code == 204 and len(expected) > 1:
             # The endpoint can return multiple code, don't check content
             return None
 
@@ -543,7 +543,10 @@ class NetDocClient:
 
     async def discoveryjob_claim(self) -> DiscoveryJobClaim:
         return await self._request(
-            'POST', 'discovery-jobs/claim/', expected_status=[200, 204], response_model=DiscoveryJobClaim
+            'POST',
+            'discovery-jobs/claim/',
+            expected_status=[200, 204],
+            response_model=DiscoveryJobClaim,
         )
 
     async def discoveryjob_complete(
