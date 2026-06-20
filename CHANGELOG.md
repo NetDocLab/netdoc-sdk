@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/NetDocLab/netdoc-sdk/compare/v0.3.1...v0.4.0) (2026-06-20)
+
+
+### Bug Fixes
+
+* trigger tests ([f8dae81](https://github.com/NetDocLab/netdoc-sdk/commit/f8dae8121f8dd5f4fe45a79db146ac8a03a16c90))
+
 ## [0.3.1](https://github.com/NetDocLab/netdoc-sdk/compare/v0.3.0...v0.3.1) (2026-06-10)
 
 
