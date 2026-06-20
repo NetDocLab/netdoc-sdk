@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.4.1](https://github.com/NetDocLab/netdoc-sdk/compare/v0.4.0...v0.4.1) (2026-06-20)
+
+
+### Bug Fixes
+
+* fix expected status codes ([9a26e9e](https://github.com/NetDocLab/netdoc-sdk/commit/9a26e9ebb70b16cce2bf816b7bcb1289edfc55ea))
+* manage multiple status code on job claim ([29c45eb](https://github.com/NetDocLab/netdoc-sdk/commit/29c45eb8c0fcea36b5f6b85fe73309d5431a85ac))
+* manage multiple status codes on job claim ([dc073a9](https://github.com/NetDocLab/netdoc-sdk/commit/dc073a96f9955cfd1450d7e21feb6e19041d406b))
+
 ## [0.4.0](https://github.com/NetDocLab/netdoc-sdk/compare/v0.3.1...v0.4.0) (2026-06-20)
 
 
