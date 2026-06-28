@@ -1,4 +1,17 @@
-"""Shared fixtures for NetDocClient unit tests."""
+"""Shared fixtures and test utilities for NetDocClient unit tests.
+
+This module provides pytest fixtures and constants used across all unit tests.
+Unit tests focus on isolated behavior and API contracts using mocked HTTP responses.
+
+Fixtures:
+    - client: Synchronous NetDocClient for testing static attributes
+    - async_client: Async NetDocClient for HTTP mocking tests
+
+Constants:
+    - BASE: Fake NetDoc server URL for all unit tests
+    - TOKEN: Test authentication token
+    - PAGINATED_EMPTY: Empty paginated API response template
+"""
 
 import pytest
 
@@ -12,12 +25,34 @@ PAGINATED_EMPTY = {'count': 0, 'next': None, 'previous': None, 'results': []}
 
 @pytest.fixture
 def client():
-    """Synchronous client instance — used for testing pure attributes and static methods."""
+    """Synchronous NetDocClient instance.
+
+    Used for testing pure attributes, static methods, and initialization logic
+    that don't require HTTP calls. No mocking or fixtures needed.
+
+    Returns:
+        NetDocClient: Client configured with test BASE URL and TOKEN.
+    """
     return NetDocClient(base_url=BASE, token=TOKEN)
 
 
 @pytest.fixture
 async def async_client():
-    """Async client opened as context manager — used for tests that make HTTP calls."""
+    """Async NetDocClient instance opened as async context manager.
+
+    Used for tests that make mocked HTTP calls via respx. The client is
+    automatically opened and closed by the fixture, providing a properly
+    initialized async session.
+
+    Yields:
+        NetDocClient: Async-enabled client ready for HTTP mocking.
+
+    Example:
+        @respx.mock
+        async def test_something(async_client):
+            route = respx.get(...).mock(return_value=...)
+            await async_client.method_call()
+            assert route.called
+    """
     async with NetDocClient(base_url=BASE, token=TOKEN) as c:
         yield c
