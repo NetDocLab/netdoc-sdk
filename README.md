@@ -1,23 +1,73 @@
 # NetDoc SDK
 
-Async Python SDK for the NetDoc `/api/v1` API.
+[![Python Version](https://img.shields.io/badge/python-3.12+-blue)](https://www.python.org/downloads/)
+[![PyPI version](https://img.shields.io/pypi/v/netdoc-sdk.svg)](https://pypi.org/project/netdoc-sdk/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-## Install
+Async Python SDK for the NetDoc `/api/v1` API. Provides a modern, type-safe interface for building network discoveries, managing inventory, and querying topology data.
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Features](#features)
+- [API Reference](#api-reference)
+- [Authentication](#authentication)
+- [Error Handling](#error-handling)
+- [Advanced Usage](#advanced-usage)
+- [Troubleshooting](#troubleshooting)
+- [Source Code](#source-code)
+- [Contributing](#contributing)
+
+## Installation
+
+### Via pip (PyPI)
 
 ```bash
 pip install netdoc-sdk
 ```
 
+### Development version
+
+```bash
+git clone https://github.com/netdoclab/netdoc-sdk.git
+cd netdoc-sdk
+pip install -e .
+```
+
 ## Quick Start
+
+Basic usage with async context manager:
 
 ```python
 import asyncio
+from netdoc_sdk import NetDocClient
 
-from netdoc_sdk import DeviceBuilder, NetDocClient, SnapshotBuilder
+async def main():
+    # Create client and connect
+    async with NetDocClient("https://netdoc.example.com", token="your-api-token") as client:
+        # List snapshots
+        snapshots = await client.snapshots_list()
+        print(f"Found {len(snapshots)} snapshots")
+        
+        # Get a specific snapshot
+        snapshot = await client.snapshots_retrieve(id="snapshot-1")
+        print(f"Snapshot: {snapshot.label}")
 
+asyncio.run(main())
+```
+
+### Creating Network Topology
+
+Build and submit network snapshots using the fluent builder API:
+
+```python
+import asyncio
+from netdoc_sdk import NetDocClient, DeviceBuilder, SnapshotBuilder
 
 async def main():
     async with NetDocClient("https://netdoc.example.com", token="your-api-token") as client:
+        # Build topology
         snapshot = (
             SnapshotBuilder(label="nightly", description="Nightly collection")
             .add_device(
@@ -35,60 +85,414 @@ async def main():
             .build()
         )
 
-        await client.create_snapshot(snapshot)
-        devices = await client.list_devices(snapshot="snapshot-id", page_size=50)
-        topology = await client.get_topology_graph(snapshot="snapshot-id", include_endpoints=True)
-        return devices, topology
-
+        # Submit to server
+        result = await client.snapshots_create(snapshot)
+        print(f"Created snapshot: {result.id}")
 
 asyncio.run(main())
 ```
 
-`base_url` may be either the server root (`https://netdoc.example.com`) or an API URL ending in
-`/api/v1`; the client normalizes both forms.
+### Querying Network Data
 
-## API Surface
+```python
+async with NetDocClient(base_url, token=token) as client:
+    # List all devices in a snapshot
+    devices = await client.devices_list(snapshot="snapshot-id", page_size=50)
+    
+    # Get topology graph
+    topology = await client.get_topology_graph(
+        snapshot="snapshot-id",
+        include_endpoints=True
+    )
+    
+    # Query specific device
+    device = await client.devices_retrieve(id="device-1")
+    interfaces = await client.devices_interfaces_list(device=device.id)
+    
+    # Fetch L2 topology
+    vlans = await client.vlan_list(snapshot="snapshot-id")
+    mac_table = await client.mac_entry_list(snapshot="snapshot-id")
+```
 
-The client exposes every OpenAPI `operationId` as an async method, for example:
+## Features
 
-- `snapshots_list`, `snapshots_create`, `snapshots_retrieve`, `snapshots_partial_update`,
-  `snapshots_destroy`, `snapshots_pin_create`, `snapshots_unpin_create`,
-  `snapshots_status_create`, `snapshots_latest_retrieve`
-- `devices_list`, `devices_create`, `devices_retrieve`, `devices_interfaces_list`,
-  `devices_routes_list`, `devices_create_many_create`
-- inventory read APIs for interfaces, VRFs, VLANs, IP addresses, routes, ARP entries,
-  MAC entries, endpoints, canonical devices, and canonical endpoints
-- topology APIs for device connections, tunnel connections, endpoint connections,
-  topology graph, and L2 domain lookup
-- core APIs for credentials, tenants, users, and token creation
+✅ **Full API Coverage** - Every OpenAPI operation exposed as a method  
+✅ **Async/Await** - Modern async/await syntax for non-blocking I/O  
+✅ **Type Safe** - Full type hints and IDE autocomplete support  
+✅ **Builder Pattern** - Fluent API for constructing complex objects  
+✅ **Error Handling** - Structured exceptions with status codes and details  
+✅ **Pagination** - Automatic page size handling for list operations  
+✅ **Flexible Auth** - Token-based or username/password authentication  
+✅ **Multi-tenant** - Support for tenant scoping with `tenant_id`  
+✅ **Connection Pooling** - Efficient HTTP connection reuse  
+✅ **Comprehensive Docs** - Inline docstrings and examples  
 
-Friendly aliases are also available for common calls, such as `list_snapshots`,
-`create_snapshot`, `get_snapshot`, `create_device`, `list_devices`, and `get_topology_graph`.
+## API Reference
+
+### Discovery & Snapshots
+
+```python
+# Snapshot management
+await client.snapshots_list()
+await client.snapshots_create(snapshot)
+await client.snapshots_retrieve(id="...")
+await client.snapshots_latest_retrieve()
+await client.snapshots_pin_create(id="...")
+await client.snapshots_unpin_create(id="...")
+
+# Device management
+await client.devices_list(snapshot="...", page_size=50)
+await client.devices_create(snapshot, device)
+await client.devices_retrieve(id="...")
+await client.devices_create_many_create(snapshot, devices)
+
+# Device details
+await client.devices_interfaces_list(device="...")
+await client.devices_routes_list(device="...")
+```
+
+### Network Inventory
+
+Query and explore network elements:
+
+```python
+# VLANs, IP addresses, routes
+await client.vlan_list(snapshot="...")
+await client.ip_address_list(snapshot="...")
+await client.route_list(snapshot="...")
+
+# MAC and ARP
+await client.mac_entry_list(snapshot="...")
+await client.arp_entry_list(snapshot="...")
+
+# Endpoints
+await client.endpoint_list(snapshot="...")
+await client.canonical_endpoint_list()
+
+# VRF routing
+await client.vrf_list(snapshot="...")
+```
+
+### Topology
+
+Analyze network topology and connections:
+
+```python
+# Topology graph
+await client.get_topology_graph(snapshot="...", include_endpoints=True)
+
+# Device connections
+await client.device_connection_list(snapshot="...")
+
+# Tunnel connections  
+await client.tunnel_connection_list(snapshot="...")
+
+# Endpoint connections
+await client.endpoint_connection_list(snapshot="...")
+
+# L2 domain lookup
+await client.l2_domain_lookup(snapshot="...", vlan=10)
+```
+
+### Core / Tenants
+
+Manage credentials, users, and access:
+
+```python
+# Credentials
+await client.credential_list()
+await client.credential_create(credential)
+
+# Tenants
+await client.tenant_list()
+await client.tenant_create(tenant)
+
+# Users
+await client.user_list()
+await client.user_create(user)
+
+# Tokens
+await client.token_list()
+await client.token_create(token)
+
+# Profile
+await client.profile_read()
+```
+
+Base URL handling:
+
+- `base_url` accepts server root: `https://netdoc.example.com`
+- Or API endpoint: `https://netdoc.example.com/api/v1`
+- Client automatically normalizes both forms
+
+### Friendly Aliases
+
+Common operations have shorter aliases:
+
+```python
+# Long form
+await client.snapshots_list()
+await client.snapshots_create(snapshot)
+await client.snapshots_retrieve(id="...")
+
+# Short aliases (equivalent)
+await client.list_snapshots()
+await client.create_snapshot(snapshot)
+await client.get_snapshot("...")
+
+# More aliases
+await client.list_devices()
+await client.create_device(...)
+await client.get_topology_graph(...)
+```
 
 ## Authentication
 
+### Token Authentication
+
+Recommended for production use:
+
+```python
+client = NetDocClient(
+    base_url="https://netdoc.example.com",
+    token="your-api-token"
+)
+```
+
+Tokens are sent as `Authorization: Token <token>` header.
+
+### Username/Password Authentication
+
+Authenticate with credentials:
+
 ```python
 client = await NetDocClient.from_credentials(
-    "https://netdoc.example.com",
+    base_url="https://netdoc.example.com",
     username="collector",
     password="secret",
 )
 ```
 
-Token auth uses `Authorization: Token <token>`. For superuser tenant scoping, pass
-`tenant_id="..."`; the client sends it as `X-Tenant-ID`.
+### Tenant Scoping
 
-## Errors
+For superuser access across tenants:
 
-HTTP failures preserve `status_code`, `detail`, and the raw parsed response body:
+```python
+client = NetDocClient(
+    base_url="https://netdoc.example.com",
+    token="admin-token",
+    tenant_id="tenant-uuid",  # Sent as X-Tenant-ID header
+)
+```
+
+### Custom Headers
+
+Add custom headers to all requests:
+
+```python
+client = NetDocClient(
+    base_url="...",
+    token="...",
+    headers={
+        "X-Custom-Header": "value",
+        "X-Request-ID": "12345",
+    }
+)
+```
+
+## Error Handling
+
+### Exception Types
+
+```python
+from netdoc_sdk.exceptions import (
+    NetDocError,              # Base exception
+    AuthenticationError,      # 401 Unauthorized
+    PermissionDeniedError,    # 403 Forbidden
+    NotFoundError,            # 404 Not Found
+    ValidationError,          # 400 Bad Request
+    ConflictError,            # 409 Conflict
+    RateLimitError,           # 429 Too Many Requests
+    ServerError,              # 500+ Server Error
+    ConnectionError,          # Network/connection error
+)
+```
+
+### Handling Errors
 
 ```python
 from netdoc_sdk import NotFoundError, ValidationError
 
 try:
-    await client.get_snapshot("missing")
+    snapshot = await client.snapshots_retrieve("missing-id")
 except NotFoundError as exc:
-    print(exc.status_code, exc.detail)
+    print(f"Not found: {exc.detail}")
+    print(f"Status: {exc.status_code}")
 except ValidationError as exc:
-    print(exc.errors)
+    print(f"Validation errors: {exc.errors}")
+except Exception as exc:
+    print(f"Unexpected error: {exc}")
 ```
+
+### Error Details
+
+All SDK exceptions include:
+
+```python
+try:
+    await client.device_create(snapshot, device)
+except ValidationError as exc:
+    exc.status_code  # HTTP status (400)
+    exc.detail       # Human-readable error message
+    exc.errors       # Structured validation errors dict
+    str(exc)         # Full error representation
+```
+
+## Advanced Usage
+
+### Pagination
+
+Automatic pagination for list operations:
+
+```python
+# Get all devices with automatic pagination
+all_devices = []
+async for device in await client.devices_list(snapshot="...", page_size=100):
+    all_devices.append(device)
+
+# Or fetch specific page
+response = await client.devices_list(snapshot="...", page=2, page_size=50)
+```
+
+### Filtering
+
+Many list operations support filtering:
+
+```python
+# Filter devices by vendor
+devices = await client.devices_list(
+    snapshot="snapshot-1",
+    vendor="cisco",
+    page_size=100,
+)
+
+# Filter snapshots by status
+snapshots = await client.snapshots_list(status="completed")
+```
+
+### Response Objects
+
+All responses are Pydantic models with type safety:
+
+```python
+snapshot = await client.snapshots_retrieve("...")
+print(snapshot.id)           # IDE autocomplete
+print(snapshot.label)        # Type checking
+print(snapshot.created_at)   # datetime object
+```
+
+### Connection Management
+
+Explicit connection lifecycle:
+
+```python
+# Via context manager (recommended)
+async with NetDocClient(base_url, token=token) as client:
+    result = await client.snapshots_list()
+
+# Manual lifecycle
+client = NetDocClient(base_url, token=token)
+result = await client.snapshots_list()
+await client.close()
+```
+
+## Troubleshooting
+
+### Connection Issues
+
+**Problem:** `ConnectionError: Failed to connect to netdoc.example.com`
+
+**Solutions:**
+- Verify server is running and accessible
+- Check firewall rules and network connectivity
+- Ensure HTTPS/HTTP protocol is correct
+- Try with curl: `curl -H "Authorization: Token $TOKEN" https://netdoc.example.com/api/v1/snapshots/`
+
+### Authentication Errors
+
+**Problem:** `AuthenticationError: 401 Unauthorized`
+
+**Solutions:**
+- Verify API token is correct
+- Check token hasn't expired
+- Ensure token is passed correctly (not URL encoded)
+- Try creating a new token in the web UI
+
+### Validation Errors
+
+**Problem:** `ValidationError: 400 Bad Request`
+
+**Solutions:**
+- Check error message for specific field issues
+- Verify request data matches API schema
+- Inspect `exc.errors` dict for per-field details
+- Review example in quick start above
+
+### Type Issues
+
+**Problem:** `mypy or IDE errors about type mismatcements`
+
+**Solutions:**
+- Ensure SDK is installed: `pip install netdoc-sdk`
+- Update IDE/mypy cache: Restart IDE or `mypy --no-incremental`
+- Check Python version is 3.12+: `python --version`
+
+## Source Code
+
+The SDK source code is well-documented and organized:
+
+- **Comprehensive docstrings** - All classes, functions, and modules have detailed docstrings
+- **Type hints** - Full typing throughout for IDE support and mypy checking
+- **Clean architecture** - Layered design with clear separation of concerns
+
+For detailed information about the source code structure, internal implementation, and development guidelines, see **[Source Code Reference](docs/source-code.md)**.
+
+### Key Modules
+
+| Module | Purpose | Lines |
+|--------|---------|-------|
+| `client.py` | Main async HTTP client | 773 |
+| `exceptions.py` | Exception hierarchy | 270+ |
+| `models/` | Pydantic request/response models | 612 |
+
+### For Developers
+
+- **Contributing Code:** See [CONTRIBUTING.md](CONTRIBUTING.md) for development workflow, code standards, and PR process
+- **Running Tests:** See [tests/README.md](tests/README.md) for comprehensive test documentation
+- **Source Architecture:** See [docs/source-code.md](docs/source-code.md) for internal implementation details
+
+## Requirements
+
+- **Python:** 3.12 or higher
+- **Dependencies:** httpx, pydantic, python-dateutil
+
+## Contributing
+
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on:
+
+- Development setup
+- Running tests
+- Code quality standards
+- Commit conventions
+- Pull request process
+
+## Support
+
+- 📖 [Full Documentation](https://github.com/netdoclab/netdoc-sdk)
+- 🐛 [Issue Tracker](https://github.com/netdoclab/netdoc-sdk/issues)
+- 💬 [Discussions](https://github.com/netdoclab/netdoc-sdk/discussions)
+
+## License
+
+MIT License - see LICENSE file for details
+
