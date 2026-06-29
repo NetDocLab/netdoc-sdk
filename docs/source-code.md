@@ -6,7 +6,7 @@ This guide explains the structure and implementation of the NetDoc SDK source co
 
 The SDK is organized into clear modules:
 
-```
+```text
 src/netdoc_sdk/
 ├── __init__.py       # Package exports
 ├── client.py         # Main NetDocClient class (773 lines)
@@ -27,7 +27,7 @@ src/netdoc_sdk/
 
 ### Layered Design
 
-```
+```text
 User Code
     ↓
 NetDocClient (public async methods)
@@ -136,6 +136,7 @@ NetDocError (base)
 ```
 
 Each exception preserves:
+
 - `status_code`: HTTP status (or None for ConnectionError)
 - `detail`: Server error detail message
 - `body`: Full parsed response
@@ -209,7 +210,7 @@ await client.snapshots_partial_update("id", update)
 
 How a typical request is processed:
 
-```
+```text
 1. User calls: await client.snapshots_list(page_size=50)
 
 2. Generated method calls:
@@ -277,7 +278,7 @@ except ConnectionError:
 NetDocClient(
     base_url: str,                    # Server URL (required)
     token: str | None = None,          # API token for auth
-    
+
     # Advanced options (keyword-only)
     client_kwargs: dict | None = None, # Extra httpx.AsyncClient kwargs
     cookies: dict | None = None,       # HTTP cookies to send
@@ -463,10 +464,10 @@ The internal `httpx.AsyncClient` maintains a connection pool for efficient reuse
 async with NetDocClient(...) as client:
     # First request: creates connection
     await client.snapshots_list()
-    
+
     # Subsequent requests: reuse connection
     await client.devices_list()
-    
+
     # Multiple in parallel: uses pool
     await asyncio.gather(
         client.snapshots_list(),
@@ -523,7 +524,7 @@ from netdoc_sdk import NetDocClient
 async def test_my_code():
     mock_client = AsyncMock(spec=NetDocClient)
     mock_client.snapshots_list.return_value = [...]
-    
+
     result = await my_function(mock_client)
     assert result == ...
 ```

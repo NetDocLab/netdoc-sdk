@@ -49,7 +49,7 @@ async def main():
         # List snapshots
         snapshots = await client.snapshots_list()
         print(f"Found {len(snapshots)} snapshots")
-        
+
         # Get a specific snapshot
         snapshot = await client.snapshots_retrieve(id="snapshot-1")
         print(f"Snapshot: {snapshot.label}")
@@ -98,17 +98,17 @@ asyncio.run(main())
 async with NetDocClient(base_url, token=token) as client:
     # List all devices in a snapshot
     devices = await client.devices_list(snapshot="snapshot-id", page_size=50)
-    
+
     # Get topology graph
     topology = await client.get_topology_graph(
         snapshot="snapshot-id",
         include_endpoints=True
     )
-    
+
     # Query specific device
     device = await client.devices_retrieve(id="device-1")
     interfaces = await client.devices_interfaces_list(device=device.id)
-    
+
     # Fetch L2 topology
     vlans = await client.vlan_list(snapshot="snapshot-id")
     mac_table = await client.mac_entry_list(snapshot="snapshot-id")
@@ -116,16 +116,16 @@ async with NetDocClient(base_url, token=token) as client:
 
 ## Features
 
-✅ **Full API Coverage** - Every OpenAPI operation exposed as a method  
-✅ **Async/Await** - Modern async/await syntax for non-blocking I/O  
-✅ **Type Safe** - Full type hints and IDE autocomplete support  
-✅ **Builder Pattern** - Fluent API for constructing complex objects  
-✅ **Error Handling** - Structured exceptions with status codes and details  
-✅ **Pagination** - Automatic page size handling for list operations  
-✅ **Flexible Auth** - Token-based or username/password authentication  
-✅ **Multi-tenant** - Support for tenant scoping with `tenant_id`  
-✅ **Connection Pooling** - Efficient HTTP connection reuse  
-✅ **Comprehensive Docs** - Inline docstrings and examples  
+✅ **Full API Coverage** - Every OpenAPI operation exposed as a method
+✅ **Async/Await** - Modern async/await syntax for non-blocking I/O
+✅ **Type Safe** - Full type hints and IDE autocomplete support
+✅ **Builder Pattern** - Fluent API for constructing complex objects
+✅ **Error Handling** - Structured exceptions with status codes and details
+✅ **Pagination** - Automatic page size handling for list operations
+✅ **Flexible Auth** - Token-based or username/password authentication
+✅ **Multi-tenant** - Support for tenant scoping with `tenant_id`
+✅ **Connection Pooling** - Efficient HTTP connection reuse
+✅ **Comprehensive Docs** - Inline docstrings and examples
 
 ## API Reference
 
@@ -184,7 +184,7 @@ await client.get_topology_graph(snapshot="...", include_endpoints=True)
 # Device connections
 await client.device_connection_list(snapshot="...")
 
-# Tunnel connections  
+# Tunnel connections
 await client.tunnel_connection_list(snapshot="...")
 
 # Endpoint connections
@@ -413,6 +413,7 @@ await client.close()
 **Problem:** `ConnectionError: Failed to connect to netdoc.example.com`
 
 **Solutions:**
+
 - Verify server is running and accessible
 - Check firewall rules and network connectivity
 - Ensure HTTPS/HTTP protocol is correct
@@ -423,6 +424,7 @@ await client.close()
 **Problem:** `AuthenticationError: 401 Unauthorized`
 
 **Solutions:**
+
 - Verify API token is correct
 - Check token hasn't expired
 - Ensure token is passed correctly (not URL encoded)
@@ -433,6 +435,7 @@ await client.close()
 **Problem:** `ValidationError: 400 Bad Request`
 
 **Solutions:**
+
 - Check error message for specific field issues
 - Verify request data matches API schema
 - Inspect `exc.errors` dict for per-field details
@@ -443,6 +446,7 @@ await client.close()
 **Problem:** `mypy or IDE errors about type mismatcements`
 
 **Solutions:**
+
 - Ensure SDK is installed: `pip install netdoc-sdk`
 - Update IDE/mypy cache: Restart IDE or `mypy --no-incremental`
 - Check Python version is 3.12+: `python --version`
@@ -495,4 +499,3 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guid
 ## License
 
 MIT License - see LICENSE file for details
-

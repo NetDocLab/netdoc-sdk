@@ -292,4 +292,3 @@ class ValidationError(NetDocError):
         if self.errors:
             return f'{self.message}: {self.errors}'
         return self.message
-

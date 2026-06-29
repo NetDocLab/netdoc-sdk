@@ -49,7 +49,7 @@ See https://github.com/netdoclab/netdoc-sdk for documentation.
 """
 
 from netdoc_sdk.client import NetDocClient
-from netdoc_sdk.exceptions import (  # noqa: F401
+from netdoc_sdk.exceptions import (
     AuthenticationError,
     ConnectionError,
     MethodNotAllowedError,
@@ -84,4 +84,3 @@ __all__ = [
     'ValidationError',
     *models,
 ]
-
