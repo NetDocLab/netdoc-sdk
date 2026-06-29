@@ -21,7 +21,10 @@ from netdoc_sdk.exceptions import (
 )
 from netdoc_sdk.models.core import (
     AuditLogDetail,
+    LogCreate,
+    LogDetail,
     PaginatedAuditLogList,
+    PaginatedLogList,
     PaginatedTenantList,
     PaginatedUserList,
     TenantCreate,
@@ -437,6 +440,35 @@ class NetDocClient:
     async def auditlog_get(self, id: str) -> AuditLogDetail:
         return await self._request(
             'GET', f'audit-logs/{id}/', expected_status=200, response_model=AuditLogDetail
+        )
+
+    # ---------------------------------------------------------------------------
+    # core.LogRecord
+    # ---------------------------------------------------------------------------
+
+    async def log_add(
+        self, data: JsonMapping | LogCreate | None = None, **fields: Any
+    ) -> LogDetail:
+        return await self._request(
+            'POST',
+            'logs/',
+            json=self._serialize_body(data, **fields),
+            expected_status=201,
+            response_model=LogDetail,
+        )
+
+    async def log_list(self, **params: Any) -> PaginatedLogList:
+        return await self._request(
+            'GET',
+            'logs/',
+            params=params,
+            expected_status=200,
+            response_model=PaginatedLogList,
+        )
+
+    async def log_get(self, id: str) -> LogDetail:
+        return await self._request(
+            'GET', f'logs/{id}/', expected_status=200, response_model=LogDetail
         )
 
     # ---------------------------------------------------------------------------

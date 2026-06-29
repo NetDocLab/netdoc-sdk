@@ -194,3 +194,53 @@ class AuditLogDetail(APIModel):
 
 
 PaginatedAuditLogList = PaginatedResponse[AuditLogDetail]
+
+
+# ---------------------------------------------------------------------------
+# core.LogRecord
+# ---------------------------------------------------------------------------
+
+
+class LogDetail(APIModel):
+    id: UUID4Str
+    level: str
+    logger_name: str
+    message: str
+    correlation_id: UUID | None
+    tenant_id: UUID | None
+    user_id: UUID | None
+    username: str | None
+    object_type: str | None
+    object_id: UUID | None
+    object_label: str | None
+    context: dict
+    exception_type: str | None
+    traceback: str | None
+    module: str
+    func_name: str
+    line_no: int | None
+    hostname: str
+    process: int
+    thread_name: str
+    created_at: datetime
+
+
+PaginatedLogList = PaginatedResponse[LogDetail]
+
+
+class LogCreate(APIModel):
+    level: str
+    message: str
+    correlation_id: UUID | None = None
+    object_type: str | None = None
+    object_id: UUID | None = None
+    object_label: str | None = None
+    context: dict | None = None
+    exception_type: str | None = None
+    traceback: str | None = None
+    module: str
+    func_name: str
+    line_no: int | None = None
+    hostname: str
+    process: int
+    thread_name: str
