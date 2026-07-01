@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.5.0](https://github.com/NetDocLab/netdoc-sdk/compare/v0.4.1...v0.5.0) (2026-07-01)
+
+
+### Bug Fixes
+
+* change logic for strict parameter validation ([3cc4aa2](https://github.com/NetDocLab/netdoc-sdk/commit/3cc4aa2e2bb724b7fceba4f9dd15ead7f8f9bae4))
+* fix icon field on canonical device ([03b7513](https://github.com/NetDocLab/netdoc-sdk/commit/03b751309162d2ae0dc8a1b5edfacf04cb5641d6))
+
 ## [0.4.1](https://github.com/NetDocLab/netdoc-sdk/compare/v0.4.0...v0.4.1) (2026-06-20)
 
 
