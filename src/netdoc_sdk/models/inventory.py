@@ -74,6 +74,7 @@ class CanonicalDeviceDetail(APIModel):
     icon: str | None
     mgmt_address: str | None
     discovery_mode: str | None
+    icon: str | None
     is_discoverable: bool
     identifiers: dict
     credential: UUID4Str | None
