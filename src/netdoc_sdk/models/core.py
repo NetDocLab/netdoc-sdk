@@ -10,7 +10,7 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, model_validator
 from pydantic.functional_validators import AfterValidator
 
-_STRICT_EXTRA = os.getenv('DJANGO_ENV') == 'test'
+_STRICT_EXTRA = os.getenv('SDK_STRICT', '').lower() in ('1', 'true', 'yes', 'on')
 
 logger = logging.getLogger('netdoc_sdk')
 
