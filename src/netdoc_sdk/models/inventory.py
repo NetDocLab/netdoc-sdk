@@ -71,6 +71,7 @@ class SiteUpdate(APIModel):
 class CanonicalDeviceDetail(APIModel):
     id: UUID4Str
     label: str
+    icon: str | None
     mgmt_address: str | None
     discovery_mode: str | None
     is_discoverable: bool
@@ -91,6 +92,7 @@ class CanonicalDeviceDetail(APIModel):
 class CanonicalDeviceList(APIModel):
     id: UUID4Str
     label: str
+    icon: str | None
     mgmt_address: str | None
     discovery_mode: str | None
     is_discoverable: bool
@@ -111,6 +113,7 @@ PaginatedCanonicalDeviceList = PaginatedResponse[CanonicalDeviceList]
 
 class CanonicalDeviceCreate(APIModel):
     label: str
+    icon: str | None = None
     mgmt_address: str | None = None
     is_discoverable: bool
     identifiers: list
@@ -122,6 +125,7 @@ class CanonicalDeviceCreate(APIModel):
 
 class CanonicalDeviceUpdate(APIModel):
     label: str | None = None
+    icon: str | None = None
     mgmt_address: str | None = None
     is_discoverable: bool
     identifiers: list | None = None
