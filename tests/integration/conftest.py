@@ -280,3 +280,37 @@ def collector_client(db, live_server):
     token, _ = Token.objects.get_or_create(user=user)
 
     return NetDocClient(base_url=live_server.url, token=token.key)
+
+
+@pytest.fixture
+def collector_sync_client(db, live_server):
+    """NetDocClient authenticated as a tenant collector.
+
+    Creates a collector user within a test tenant with token authentication
+    and returns an authenticated client pointing to the live Django test server.
+
+    Tenant collectors have write-only permissions within their assigned tenant and
+    cannot access resources in other tenants. This fixture is useful for testing
+    multi-tenant functionality and tenant isolation.
+
+    Args:
+        db: pytest-django database fixture for test isolation
+        live_server: pytest-django live_server fixture
+
+    Returns:
+        NetDocClient: Authenticated client with admin user credentials
+    """
+    username = 'conftest-collector'
+    password = '986629a7ca89202a3ef2ae1dd9d5fb37'
+    User = get_user_model()
+
+    # Create user within a tenant
+    tenant = Tenant.objects.create(name='conftest-tenant')
+    user = User.objects.create_user(
+        username=username, password=password, tenant=tenant, role='collector'
+    )
+
+    # Create token for API authentication
+    token, _ = Token.objects.get_or_create(user=user)
+
+    return NetDocSyncClient(base_url=live_server.url, token=token.key)
