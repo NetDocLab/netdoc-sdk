@@ -14,7 +14,7 @@ Behavior:
     - Empty bodies return None
 """
 
-from netdoc_sdk.client import SyncNetDocClient as NetDocClient
+from netdoc_sdk.client import NetDocSyncClient as NetDocClient
 from netdoc_sdk.models.inventory import SiteCreate
 
 

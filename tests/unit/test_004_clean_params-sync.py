@@ -12,7 +12,7 @@ Behavior:
     - None input returns None
 """
 
-from netdoc_sdk.client import SyncNetDocClient as NetDocClient
+from netdoc_sdk.client import NetDocSyncClient as NetDocClient
 
 
 class TestCleanParamsSyncClient:

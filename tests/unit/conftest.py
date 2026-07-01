@@ -15,7 +15,7 @@ Constants:
 
 import pytest
 
-from netdoc_sdk.client import NetDocClient, SyncNetDocClient
+from netdoc_sdk.client import NetDocClient, NetDocSyncClient
 
 BASE = 'http://fake-netdoc'
 TOKEN = 'test-token-abc'
@@ -33,7 +33,7 @@ def sync_client():
     Returns:
         NetDocClient: Client configured with test BASE URL and TOKEN.
     """
-    return SyncNetDocClient(base_url=BASE, token=TOKEN)
+    return NetDocSyncClient(base_url=BASE, token=TOKEN)
 
 
 @pytest.fixture

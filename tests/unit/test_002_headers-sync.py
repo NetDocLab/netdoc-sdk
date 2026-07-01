@@ -22,7 +22,7 @@ Test coverage:
 import httpx
 import respx
 
-from netdoc_sdk.client import SyncNetDocClient as NetDocClient
+from netdoc_sdk.client import NetDocSyncClient as NetDocClient
 
 BASE = 'http://fake-netdoc'
 TOKEN = 'test-token-abc'

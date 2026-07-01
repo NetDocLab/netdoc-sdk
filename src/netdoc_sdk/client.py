@@ -114,7 +114,7 @@ class NetDocClient(_NetDocClientBase):
         return self._parse_response(response, response_model, expected)
 
 
-class SyncNetDocClient(_NetDocClientBase):
+class NetDocSyncClient(_NetDocClientBase):
     """Synchronous client for the NetDoc API.
 
     Intended for use in thread-based collectors (nornir + netmiko) and any

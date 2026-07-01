@@ -13,7 +13,7 @@ import httpx
 import pytest
 import respx
 
-from netdoc_sdk.client import SyncNetDocClient as NetDocClient
+from netdoc_sdk.client import NetDocSyncClient as NetDocClient
 from netdoc_sdk.exceptions import AuthenticationError
 
 BASE = 'http://fake-netdoc'
