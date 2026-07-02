@@ -13,11 +13,11 @@ class TestAuthenticationSyncClient:
     def test_unauthenticated_user(self, live_server):
         client = NetDocClient(base_url=live_server.url, token='invalid')
         with pytest.raises(AuthenticationError):
-            client.site_list()
+            client.sites_list()
 
     @pytest.mark.django_db(transaction=True)
     def test_admin_client_by_password(self, admin_sync_client_by_password):
-        admin_sync_client_by_password.site_list()
+        admin_sync_client_by_password.sites_list()
 
     @pytest.mark.django_db(transaction=True)
     def test_superuser_impersonating(self, live_server):
@@ -40,4 +40,4 @@ class TestAuthenticationSyncClient:
         token, _ = Token.objects.get_or_create(user=user)
 
         client = NetDocClient(base_url=live_server.url, token=token.key)
-        client.site_list()
+        client.sites_list()

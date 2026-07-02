@@ -48,7 +48,7 @@ class TestHeaders:
         """Authorization header should use 'Token {token}' format."""
         route = respx.get(f'{BASE}/api/v1/sites/').mock(return_value=_ok())
         async with NetDocClient(base_url=BASE, token=TOKEN) as c:
-            await c.site_list()
+            await c.sites_list()
         assert route.calls[0].request.headers['authorization'] == f'Token {TOKEN}'
 
     @respx.mock
@@ -56,7 +56,7 @@ class TestHeaders:
         """Accept header should always be set to 'application/json'."""
         route = respx.get(f'{BASE}/api/v1/sites/').mock(return_value=_ok())
         async with NetDocClient(base_url=BASE, token=TOKEN) as c:
-            await c.site_list()
+            await c.sites_list()
         assert route.calls[0].request.headers['accept'] == 'application/json'
 
     @respx.mock
@@ -64,7 +64,7 @@ class TestHeaders:
         """Authorization header should not be sent when token is None."""
         route = respx.get(f'{BASE}/api/v1/sites/').mock(return_value=_ok())
         async with NetDocClient(base_url=BASE) as c:
-            await c.site_list()
+            await c.sites_list()
         assert 'authorization' not in route.calls[0].request.headers
 
     @respx.mock
@@ -72,7 +72,7 @@ class TestHeaders:
         """X-Tenant-ID header should be sent when tenant_id is configured."""
         route = respx.get(f'{BASE}/api/v1/sites/').mock(return_value=_ok())
         async with NetDocClient(base_url=BASE, token=TOKEN, tenant_id='tenant-xyz') as c:
-            await c.site_list()
+            await c.sites_list()
         assert route.calls[0].request.headers['x-tenant-id'] == 'tenant-xyz'
 
     @respx.mock
@@ -80,7 +80,7 @@ class TestHeaders:
         """X-Tenant-ID header should not be sent when tenant_id is None."""
         route = respx.get(f'{BASE}/api/v1/sites/').mock(return_value=_ok())
         async with NetDocClient(base_url=BASE, token=TOKEN) as c:
-            await c.site_list()
+            await c.sites_list()
         assert 'x-tenant-id' not in route.calls[0].request.headers
 
     @respx.mock
@@ -88,5 +88,5 @@ class TestHeaders:
         """Custom headers passed at init should be included in every request."""
         route = respx.get(f'{BASE}/api/v1/sites/').mock(return_value=_ok())
         async with NetDocClient(base_url=BASE, token=TOKEN, headers={'X-Custom': 'value'}) as c:
-            await c.site_list()
+            await c.sites_list()
         assert route.calls[0].request.headers['x-custom'] == 'value'

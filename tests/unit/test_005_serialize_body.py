@@ -15,7 +15,7 @@ Behavior:
 """
 
 from netdoc_sdk.client import NetDocClient
-from netdoc_sdk.models.inventory import SiteCreate
+from netdoc_sdk.models._generated_models import SiteDetailRequest
 
 
 class TestSerializeBody:
@@ -28,7 +28,7 @@ class TestSerializeBody:
 
     def test_pydantic_model_is_serialised_to_dict(self):
         """Pydantic model should be converted to dictionary."""
-        site = SiteCreate(name='rome')
+        site = SiteDetailRequest(name='rome')
         result = NetDocClient._serialize_body(site)
         assert result['name'] == 'rome'
 

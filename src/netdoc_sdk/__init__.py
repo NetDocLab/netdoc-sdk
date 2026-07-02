@@ -60,15 +60,9 @@ from netdoc_sdk.exceptions import (
     ServerError,
     ValidationError,
 )
-from netdoc_sdk.models import core as _core  # noqa: F401
-from netdoc_sdk.models import discovery as _discovery  # noqa: F401
-from netdoc_sdk.models import inventory as _inventory  # noqa: F401
-from netdoc_sdk.models import snapshots as _snapshots  # noqa: F401
+from netdoc_sdk.models import _generated_models  # noqa: F401
 
-models = []
-for model in ['_core', '_snapshots', '_discovery', '_inventory']:
-    models += [name for name in dir(model) if not name.startswith('_')]
-    del model
+models = [name for name in dir('_generated_models') if not name.startswith('_')]
 
 
 __all__ = [

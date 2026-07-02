@@ -19,7 +19,7 @@ dependencies = [
     "httpx>=0.26",
 
     # Data validation
-    "pydantic>=2.5",
+    "pydantic[email] (>=2.13.4,<3.0.0)",
 
     # Async support
     "anyio>=4.2",
@@ -72,8 +72,11 @@ mypy = ">=1.7"
 ruff = ">=0.1"
 
 # Development tools
+datamodel-code-generator = {extras = ["http"], version = "^0.66.3"}
 ipython = ">=8.18"
+jinja2 = ">=3.0"
 netutils = "1.17.2"
+pyyaml = ">=6.0"
 watchdog = ">=3.0"
 
 # Documentation
@@ -85,6 +88,7 @@ mkdocstrings = {version = ">=0.24", extras = ["python"]}
 # ---------------------------------------------------------------------------
 # Bandit — security linter
 # ---------------------------------------------------------------------------
+
 
 [tool.bandit]
 # B101: assert used — expected in tests (already excluded above, belt-and-suspenders)
@@ -223,3 +227,5 @@ section-order = ["future", "standard-library", "third-party", "first-party", "lo
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = ["S101", "ARG001", "ARG002"]
 "tests/factories.py" = ["F401"]
+"src/netdoc_sdk/models/_generated_models.py" = ["TC003"]
+"src/netdoc_sdk/_generated_endpoints.py" = ["TC001", "TC003"]

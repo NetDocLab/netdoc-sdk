@@ -14,4 +14,4 @@ class TestToken:
             username=username,
             password=password,
         )
-        await client.token_add(username=username, password=password)
+        await client.tokens_add(username=username, password=password)

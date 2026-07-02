@@ -12,7 +12,7 @@ import pytest
 import respx
 
 from netdoc_sdk.exceptions import ValidationError
-from netdoc_sdk.models.inventory import PaginatedSiteList, SiteDetail
+from netdoc_sdk.models._generated_models import PaginatedSiteListList, SiteDetail
 
 BASE = 'http://fake-netdoc'
 TOKEN = 'test-token-abc'
@@ -39,15 +39,15 @@ class TestResponseParsing:
                             'city': '',
                             'region': '',
                             'country': '',
-                            'created_at': '2026-05-23 06:37:34.246550',
-                            'updated_at': '2026-05-23 06:37:34.246550',
+                            'created_at': '2026-05-23 06:37:34.246550Z',
+                            'updated_at': '2026-05-23 06:37:34.246550Z',
                         }
                     ],
                 },
             )
         )
-        result = await client.site_list()
-        assert isinstance(result, PaginatedSiteList)
+        result = await client.sites_list()
+        assert isinstance(result, PaginatedSiteListList)
         assert result.count == 1
         assert result.results[0].name == 'milan'
 
@@ -65,12 +65,12 @@ class TestResponseParsing:
                     'city': '',
                     'region': '',
                     'country': '',
-                    'created_at': '2026-05-23 06:37:34.246550',
-                    'updated_at': '2026-05-23 06:37:34.246550',
+                    'created_at': '2026-05-23 06:37:34.246550Z',
+                    'updated_at': '2026-05-23 06:37:34.246550Z',
                 },
             )
         )
-        result = await client.site_get('1')
+        result = await client.sites_get('1')
         assert isinstance(result, SiteDetail)
         assert result.id == site_id
         assert result.name == 'milan'
@@ -78,7 +78,7 @@ class TestResponseParsing:
     @respx.mock
     async def test_204_no_content_returns_none(self, client):
         respx.delete(f'{BASE}/api/v1/sites/1/').mock(return_value=httpx.Response(204))
-        result = await client.site_delete('1')
+        result = await client.sites_delete('1')
         assert result is None
 
     @respx.mock
@@ -86,4 +86,4 @@ class TestResponseParsing:
         # A 200 response with no body is unexpected and must raise ServerError.
         respx.get(f'{BASE}/api/v1/sites/').mock(return_value=httpx.Response(200, content=b''))
         with pytest.raises(ValidationError):
-            await client.site_list()
+            await client.sites_list()

@@ -38,7 +38,7 @@ class TestErrorMappingrSyncClient:
             return_value=httpx.Response(400, json={'name': ['This field is required.']})
         )
         with pytest.raises(ValidationError) as exc:
-            client.site_list()
+            client.sites_list()
         assert exc.value.errors is not None
 
     @respx.mock
@@ -49,7 +49,7 @@ class TestErrorMappingrSyncClient:
             )
         )
         with pytest.raises(AuthenticationError):
-            client.site_list()
+            client.sites_list()
 
     @respx.mock
     def test_403_raises_permission_denied_error(self, client):
@@ -57,7 +57,7 @@ class TestErrorMappingrSyncClient:
             return_value=httpx.Response(403, json={'detail': 'You do not have permission.'})
         )
         with pytest.raises(PermissionDeniedError):
-            client.site_list()
+            client.sites_list()
 
     @respx.mock
     def test_404_raises_not_found_error(self, client):
@@ -65,7 +65,7 @@ class TestErrorMappingrSyncClient:
             return_value=httpx.Response(404, json={'detail': 'Not found.'})
         )
         with pytest.raises(NotFoundError):
-            client.site_get('999')
+            client.sites_get('999')
 
     @respx.mock
     def test_404_error_message_comes_from_detail_field(self, client):
@@ -73,7 +73,7 @@ class TestErrorMappingrSyncClient:
             return_value=httpx.Response(404, json={'detail': 'Site not found.'})
         )
         with pytest.raises(NotFoundError) as exc:
-            client.site_get('999')
+            client.sites_get('999')
         assert 'Site not found' in str(exc.value)
 
     @respx.mock
@@ -82,7 +82,7 @@ class TestErrorMappingrSyncClient:
             return_value=httpx.Response(405, json={'detail': 'Method not allowed.'})
         )
         with pytest.raises(MethodNotAllowedError):
-            client.site_list()
+            client.sites_list()
 
     @respx.mock
     def test_429_raises_rate_limit_error_with_retry_after(self, client):
@@ -94,7 +94,7 @@ class TestErrorMappingrSyncClient:
             )
         )
         with pytest.raises(RateLimitError) as exc:
-            client.site_list()
+            client.sites_list()
         assert exc.value.retry_after == 60
 
     @respx.mock
@@ -103,7 +103,7 @@ class TestErrorMappingrSyncClient:
             return_value=httpx.Response(429, json={'detail': 'Too many requests.'})
         )
         with pytest.raises(RateLimitError) as exc:
-            client.site_list()
+            client.sites_list()
         assert exc.value.retry_after is None
 
     @respx.mock
@@ -112,7 +112,7 @@ class TestErrorMappingrSyncClient:
             return_value=httpx.Response(500, json={'detail': 'Internal server error.'})
         )
         with pytest.raises(ServerError) as exc:
-            client.site_list()
+            client.sites_list()
         assert exc.value.status_code == 500
 
     @respx.mock
@@ -122,4 +122,4 @@ class TestErrorMappingrSyncClient:
             return_value=httpx.Response(503, content=b'Service Unavailable')
         )
         with pytest.raises(ServerError):
-            client.site_list()
+            client.sites_list()

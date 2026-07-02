@@ -20,6 +20,7 @@ from typing import Any
 import httpx
 from pydantic import BaseModel
 
+from netdoc_sdk._generated_endpoints import JsonMapping, _GeneratedEndpoints
 from netdoc_sdk.exceptions import (
     AuthenticationError,
     MethodNotAllowedError,
@@ -30,64 +31,11 @@ from netdoc_sdk.exceptions import (
     ServerError,
     ValidationError,
 )
-from netdoc_sdk.models.core import (
-    AuditLogDetail,
-    LogCreate,
-    LogDetail,
-    PaginatedAuditLogList,
-    PaginatedLogList,
-    PaginatedTenantList,
-    PaginatedUserList,
-    TenantCreate,
-    TenantDetail,
-    TenantUpdate,
-    TokenDetail,
-    TokenRequest,
-    UserCreate,
-    UserDetail,
-    UserProfileUpdate,
-    UserUpdate,
-)
-from netdoc_sdk.models.discovery import (
-    CollectorDetail,
-    CollectorHeartbeat,
-    CollectorJobCompleted,
-    CollectorUpdate,
-    CredentialCreate,
-    CredentialDetail,
-    CredentialUpdate,
-    DiscoveryJobClaim,
-    DiscoveryJobDetail,
-    DiscoveryJobPush,
-    DiscoveryRunDetail,
-    PaginatedCollectorList,
-    PaginatedCredentialList,
-    PaginatedDiscoveryJobList,
-    PaginatedDiscoveryRunList,
-    PaginatedRawOutputList,
-)
-from netdoc_sdk.models.inventory import (
-    CanonicalDeviceCreate,
-    CanonicalDeviceDetail,
-    CanonicalDeviceUpdate,
-    PaginatedCanonicalDeviceList,
-    PaginatedSiteList,
-    SiteCreate,
-    SiteDetail,
-    SiteUpdate,
-)
-from netdoc_sdk.models.snapshots import (
-    PaginatedSnapshotList,
-    SnapshotDetail,
-    SnapshotUpdate,
-)
 
 logger = logging.getLogger('netdoc_sdk')
 
-JsonMapping = Mapping[str, Any] | BaseModel
 
-
-class _NetDocClientBase:
+class _NetDocClientBase(_GeneratedEndpoints):
     """Shared logic for both the sync and async NetDoc clients."""
 
     api_prefix = 'api/v1'
@@ -263,573 +211,573 @@ class _NetDocClientBase:
 
         return TypeAdapter(response_model).validate_python(response.json())
 
-    # ------------------------------------------------------------------
-    # Endpoint methods — return self._request(...) directly.
-    #
-    # Because ``_request`` is a coroutine in AsyncNetDocClient and a plain
-    # function in NetDocClient, these methods are naturally "transparent":
-    #   - sync callers get the result value immediately
-    #   - async callers get a coroutine they must ``await``
-    #
-    # No duplication needed; adding a new endpoint means one method here.
-    # ------------------------------------------------------------------
-
-    # core.Tenant
-
-    def tenant_add(
-        self, data: JsonMapping | TenantCreate | None = None, **fields: Any
-    ) -> TenantDetail:
-        """Create a new tenant."""
-        return self._request(
-            'POST',
-            'tenants/',
-            json=self._serialize_body(data, **fields),
-            expected_status=201,
-            response_model=TenantDetail,
-        )
-
-    def tenant_list(self, **params: Any) -> PaginatedTenantList:
-        """Return a paginated list of tenants."""
-        return self._request(
-            'GET',
-            'tenants/',
-            params=params,
-            expected_status=200,
-            response_model=PaginatedTenantList,
-        )
-
-    def tenant_get(self, id: str) -> TenantDetail:
-        """Retrieve a single tenant by ID."""
-        return self._request(
-            'GET',
-            f'tenants/{id}/',
-            expected_status=200,
-            response_model=TenantDetail,
-        )
-
-    def tenant_update(
-        self, id: str, data: JsonMapping | TenantUpdate | None = None, **fields: Any
-    ) -> TenantDetail:
-        """Partially update a tenant."""
-        return self._request(
-            'PATCH',
-            f'tenants/{id}/',
-            json=self._serialize_body(data, **fields),
-            expected_status=200,
-            response_model=TenantDetail,
-        )
-
-    def tenant_delete(self, id: str) -> None:
-        """Delete a tenant."""
-        return self._request('DELETE', f'tenants/{id}/', expected_status=204)
-
-    def tenant_current(self) -> TenantDetail:
-        """Return the tenant associated with the current token."""
-        return self._request('GET', 'tenants/current/', response_model=TenantDetail)
-
-    # core.User
-
-    def user_add(self, data: JsonMapping | UserCreate | None = None, **fields: Any) -> UserDetail:
-        """Create a new user."""
-        return self._request(
-            'POST',
-            'users/',
-            json=self._serialize_body(data, **fields),
-            expected_status=201,
-            response_model=UserDetail,
-        )
-
-    def user_list(self, **params: Any) -> PaginatedUserList:
-        """Return a paginated list of users."""
-        return self._request(
-            'GET',
-            'users/',
-            params=params,
-            expected_status=200,
-            response_model=PaginatedUserList,
-        )
-
-    def user_get(self, id: str) -> UserDetail:
-        """Retrieve a single user by ID."""
-        return self._request(
-            'GET',
-            f'users/{id}/',
-            expected_status=200,
-            response_model=UserDetail,
-        )
-
-    def user_update(
-        self, id: str, data: JsonMapping | UserUpdate | None = None, **fields: Any
-    ) -> UserDetail:
-        """Partially update a user."""
-        return self._request(
-            'PATCH',
-            f'users/{id}/',
-            json=self._serialize_body(data, **fields),
-            expected_status=200,
-            response_model=UserDetail,
-        )
-
-    def user_delete(self, id: str) -> None:
-        """Delete a user."""
-        return self._request('DELETE', f'users/{id}/', expected_status=204)
-
-    def profile_get(self) -> UserDetail:
-        """Return the profile of the currently authenticated user."""
-        return self._request(
-            'GET',
-            'users/current/',
-            expected_status=200,
-            response_model=UserDetail,
-        )
-
-    def profile_update(
-        self, data: JsonMapping | UserProfileUpdate | None = None, **fields: Any
-    ) -> UserDetail:
-        """Update the profile of the currently authenticated user."""
-        return self._request(
-            'PATCH',
-            'users/current/',
-            json=self._serialize_body(data, **fields),
-            expected_status=200,
-            response_model=UserDetail,
-        )
-
-    # core.Token
-
-    def token_add(
-        self, data: JsonMapping | TokenRequest | None = None, **fields: Any
-    ) -> TokenDetail:
-        """Obtain an API token from username and password credentials."""
-        return self._request(
-            'POST',
-            'tokens/',
-            json=self._serialize_body(data, **fields),
-            expected_status=200,
-            response_model=TokenDetail,
-        )
-
-    # core.AuditLog
-
-    def auditlog_list(self, **params: Any) -> PaginatedAuditLogList:
-        """Return a paginated list of audit log entries."""
-        return self._request(
-            'GET',
-            'audit-logs/',
-            params=params,
-            expected_status=200,
-            response_model=PaginatedAuditLogList,
-        )
-
-    def auditlog_get(self, id: str) -> AuditLogDetail:
-        """Retrieve a single audit log entry by ID."""
-        return self._request(
-            'GET',
-            f'audit-logs/{id}/',
-            expected_status=200,
-            response_model=AuditLogDetail,
-        )
-
-    # core.LogRecord
-
-    def log_add(self, data: JsonMapping | LogCreate | None = None, **fields: Any) -> LogDetail:
-        """Create a log record."""
-        return self._request(
-            'POST',
-            'logs/',
-            json=self._serialize_body(data, **fields),
-            expected_status=201,
-            response_model=LogDetail,
-        )
-
-    def log_list(self, **params: Any) -> PaginatedLogList:
-        """Return a paginated list of log records."""
-        return self._request(
-            'GET',
-            'logs/',
-            params=params,
-            expected_status=200,
-            response_model=PaginatedLogList,
-        )
-
-    def log_get(self, id: str) -> LogDetail:
-        """Retrieve a single log record by ID."""
-        return self._request(
-            'GET',
-            f'logs/{id}/',
-            expected_status=200,
-            response_model=LogDetail,
-        )
-
-    # snapshots.Snapshot
-
-    def snapshot_list(self, **params: Any) -> PaginatedSnapshotList:
-        """Return a paginated list of snapshots."""
-        return self._request(
-            'GET',
-            'snapshots/',
-            params=params,
-            expected_status=200,
-            response_model=PaginatedSnapshotList,
-        )
-
-    def snapshot_get(self, id: str) -> SnapshotDetail:
-        """Retrieve a single snapshot by ID."""
-        return self._request(
-            'GET',
-            f'snapshots/{id}/',
-            expected_status=200,
-            response_model=SnapshotDetail,
-        )
-
-    def snapshot_update(
-        self, id: str, data: JsonMapping | SnapshotUpdate | None = None, **fields: Any
-    ) -> SnapshotDetail:
-        """Partially update a snapshot."""
-        return self._request(
-            'PATCH',
-            f'snapshots/{id}/',
-            json=self._serialize_body(data, **fields),
-            expected_status=200,
-            response_model=SnapshotDetail,
-        )
-
-    def snapshot_delete(self, id: str) -> None:
-        """Delete a snapshot."""
-        return self._request('DELETE', f'snapshots/{id}/', expected_status=204)
-
-    def snapshot_pin(
-        self, id: str, data: JsonMapping | None = None, **fields: Any
-    ) -> SnapshotDetail:
-        """Pin a snapshot so it is excluded from automatic pruning."""
-        return self._request(
-            'POST',
-            f'snapshots/{id}/pin/',
-            json=self._serialize_body(data, **fields),
-            expected_status=200,
-            response_model=SnapshotDetail,
-        )
-
-    def snapshot_unpin(
-        self, id: str, data: JsonMapping | None = None, **fields: Any
-    ) -> SnapshotDetail:
-        """Remove the pin from a snapshot."""
-        return self._request(
-            'POST',
-            f'snapshots/{id}/unpin/',
-            json=self._serialize_body(data, **fields),
-            expected_status=200,
-            response_model=SnapshotDetail,
-        )
-
-    def snapshot_stats(self, id: str) -> SnapshotDetail:
-        """Return statistics for a snapshot."""
-        return self._request(
-            'GET',
-            f'snapshots/{id}/stats/',
-            expected_status=200,
-            response_model=SnapshotDetail,
-        )
-
-    def snapshot_latest(self) -> SnapshotDetail:
-        """Return the most recent snapshot."""
-        return self._request(
-            'GET',
-            'snapshots/latest/',
-            expected_status=200,
-            response_model=SnapshotDetail,
-        )
-
-    # discovery.DiscoveryRun
-
-    def discovery_add(self) -> DiscoveryRunDetail:
-        """Trigger a new discovery run."""
-        return self._request(
-            'POST',
-            'discoveries/',
-            expected_status=201,
-            response_model=DiscoveryRunDetail,
-        )
-
-    def discovery_list(self, **params: Any) -> PaginatedDiscoveryRunList:
-        """Return a paginated list of discovery runs."""
-        return self._request(
-            'GET',
-            'discoveries/',
-            params=params,
-            expected_status=200,
-            response_model=PaginatedDiscoveryRunList,
-        )
-
-    def discovery_get(self, id: str) -> DiscoveryRunDetail:
-        """Retrieve a single discovery run by ID."""
-        return self._request(
-            'GET',
-            f'discoveries/{id}/',
-            expected_status=200,
-            response_model=DiscoveryRunDetail,
-        )
-
-    def discovery_cancel(self, id: str) -> None:
-        """Cancel a running discovery run."""
-        return self._request(
-            'POST',
-            f'discoveries/{id}/cancel/',
-            expected_status=204,
-        )
-
-    def discovery_jobs(self, id: str) -> PaginatedDiscoveryJobList:
-        """Return the jobs belonging to a discovery run."""
-        return self._request(
-            'GET',
-            f'discoveries/{id}/jobs/',
-            expected_status=200,
-            response_model=PaginatedDiscoveryJobList,
-        )
-
-    # discovery.DiscoveryJob
-
-    def discoveryjob_claim(self) -> DiscoveryJobClaim:
-        """Claim the next available discovery job for processing."""
-        return self._request(
-            'POST',
-            'discovery-jobs/claim/',
-            expected_status=[200, 204],
-            response_model=DiscoveryJobClaim,
-        )
-
-    def discoveryjob_complete(
-        self,
-        id: str,
-        claim_token: str,
-        data: JsonMapping | CollectorJobCompleted | None = None,
-        **fields: Any,
-    ) -> DiscoveryJobDetail:
-        """Mark a discovery job as completed and submit its results."""
-        return self._request(
-            'POST',
-            f'discovery-jobs/{id}/complete/',
-            json=self._serialize_body(data, **fields),
-            headers={'X-Claim-Token': claim_token},
-            expected_status=204,
-        )
-
-    def discoveryjob_push_discovered_device(
-        self,
-        id: str,
-        claim_token: str,
-        data: JsonMapping | DiscoveryJobPush | None = None,
-        **fields: Any,
-    ) -> DiscoveryJobDetail:
-        """Push a single discovered device to the backend during job execution."""
-        return self._request(
-            'POST',
-            f'discovery-jobs/{id}/push-discovered-device/',
-            json=self._serialize_body(data, **fields),
-            headers={'X-Claim-Token': claim_token},
-            expected_status=200,
-            response_model=DiscoveryJobPush,
-        )
-
-    def discoveryjob_logs(self, id: str) -> PaginatedRawOutputList:
-        """Return the raw output logs for a discovery job."""
-        return self._request(
-            'GET',
-            f'discovery-jobs/{id}/logs/',
-            expected_status=200,
-            response_model=PaginatedRawOutputList,
-        )
-
-    # discovery.Collector
-
-    def collector_list(self, **params: Any) -> PaginatedCollectorList:
-        """Return a paginated list of collectors."""
-        return self._request(
-            'GET',
-            'collectors/',
-            params=params,
-            expected_status=200,
-            response_model=PaginatedCollectorList,
-        )
-
-    def collector_get(self, id: str) -> CollectorDetail:
-        """Retrieve a single collector by ID."""
-        return self._request(
-            'GET',
-            f'collectors/{id}/',
-            expected_status=200,
-            response_model=CollectorDetail,
-        )
-
-    def collector_update(
-        self, id: str, data: JsonMapping | CollectorUpdate | None = None, **fields: Any
-    ) -> CollectorDetail:
-        """Partially update a collector's configuration."""
-        return self._request(
-            'PATCH',
-            f'collectors/{id}/',
-            json=self._serialize_body(data, **fields),
-            expected_status=200,
-            response_model=CollectorDetail,
-        )
-
-    def collector_delete(self, id: str) -> None:
-        """Delete a collector registration."""
-        return self._request('DELETE', f'collectors/{id}/', expected_status=204)
-
-    def collector_heartbeat(
-        self, data: JsonMapping | CollectorHeartbeat | None = None, **fields: Any
-    ) -> None:
-        """Send a heartbeat to keep the collector registration alive."""
-        return self._request(
-            'POST',
-            'collectors/heartbeat/',
-            json=self._serialize_body(data, **fields),
-            expected_status=200,
-            response_model=CollectorDetail,
-        )
-
-    # discovery.Credential
-
-    def credential_add(
-        self, data: JsonMapping | CredentialCreate | None = None, **fields: Any
-    ) -> CredentialDetail:
-        """Create a new device credential."""
-        return self._request(
-            'POST',
-            'credentials/',
-            json=self._serialize_body(data, **fields),
-            expected_status=201,
-            response_model=CredentialDetail,
-        )
-
-    def credential_list(self, **params: Any) -> PaginatedCredentialList:
-        """Return a paginated list of credentials."""
-        return self._request(
-            'GET',
-            'credentials/',
-            params=params,
-            expected_status=200,
-            response_model=PaginatedCredentialList,
-        )
-
-    def credential_get(self, id: str) -> CredentialDetail:
-        """Retrieve a single credential by ID."""
-        return self._request(
-            'GET',
-            f'credentials/{id}/',
-            expected_status=200,
-            response_model=CredentialDetail,
-        )
-
-    def credential_update(
-        self, id: str, data: JsonMapping | CredentialUpdate | None = None, **fields: Any
-    ) -> CredentialDetail:
-        """Partially update a credential."""
-        return self._request(
-            'PATCH',
-            f'credentials/{id}/',
-            json=self._serialize_body(data, **fields),
-            expected_status=200,
-            response_model=CredentialDetail,
-        )
-
-    def credential_delete(self, id: str) -> None:
-        """Delete a credential."""
-        return self._request('DELETE', f'credentials/{id}/', expected_status=204)
-
-    # inventory.CanonicalDevice
-
-    def canonicaldevice_add(
-        self, data: JsonMapping | CanonicalDeviceCreate | None = None, **fields: Any
-    ) -> CanonicalDeviceDetail:
-        """Create a new canonical device."""
-        return self._request(
-            'POST',
-            'canonical-devices/',
-            json=self._serialize_body(data, **fields),
-            expected_status=201,
-            response_model=CanonicalDeviceDetail,
-        )
-
-    def canonicaldevice_list(self, **params: Any) -> PaginatedCanonicalDeviceList:
-        """Return a paginated list of canonical devices."""
-        return self._request(
-            'GET',
-            'canonical-devices/',
-            params=params,
-            expected_status=200,
-            response_model=PaginatedCanonicalDeviceList,
-        )
-
-    def canonicaldevice_get(self, id: str) -> CanonicalDeviceDetail:
-        """Retrieve a single canonical device by ID."""
-        return self._request(
-            'GET',
-            f'canonical-devices/{id}/',
-            expected_status=200,
-            response_model=CanonicalDeviceDetail,
-        )
-
-    def canonicaldevice_update(
-        self, id: str, data: JsonMapping | CanonicalDeviceUpdate | None = None, **fields: Any
-    ) -> CanonicalDeviceDetail:
-        """Partially update a canonical device."""
-        return self._request(
-            'PATCH',
-            f'canonical-devices/{id}/',
-            json=self._serialize_body(data, **fields),
-            expected_status=200,
-            response_model=CanonicalDeviceDetail,
-        )
-
-    def canonicaldevice_delete(self, id: str) -> None:
-        """Delete a canonical device."""
-        return self._request('DELETE', f'canonical-devices/{id}/', expected_status=204)
-
-    # inventory.Site
-
-    def site_add(self, data: JsonMapping | SiteCreate | None = None, **fields: Any) -> SiteDetail:
-        """Create a new site."""
-        return self._request(
-            'POST',
-            'sites/',
-            json=self._serialize_body(data, **fields),
-            expected_status=201,
-            response_model=SiteDetail,
-        )
-
-    def site_list(self, **params: Any) -> PaginatedSiteList:
-        """Return a paginated list of sites."""
-        return self._request(
-            'GET',
-            'sites/',
-            params=params,
-            expected_status=200,
-            response_model=PaginatedSiteList,
-        )
-
-    def site_get(self, id: str) -> SiteDetail:
-        """Retrieve a single site by ID."""
-        return self._request(
-            'GET',
-            f'sites/{id}/',
-            expected_status=200,
-            response_model=SiteDetail,
-        )
-
-    def site_update(
-        self, id: str, data: JsonMapping | SiteUpdate | None = None, **fields: Any
-    ) -> SiteDetail:
-        """Partially update a site."""
-        return self._request(
-            'PATCH',
-            f'sites/{id}/',
-            json=self._serialize_body(data, **fields),
-            expected_status=200,
-            response_model=SiteDetail,
-        )
-
-    def site_delete(self, id: str) -> None:
-        """Delete a site."""
-        return self._request('DELETE', f'sites/{id}/', expected_status=204)
+    # # ------------------------------------------------------------------
+    # # Endpoint methods — return self._request(...) directly.
+    # #
+    # # Because ``_request`` is a coroutine in AsyncNetDocClient and a plain
+    # # function in NetDocClient, these methods are naturally "transparent":
+    # #   - sync callers get the result value immediately
+    # #   - async callers get a coroutine they must ``await``
+    # #
+    # # No duplication needed; adding a new endpoint means one method here.
+    # # ------------------------------------------------------------------
+
+    # # core.Tenant
+
+    # def tenant_add(
+    #     self, data: JsonMapping | TenantCreate | None = None, **fields: Any
+    # ) -> TenantDetail:
+    #     """Create a new tenant."""
+    #     return self._request(
+    #         'POST',
+    #         'tenants/',
+    #         json=self._serialize_body(data, **fields),
+    #         expected_status=201,
+    #         response_model=TenantDetail,
+    #     )
+
+    # def tenant_list(self, **params: Any) -> PaginatedTenantList:
+    #     """Return a paginated list of tenants."""
+    #     return self._request(
+    #         'GET',
+    #         'tenants/',
+    #         params=params,
+    #         expected_status=200,
+    #         response_model=PaginatedTenantList,
+    #     )
+
+    # def tenant_get(self, id: str) -> TenantDetail:
+    #     """Retrieve a single tenant by ID."""
+    #     return self._request(
+    #         'GET',
+    #         f'tenants/{id}/',
+    #         expected_status=200,
+    #         response_model=TenantDetail,
+    #     )
+
+    # def tenant_update(
+    #     self, id: str, data: JsonMapping | TenantUpdate | None = None, **fields: Any
+    # ) -> TenantDetail:
+    #     """Partially update a tenant."""
+    #     return self._request(
+    #         'PATCH',
+    #         f'tenants/{id}/',
+    #         json=self._serialize_body(data, **fields),
+    #         expected_status=200,
+    #         response_model=TenantDetail,
+    #     )
+
+    # def tenant_delete(self, id: str) -> None:
+    #     """Delete a tenant."""
+    #     return self._request('DELETE', f'tenants/{id}/', expected_status=204)
+
+    # def tenant_current(self) -> TenantDetail:
+    #     """Return the tenant associated with the current token."""
+    #     return self._request('GET', 'tenants/current/', response_model=TenantDetail)
+
+    # # core.User
+
+    # def user_add(self, data: JsonMapping | UserCreate | None = None, **fields: Any) -> UserDetail:
+    #     """Create a new user."""
+    #     return self._request(
+    #         'POST',
+    #         'users/',
+    #         json=self._serialize_body(data, **fields),
+    #         expected_status=201,
+    #         response_model=UserDetail,
+    #     )
+
+    # def user_list(self, **params: Any) -> PaginatedUserList:
+    #     """Return a paginated list of users."""
+    #     return self._request(
+    #         'GET',
+    #         'users/',
+    #         params=params,
+    #         expected_status=200,
+    #         response_model=PaginatedUserList,
+    #     )
+
+    # def user_get(self, id: str) -> UserDetail:
+    #     """Retrieve a single user by ID."""
+    #     return self._request(
+    #         'GET',
+    #         f'users/{id}/',
+    #         expected_status=200,
+    #         response_model=UserDetail,
+    #     )
+
+    # def user_update(
+    #     self, id: str, data: JsonMapping | UserUpdate | None = None, **fields: Any
+    # ) -> UserDetail:
+    #     """Partially update a user."""
+    #     return self._request(
+    #         'PATCH',
+    #         f'users/{id}/',
+    #         json=self._serialize_body(data, **fields),
+    #         expected_status=200,
+    #         response_model=UserDetail,
+    #     )
+
+    # def user_delete(self, id: str) -> None:
+    #     """Delete a user."""
+    #     return self._request('DELETE', f'users/{id}/', expected_status=204)
+
+    # def profile_get(self) -> UserDetail:
+    #     """Return the profile of the currently authenticated user."""
+    #     return self._request(
+    #         'GET',
+    #         'users/current/',
+    #         expected_status=200,
+    #         response_model=UserDetail,
+    #     )
+
+    # def profile_update(
+    #     self, data: JsonMapping | UserProfileUpdate | None = None, **fields: Any
+    # ) -> UserDetail:
+    #     """Update the profile of the currently authenticated user."""
+    #     return self._request(
+    #         'PATCH',
+    #         'users/current/',
+    #         json=self._serialize_body(data, **fields),
+    #         expected_status=200,
+    #         response_model=UserDetail,
+    #     )
+
+    # # core.Token
+
+    # def token_add(
+    #     self, data: JsonMapping | TokenRequest | None = None, **fields: Any
+    # ) -> TokenDetail:
+    #     """Obtain an API token from username and password credentials."""
+    #     return self._request(
+    #         'POST',
+    #         'tokens/',
+    #         json=self._serialize_body(data, **fields),
+    #         expected_status=200,
+    #         response_model=TokenDetail,
+    #     )
+
+    # # core.AuditLog
+
+    # def auditlog_list(self, **params: Any) -> PaginatedAuditLogList:
+    #     """Return a paginated list of audit log entries."""
+    #     return self._request(
+    #         'GET',
+    #         'audit-logs/',
+    #         params=params,
+    #         expected_status=200,
+    #         response_model=PaginatedAuditLogList,
+    #     )
+
+    # def auditlog_get(self, id: str) -> AuditLogDetail:
+    #     """Retrieve a single audit log entry by ID."""
+    #     return self._request(
+    #         'GET',
+    #         f'audit-logs/{id}/',
+    #         expected_status=200,
+    #         response_model=AuditLogDetail,
+    #     )
+
+    # # core.LogRecord
+
+    # def log_add(self, data: JsonMapping | LogCreate | None = None, **fields: Any) -> LogDetail:
+    #     """Create a log record."""
+    #     return self._request(
+    #         'POST',
+    #         'logs/',
+    #         json=self._serialize_body(data, **fields),
+    #         expected_status=201,
+    #         response_model=LogDetail,
+    #     )
+
+    # def log_list(self, **params: Any) -> PaginatedLogList:
+    #     """Return a paginated list of log records."""
+    #     return self._request(
+    #         'GET',
+    #         'logs/',
+    #         params=params,
+    #         expected_status=200,
+    #         response_model=PaginatedLogList,
+    #     )
+
+    # def log_get(self, id: str) -> LogDetail:
+    #     """Retrieve a single log record by ID."""
+    #     return self._request(
+    #         'GET',
+    #         f'logs/{id}/',
+    #         expected_status=200,
+    #         response_model=LogDetail,
+    #     )
+
+    # # snapshots.Snapshot
+
+    # def snapshot_list(self, **params: Any) -> PaginatedSnapshotList:
+    #     """Return a paginated list of snapshots."""
+    #     return self._request(
+    #         'GET',
+    #         'snapshots/',
+    #         params=params,
+    #         expected_status=200,
+    #         response_model=PaginatedSnapshotList,
+    #     )
+
+    # def snapshot_get(self, id: str) -> SnapshotDetail:
+    #     """Retrieve a single snapshot by ID."""
+    #     return self._request(
+    #         'GET',
+    #         f'snapshots/{id}/',
+    #         expected_status=200,
+    #         response_model=SnapshotDetail,
+    #     )
+
+    # def snapshot_update(
+    #     self, id: str, data: JsonMapping | SnapshotUpdate | None = None, **fields: Any
+    # ) -> SnapshotDetail:
+    #     """Partially update a snapshot."""
+    #     return self._request(
+    #         'PATCH',
+    #         f'snapshots/{id}/',
+    #         json=self._serialize_body(data, **fields),
+    #         expected_status=200,
+    #         response_model=SnapshotDetail,
+    #     )
+
+    # def snapshot_delete(self, id: str) -> None:
+    #     """Delete a snapshot."""
+    #     return self._request('DELETE', f'snapshots/{id}/', expected_status=204)
+
+    # def snapshot_pin(
+    #     self, id: str, data: JsonMapping | None = None, **fields: Any
+    # ) -> SnapshotDetail:
+    #     """Pin a snapshot so it is excluded from automatic pruning."""
+    #     return self._request(
+    #         'POST',
+    #         f'snapshots/{id}/pin/',
+    #         json=self._serialize_body(data, **fields),
+    #         expected_status=200,
+    #         response_model=SnapshotDetail,
+    #     )
+
+    # def snapshot_unpin(
+    #     self, id: str, data: JsonMapping | None = None, **fields: Any
+    # ) -> SnapshotDetail:
+    #     """Remove the pin from a snapshot."""
+    #     return self._request(
+    #         'POST',
+    #         f'snapshots/{id}/unpin/',
+    #         json=self._serialize_body(data, **fields),
+    #         expected_status=200,
+    #         response_model=SnapshotDetail,
+    #     )
+
+    # def snapshot_stats(self, id: str) -> SnapshotDetail:
+    #     """Return statistics for a snapshot."""
+    #     return self._request(
+    #         'GET',
+    #         f'snapshots/{id}/stats/',
+    #         expected_status=200,
+    #         response_model=SnapshotDetail,
+    #     )
+
+    # def snapshot_latest(self) -> SnapshotDetail:
+    #     """Return the most recent snapshot."""
+    #     return self._request(
+    #         'GET',
+    #         'snapshots/latest/',
+    #         expected_status=200,
+    #         response_model=SnapshotDetail,
+    #     )
+
+    # # discovery.DiscoveryRun
+
+    # def discovery_add(self) -> DiscoveryRunDetail:
+    #     """Trigger a new discovery run."""
+    #     return self._request(
+    #         'POST',
+    #         'discoveries/',
+    #         expected_status=201,
+    #         response_model=DiscoveryRunDetail,
+    #     )
+
+    # def discovery_list(self, **params: Any) -> PaginatedDiscoveryRunList:
+    #     """Return a paginated list of discovery runs."""
+    #     return self._request(
+    #         'GET',
+    #         'discoveries/',
+    #         params=params,
+    #         expected_status=200,
+    #         response_model=PaginatedDiscoveryRunList,
+    #     )
+
+    # def discovery_get(self, id: str) -> DiscoveryRunDetail:
+    #     """Retrieve a single discovery run by ID."""
+    #     return self._request(
+    #         'GET',
+    #         f'discoveries/{id}/',
+    #         expected_status=200,
+    #         response_model=DiscoveryRunDetail,
+    #     )
+
+    # def discovery_cancel(self, id: str) -> None:
+    #     """Cancel a running discovery run."""
+    #     return self._request(
+    #         'POST',
+    #         f'discoveries/{id}/cancel/',
+    #         expected_status=204,
+    #     )
+
+    # def discovery_jobs(self, id: str) -> PaginatedDiscoveryJobList:
+    #     """Return the jobs belonging to a discovery run."""
+    #     return self._request(
+    #         'GET',
+    #         f'discoveries/{id}/jobs/',
+    #         expected_status=200,
+    #         response_model=PaginatedDiscoveryJobList,
+    #     )
+
+    # # discovery.DiscoveryJob
+
+    # def discoveryjob_claim(self) -> DiscoveryJobClaim:
+    #     """Claim the next available discovery job for processing."""
+    #     return self._request(
+    #         'POST',
+    #         'discovery-jobs/claim/',
+    #         expected_status=[200, 204],
+    #         response_model=DiscoveryJobClaim,
+    #     )
+
+    # def discoveryjob_complete(
+    #     self,
+    #     id: str,
+    #     claim_token: str,
+    #     data: JsonMapping | CollectorJobCompleted | None = None,
+    #     **fields: Any,
+    # ) -> DiscoveryJobDetail:
+    #     """Mark a discovery job as completed and submit its results."""
+    #     return self._request(
+    #         'POST',
+    #         f'discovery-jobs/{id}/complete/',
+    #         json=self._serialize_body(data, **fields),
+    #         headers={'X-Claim-Token': claim_token},
+    #         expected_status=204,
+    #     )
+
+    # def discoveryjob_push_discovered_device(
+    #     self,
+    #     id: str,
+    #     claim_token: str,
+    #     data: JsonMapping | DiscoveryJobPush | None = None,
+    #     **fields: Any,
+    # ) -> DiscoveryJobDetail:
+    #     """Push a single discovered device to the backend during job execution."""
+    #     return self._request(
+    #         'POST',
+    #         f'discovery-jobs/{id}/push-discovered-device/',
+    #         json=self._serialize_body(data, **fields),
+    #         headers={'X-Claim-Token': claim_token},
+    #         expected_status=200,
+    #         response_model=DiscoveryJobPush,
+    #     )
+
+    # def discoveryjob_logs(self, id: str) -> PaginatedRawOutputList:
+    #     """Return the raw output logs for a discovery job."""
+    #     return self._request(
+    #         'GET',
+    #         f'discovery-jobs/{id}/logs/',
+    #         expected_status=200,
+    #         response_model=PaginatedRawOutputList,
+    #     )
+
+    # # discovery.Collector
+
+    # def collector_list(self, **params: Any) -> PaginatedCollectorList:
+    #     """Return a paginated list of collectors."""
+    #     return self._request(
+    #         'GET',
+    #         'collectors/',
+    #         params=params,
+    #         expected_status=200,
+    #         response_model=PaginatedCollectorList,
+    #     )
+
+    # def collector_get(self, id: str) -> CollectorDetail:
+    #     """Retrieve a single collector by ID."""
+    #     return self._request(
+    #         'GET',
+    #         f'collectors/{id}/',
+    #         expected_status=200,
+    #         response_model=CollectorDetail,
+    #     )
+
+    # def collector_update(
+    #     self, id: str, data: JsonMapping | CollectorUpdate | None = None, **fields: Any
+    # ) -> CollectorDetail:
+    #     """Partially update a collector's configuration."""
+    #     return self._request(
+    #         'PATCH',
+    #         f'collectors/{id}/',
+    #         json=self._serialize_body(data, **fields),
+    #         expected_status=200,
+    #         response_model=CollectorDetail,
+    #     )
+
+    # def collector_delete(self, id: str) -> None:
+    #     """Delete a collector registration."""
+    #     return self._request('DELETE', f'collectors/{id}/', expected_status=204)
+
+    # def collector_heartbeat(
+    #     self, data: JsonMapping | CollectorHeartbeat | None = None, **fields: Any
+    # ) -> None:
+    #     """Send a heartbeat to keep the collector registration alive."""
+    #     return self._request(
+    #         'POST',
+    #         'collectors/heartbeat/',
+    #         json=self._serialize_body(data, **fields),
+    #         expected_status=200,
+    #         response_model=CollectorDetail,
+    #     )
+
+    # # discovery.Credential
+
+    # def credential_add(
+    #     self, data: JsonMapping | CredentialCreate | None = None, **fields: Any
+    # ) -> CredentialDetail:
+    #     """Create a new device credential."""
+    #     return self._request(
+    #         'POST',
+    #         'credentials/',
+    #         json=self._serialize_body(data, **fields),
+    #         expected_status=201,
+    #         response_model=CredentialDetail,
+    #     )
+
+    # def credential_list(self, **params: Any) -> PaginatedCredentialList:
+    #     """Return a paginated list of credentials."""
+    #     return self._request(
+    #         'GET',
+    #         'credentials/',
+    #         params=params,
+    #         expected_status=200,
+    #         response_model=PaginatedCredentialList,
+    #     )
+
+    # def credential_get(self, id: str) -> CredentialDetail:
+    #     """Retrieve a single credential by ID."""
+    #     return self._request(
+    #         'GET',
+    #         f'credentials/{id}/',
+    #         expected_status=200,
+    #         response_model=CredentialDetail,
+    #     )
+
+    # def credential_update(
+    #     self, id: str, data: JsonMapping | CredentialUpdate | None = None, **fields: Any
+    # ) -> CredentialDetail:
+    #     """Partially update a credential."""
+    #     return self._request(
+    #         'PATCH',
+    #         f'credentials/{id}/',
+    #         json=self._serialize_body(data, **fields),
+    #         expected_status=200,
+    #         response_model=CredentialDetail,
+    #     )
+
+    # def credential_delete(self, id: str) -> None:
+    #     """Delete a credential."""
+    #     return self._request('DELETE', f'credentials/{id}/', expected_status=204)
+
+    # # inventory.CanonicalDevice
+
+    # def canonicaldevice_add(
+    #     self, data: JsonMapping | CanonicalDeviceCreate | None = None, **fields: Any
+    # ) -> CanonicalDeviceDetail:
+    #     """Create a new canonical device."""
+    #     return self._request(
+    #         'POST',
+    #         'canonical-devices/',
+    #         json=self._serialize_body(data, **fields),
+    #         expected_status=201,
+    #         response_model=CanonicalDeviceDetail,
+    #     )
+
+    # def canonicaldevice_list(self, **params: Any) -> PaginatedCanonicalDeviceList:
+    #     """Return a paginated list of canonical devices."""
+    #     return self._request(
+    #         'GET',
+    #         'canonical-devices/',
+    #         params=params,
+    #         expected_status=200,
+    #         response_model=PaginatedCanonicalDeviceList,
+    #     )
+
+    # def canonicaldevice_get(self, id: str) -> CanonicalDeviceDetail:
+    #     """Retrieve a single canonical device by ID."""
+    #     return self._request(
+    #         'GET',
+    #         f'canonical-devices/{id}/',
+    #         expected_status=200,
+    #         response_model=CanonicalDeviceDetail,
+    #     )
+
+    # def canonicaldevice_update(
+    #     self, id: str, data: JsonMapping | CanonicalDeviceUpdate | None = None, **fields: Any
+    # ) -> CanonicalDeviceDetail:
+    #     """Partially update a canonical device."""
+    #     return self._request(
+    #         'PATCH',
+    #         f'canonical-devices/{id}/',
+    #         json=self._serialize_body(data, **fields),
+    #         expected_status=200,
+    #         response_model=CanonicalDeviceDetail,
+    #     )
+
+    # def canonicaldevice_delete(self, id: str) -> None:
+    #     """Delete a canonical device."""
+    #     return self._request('DELETE', f'canonical-devices/{id}/', expected_status=204)
+
+    # # inventory.Site
+
+    # def site_add(self, data: JsonMapping | SiteCreate | None = None, **fields: Any) -> SiteDetail:
+    #     """Create a new site."""
+    #     return self._request(
+    #         'POST',
+    #         'sites/',
+    #         json=self._serialize_body(data, **fields),
+    #         expected_status=201,
+    #         response_model=SiteDetail,
+    #     )
+
+    # def site_list(self, **params: Any) -> PaginatedSiteList:
+    #     """Return a paginated list of sites."""
+    #     return self._request(
+    #         'GET',
+    #         'sites/',
+    #         params=params,
+    #         expected_status=200,
+    #         response_model=PaginatedSiteList,
+    #     )
+
+    # def site_get(self, id: str) -> SiteDetail:
+    #     """Retrieve a single site by ID."""
+    #     return self._request(
+    #         'GET',
+    #         f'sites/{id}/',
+    #         expected_status=200,
+    #         response_model=SiteDetail,
+    #     )
+
+    # def site_update(
+    #     self, id: str, data: JsonMapping | SiteUpdate | None = None, **fields: Any
+    # ) -> SiteDetail:
+    #     """Partially update a site."""
+    #     return self._request(
+    #         'PATCH',
+    #         f'sites/{id}/',
+    #         json=self._serialize_body(data, **fields),
+    #         expected_status=200,
+    #         response_model=SiteDetail,
+    #     )
+
+    # def site_delete(self, id: str) -> None:
+    #     """Delete a site."""
+    #     return self._request('DELETE', f'sites/{id}/', expected_status=204)

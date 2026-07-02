@@ -32,13 +32,13 @@ class TestNetworkErrors:
             side_effect=httpx.ConnectError('Connection refused')
         )
         with pytest.raises(ConnectionError):
-            await client.site_list()
+            await client.sites_list()
 
     @respx.mock
     async def test_read_timeout_raises_sdk_connection_error(self, client):
         respx.get(f'{BASE}/api/v1/sites/').mock(side_effect=httpx.ReadTimeout('Read timed out'))
         with pytest.raises(ConnectionError):
-            await client.site_list()
+            await client.sites_list()
 
     @respx.mock
     async def test_connect_timeout_raises_sdk_connection_error(self, client):
@@ -46,4 +46,4 @@ class TestNetworkErrors:
             side_effect=httpx.ConnectTimeout('Connect timed out')
         )
         with pytest.raises(ConnectionError):
-            await client.site_list()
+            await client.sites_list()

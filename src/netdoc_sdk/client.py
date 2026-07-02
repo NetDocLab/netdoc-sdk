@@ -61,7 +61,7 @@ class NetDocClient(_NetDocClientBase):
     ) -> 'NetDocClient':
         """Authenticate with username/password and return a token-authenticated client."""
         async with cls(base_url=base_url, **kwargs) as bootstrap:
-            token = await bootstrap.token_add(username=username, password=password)
+            token = await bootstrap.tokens_add(username=username, password=password)
         return cls(base_url=base_url, token=token.token, **kwargs)
 
     async def _request(
@@ -162,7 +162,7 @@ class NetDocSyncClient(_NetDocClientBase):
     ) -> NetDocClient:
         """Authenticate with username/password and return a token-authenticated client."""
         with cls(base_url=base_url, **kwargs) as bootstrap:
-            token = bootstrap.token_add(username=username, password=password)
+            token = bootstrap.tokens_add(username=username, password=password)
         return cls(base_url=base_url, token=token.token, **kwargs)
 
     def _request(

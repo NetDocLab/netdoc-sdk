@@ -6,9 +6,9 @@ class TestAuditLogSyncClient:
     @pytest.mark.django_db(transaction=True)
     def test_audit_log(self, admin_sync_client):
         # Generate a log
-        admin_sync_client.user_add(username='test-user', password='test-password', role='admin')
+        admin_sync_client.users_add(username='test-user', password='test-password', role='admin')
 
-        res = admin_sync_client.auditlog_list()
+        res = admin_sync_client.audit_logs_list()
         assert res.count == 1
         for audit_log in res.results:
-            admin_sync_client.auditlog_get(id=audit_log.id)
+            admin_sync_client.audit_logs_get(id=audit_log.id)

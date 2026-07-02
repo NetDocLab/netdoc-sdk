@@ -6,9 +6,9 @@ class TestAuditLog:
     @pytest.mark.django_db(transaction=True)
     async def test_audit_log(self, admin_client):
         # Generate a log
-        await admin_client.user_add(username='test-user', password='test-password', role='admin')
+        await admin_client.users_add(username='test-user', password='test-password', role='admin')
 
-        res = await admin_client.auditlog_list()
+        res = await admin_client.audit_logs_list()
         assert res.count == 1
         for audit_log in res.results:
-            await admin_client.auditlog_get(id=audit_log.id)
+            await admin_client.audit_logs_get(id=audit_log.id)

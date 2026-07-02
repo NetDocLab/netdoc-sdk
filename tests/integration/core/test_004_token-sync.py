@@ -14,4 +14,4 @@ class TestTokenSyncClient:
             username=username,
             password=password,
         )
-        client.token_add(username=username, password=password)
+        client.tokens_add(username=username, password=password)

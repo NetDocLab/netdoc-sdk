@@ -111,7 +111,7 @@ def admin_client(db, live_server):
     # Create user within a tenant
     tenant = Tenant.objects.create(name='conftest-tenant')
     user = User.objects.create_user(
-        username=username, password=password, tenant=tenant, role='admin'
+        username=username, password=password, tenant=tenant, role='admin', email='admin@example.com'
     )
 
     # Create token for API authentication
@@ -145,7 +145,7 @@ def admin_sync_client(db, live_server):
     # Create user within a tenant
     tenant = Tenant.objects.create(name='conftest-tenant')
     user = User.objects.create_user(
-        username=username, password=password, tenant=tenant, role='admin'
+        username=username, password=password, tenant=tenant, role='admin', email='user@example.com'
     )
 
     # Create token for API authentication
@@ -185,10 +185,7 @@ async def admin_client_by_password(db, live_server):
     # Create user within a tenant
     tenant = await sync_to_async(Tenant.objects.create)(name='conftest-tenant')
     await sync_to_async(User.objects.create_user)(
-        username=username,
-        password=password,
-        tenant=tenant,
-        role='admin',
+        username=username, password=password, tenant=tenant, role='admin', email='admin@example.com'
     )
 
     # Authenticate via credentials and return client as async context
@@ -232,10 +229,7 @@ def admin_sync_client_by_password(db, live_server):
     # Create user within a tenant
     tenant = Tenant.objects.create(name='conftest-tenant')
     User.objects.create_user(
-        username=username,
-        password=password,
-        tenant=tenant,
-        role='admin',
+        username=username, password=password, tenant=tenant, role='admin', email='admin@example.com'
     )
 
     # Authenticate via credentials and return client as async context
