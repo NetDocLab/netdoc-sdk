@@ -7,21 +7,21 @@ from netdoc_sdk.client import NetDocSyncClient as NetDocClient
 class TestCanonicalDeviceSyncClient:
     @pytest.mark.django_db(transaction=True)
     def test_collector(self, admin_sync_client, live_server):
-        collectors_username = 'test-collector-user'
-        collectors_password = 'test-password'
+        collector_username = 'test-collector-user'
+        collector_password = 'test-password'
 
         # Add collector user
         admin_sync_client.users_add(
-            username=collectors_username, password=collectors_password, role='collector'
+            username=collector_username, password=collector_password, role='collector'
         )
-        collectors_client = NetDocClient.from_credentials(
+        collector_client = NetDocClient.from_credentials(
             base_url=live_server.url,
-            username=collectors_username,
-            password=collectors_password,
+            username=collector_username,
+            password=collector_password,
         )
 
         # Create collector (heartbeat)
-        collector = collectors_client.collectors_heartbeat_add(
+        collector = collector_client.collectors_heartbeat(
             name='collector@host.example.com', version='0.1.0'
         )
 
