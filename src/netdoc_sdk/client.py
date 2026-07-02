@@ -15,6 +15,7 @@ from netdoc_sdk.exceptions import ConnectionError
 if TYPE_CHECKING:
     from collections.abc import Iterable, Mapping
 
+
 logger = logging.getLogger('netdoc_sdk')
 
 
@@ -67,7 +68,7 @@ class NetDocClient(_NetDocClientBase):
     ) -> NetDocClient:
         """Authenticate with username/password and return a token-authenticated client."""
         async with cls(base_url=base_url, **kwargs) as bootstrap:
-            token = await bootstrap.tokens_add(username=username, password=password)
+            token = await bootstrap.tokens_add(username=username, password=password)  # type: ignore[misc] # tokens_add is shared between sync and async clients
         return cls(base_url=base_url, token=token.token, **kwargs)
 
     async def _request(
