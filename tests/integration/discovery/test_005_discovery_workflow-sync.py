@@ -722,12 +722,12 @@ PARSED_SHOW_INTERFACES = [
 @pytest.mark.django_db
 class TestDiscoveryRunSyncClient:
     @pytest.mark.django_db(transaction=True)
-    def test_discovery_job(self, admin_sync_client, live_server):
+    def test_discoveries_job(self, admin_sync_client, live_server):
         collector_username = 'test-collector-user'
         collector_password = 'test-password'
 
         # Add collector user
-        admin_sync_client.user_add(
+        admin_sync_client.users_add(
             username=collector_username, password=collector_password, role='collector'
         )
         collector_client = NetDocClient.from_credentials(
@@ -737,7 +737,7 @@ class TestDiscoveryRunSyncClient:
         )
 
         # Create canonical device
-        canonical_device = admin_sync_client.canonicaldevice_add(
+        canonical_device = admin_sync_client.canonical_devices_add(
             label='r1.example.com',
             discovery_mode='netmiko:cisco:ios:ssh',
             is_discoverable=True,
@@ -745,24 +745,24 @@ class TestDiscoveryRunSyncClient:
         )
 
         # Create collector (heartbeat)
-        collector = collector_client.collector_heartbeat(
+        collector = collector_client.collectors_heartbeat(
             name='collector@host.example.com', version='0.1.0'
         )
 
         # Activate collector
-        admin_sync_client.collector_update(collector.id, is_active=True)
+        admin_sync_client.collectors_update(collector.id, is_active=True)
 
         # Create run
-        discovery_run = admin_sync_client.discovery_add()
-        res = admin_sync_client.discovery_list()
+        discoveries_run = admin_sync_client.discoveries_add()
+        res = admin_sync_client.discoveries_list()
         assert res.count == 1
-        admin_sync_client.discovery_get(id=discovery_run.id)
+        admin_sync_client.discoveries_get(id=discoveries_run.id)
 
         # Verify jobs
-        admin_sync_client.discovery_jobs(id=discovery_run.id)
+        admin_sync_client.discoveries_jobs_list(id=discoveries_run.id)
 
         # Claim job
-        res = collector_client.discoveryjob_claim()
+        res = collector_client.discovery_jobs_claim()
         claim_token = res.claim_token
         idempotency_key = res.idempotency_key
         job_id = res.id
@@ -786,7 +786,7 @@ class TestDiscoveryRunSyncClient:
             },
             'idempotency_key': idempotency_key,
         }
-        collector_client.discoveryjob_push_discovered_device(
+        collector_client.discovery_jobs_push_discovered_device(
             id=job_id, claim_token=claim_token, **payload
         )
 
@@ -811,19 +811,19 @@ class TestDiscoveryRunSyncClient:
                 },
             ],
         }
-        collector_client.discoveryjob_complete(id=job_id, claim_token=claim_token, **payload)
+        collector_client.discovery_jobs_complete(id=job_id, claim_token=claim_token, **payload)
 
         # Verify run
-        run = admin_sync_client.discovery_get(id=discovery_run.id)
+        run = admin_sync_client.discoveries_get(id=discoveries_run.id)
         assert run.status.value == 'completed'
 
         # Verify jobs
-        jobs = admin_sync_client.discovery_jobs(id=discovery_run.id)
+        jobs = admin_sync_client.discoveries_jobs_list(id=discoveries_run.id)
         assert jobs.count == 1
         assert jobs.results[0].status.value == 'completed'
 
         # Get logs
-        logs = admin_sync_client.discoveryjob_logs(id=job_id)
+        logs = admin_sync_client.discovery_jobs_logs(id=job_id)
         assert logs.count == 1
         assert logs.results[0].status.value == 'parsed'
 
@@ -843,8 +843,8 @@ class TestDiscoveryRunSyncClient:
         assert 'show version' in raw_payload['parsed_outputs']
 
         # Get snapshot list
-        snapshots = admin_sync_client.snapshot_list()
+        snapshots = admin_sync_client.snapshots_list()
         assert snapshots.count == 1
 
         # Get single snapshot
-        admin_sync_client.snapshot_get(snapshots.results[0].id)
+        admin_sync_client.snapshots_get(snapshots.results[0].id)

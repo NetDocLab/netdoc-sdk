@@ -74,11 +74,11 @@ def _normalize_operation_id(operation_id: str) -> str:
             result = sdk_suffix
         if operation_id.endswith(f'_{openapi_suffix}'):
             result = operation_id[: -len(openapi_suffix)] + sdk_suffix
-        
+
     # Step 2 — explicit override
     if result in _OPERATION_ID_OVERRIDES:
         result = _OPERATION_ID_OVERRIDES[result]
-    
+
     return result
 
 
@@ -142,10 +142,7 @@ def _resolve_expected_status(responses: dict, http_method: str) -> int:
 
 def _extract_header_params(parameters: list[dict]) -> list[str]:
     """Return names of required custom headers declared in the operation."""
-    return [
-        p['name'] for p in parameters
-        if p.get('in') == 'header' and p.get('required', False)
-    ]
+    return [p['name'] for p in parameters if p.get('in') == 'header' and p.get('required', False)]
 
 
 def _build_method(
@@ -161,9 +158,7 @@ def _build_method(
     relative_path = _strip_api_prefix(path)
 
     has_body = http_method in ('post', 'patch', 'put')
-    has_query = http_method == 'get' and any(
-        p.get('in') == 'query' for p in parameters
-    )
+    has_query = http_method == 'get' and any(p.get('in') == 'query' for p in parameters)
 
     return_type = _resolve_response_model(responses)
     expected_status = _resolve_expected_status(responses, http_method)
@@ -174,9 +169,7 @@ def _build_method(
     sig_params = ['self']
     sig_params += [f'{p}: str' for p in path_params]
     # Header params become explicit keyword arguments
-    sig_params += [
-        f'{_header_to_arg(h)}: str' for h in header_params
-    ]
+    sig_params += [f'{_header_to_arg(h)}: str' for h in header_params]
     if has_body:
         sig_params.append('data: JsonMapping | None = None, **fields: Any')
     elif has_query:
@@ -189,15 +182,13 @@ def _build_method(
 
     # Build headers dict if needed
     if header_params:
-        header_dict = '{' + ', '.join(
-            f'{h!r}: {_header_to_arg(h)}' for h in header_params
-        ) + '}'
+        header_dict = '{' + ', '.join(f'{h!r}: {_header_to_arg(h)}' for h in header_params) + '}'
         lines.append(f'        headers = {header_dict}')
 
     lines += [
-        f'        return self._request(',
+        '        return self._request(',
         f'            {http_method.upper()!r},',
-        f'            {f"f\"{relative_path}\"" if path_params else repr(relative_path)},',
+        f'            {f'f"{relative_path}"' if path_params else repr(relative_path)},',
     ]
     if header_params:
         lines.append('            headers=headers,')
@@ -248,7 +239,7 @@ def generate_endpoints() -> None:
 
             if header_params:
                 print(f'  [headers] {operation_id}: {header_params}')
-               
+
             method_src = _build_method(
                 operation_id=operation_id,
                 http_method=http_method,

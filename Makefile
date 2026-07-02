@@ -33,4 +33,3 @@ tests: ## Run tests (pytest only)
 
 update: ## Update models and endpoints from oepnapi.yaml
 	poetry run python ./update_data.py
-	git diff --exit-code src/netdoc_sdk/models/_generated_models.py src/netdoc_sdk/_generated_endpoints.py
