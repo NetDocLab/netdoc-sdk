@@ -1,6 +1,7 @@
 import pytest
+from apps.discovery.models import RawOutput
 
-from netdoc_sdk.client import NetDocClient
+from netdoc_sdk.client import NetDocSyncClient as NetDocClient
 
 RAW_SHOW_VERSION = """
 Cisco IOS Software, Catalyst 4500 L3 Switch Software (cat4500e-ENTSERVICESK9-M), Version 12.2(54)SG1, RELEASE SOFTWARE (fc1)
@@ -719,24 +720,24 @@ PARSED_SHOW_INTERFACES = [
 
 
 @pytest.mark.django_db
-class TestDiscoveryRun:
+class TestDiscoveryRunSyncClient:
     @pytest.mark.django_db(transaction=True)
-    async def test_discoveries_job(self, admin_client, live_server):
+    def test_discoveries_job(self, admin_sync_client, live_server):
         collector_username = 'test-collector-user'
         collector_password = 'test-password'
 
         # Add collector user
-        await admin_client.users_add(
+        admin_sync_client.users_add(
             username=collector_username, password=collector_password, role='collector'
         )
-        collector_client = await NetDocClient.from_credentials(
+        collector_client = NetDocClient.from_credentials(
             base_url=live_server.url,
             username=collector_username,
             password=collector_password,
         )
 
         # Create canonical device
-        canonical_device = await admin_client.canonical_devices_add(
+        canonical_device = admin_sync_client.canonical_devices_add(
             label='r1.example.com',
             discovery_mode='netmiko:cisco:ios:ssh',
             is_discoverable=True,
@@ -744,24 +745,24 @@ class TestDiscoveryRun:
         )
 
         # Create collector (heartbeat)
-        collector = await collector_client.collectors_heartbeat(
+        collector = collector_client.collectors_heartbeat(
             name='collector@host.example.com', version='0.1.0'
         )
 
         # Activate collector
-        await admin_client.collectors_update(collector.id, is_active=True)
+        admin_sync_client.collectors_update(collector.id, is_active=True)
 
         # Create run
-        discoveries_run = await admin_client.discoveries_add()
-        res = await admin_client.discoveries_list()
+        discoveries_run = admin_sync_client.discoveries_add()
+        res = admin_sync_client.discoveries_list()
         assert res.count == 1
-        await admin_client.discoveries_get(id=discoveries_run.id)
+        admin_sync_client.discoveries_get(id=discoveries_run.id)
 
         # Verify jobs
-        await admin_client.discoveries_jobs_list(id=discoveries_run.id)
+        admin_sync_client.discoveries_jobs_list(id=discoveries_run.id)
 
         # Claim job
-        res = await collector_client.discovery_jobs_claim()
+        res = collector_client.discovery_jobs_claim()
         claim_token = res.claim_token
         idempotency_key = res.idempotency_key
         job_id = res.id
@@ -785,7 +786,7 @@ class TestDiscoveryRun:
             },
             'idempotency_key': idempotency_key,
         }
-        await collector_client.discovery_jobs_push_discovered_device(
+        collector_client.discovery_jobs_push_discovered_device(
             id=job_id, claim_token=claim_token, **payload
         )
 
@@ -810,15 +811,40 @@ class TestDiscoveryRun:
                 },
             ],
         }
-        await collector_client.discovery_jobs_complete(
-            id=job_id, claim_token=claim_token, **payload
-        )
+        collector_client.discovery_jobs_complete(id=job_id, claim_token=claim_token, **payload)
 
         # Verify run
-        run = await admin_client.discoveries_get(id=discoveries_run.id)
+        run = admin_sync_client.discoveries_get(id=discoveries_run.id)
         assert run.status.value == 'completed'
 
         # Verify jobs
-        jobs = await admin_client.discoveries_jobs_list(id=discoveries_run.id)
+        jobs = admin_sync_client.discoveries_jobs_list(id=discoveries_run.id)
         assert jobs.count == 1
         assert jobs.results[0].status.value == 'completed'
+
+        # Get logs
+        logs = admin_sync_client.discovery_jobs_logs(id=job_id)
+        assert logs.count == 1
+        assert logs.results[0].status.value == 'parsed'
+
+        # Verify raw logs
+        raw_output = RawOutput.objects.unfiltered().first()
+        assert raw_output is not None
+        assert raw_output.status == 'parsed'
+        raw_payload = raw_output.raw_payload
+
+        # Check raw output
+        assert 'raw_outputs' in raw_payload
+        assert 'show version' in raw_payload['raw_outputs']
+        assert len(raw_payload['raw_outputs']['show version']) > 10
+
+        # Check parsed output
+        assert 'parsed_outputs' in raw_payload
+        assert 'show version' in raw_payload['parsed_outputs']
+
+        # Get snapshot list
+        snapshots = admin_sync_client.snapshots_list()
+        assert snapshots.count == 1
+
+        # Get single snapshot
+        admin_sync_client.snapshots_get(snapshots.results[0].id)

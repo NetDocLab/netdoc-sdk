@@ -14,11 +14,11 @@ Behavior:
     - Empty bodies return None
 """
 
-from netdoc_sdk.client import NetDocClient
+from netdoc_sdk.client import NetDocSyncClient as NetDocClient
 from netdoc_sdk.models._generated_models import SiteDetailRequest
 
 
-class TestSerializeBody:
+class TestSerializeBodySyncClient:
     """Test request body serialization and merging."""
 
     def test_plain_dict_is_passed_through(self):

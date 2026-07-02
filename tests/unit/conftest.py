@@ -5,7 +5,7 @@ Unit tests focus on isolated behavior and API contracts using mocked HTTP respon
 
 Fixtures:
     - client: Synchronous NetDocClient for testing static attributes
-    - async_client: Async NetDocClient for HTTP mocking tests
+    - client: Async NetDocClient for HTTP mocking tests
 
 Constants:
     - BASE: Fake NetDoc server URL for all unit tests
@@ -15,7 +15,7 @@ Constants:
 
 import pytest
 
-from netdoc_sdk.client import NetDocClient
+from netdoc_sdk.client import NetDocClient, NetDocSyncClient
 
 BASE = 'http://fake-netdoc'
 TOKEN = 'test-token-abc'
@@ -24,7 +24,7 @@ PAGINATED_EMPTY = {'count': 0, 'next': None, 'previous': None, 'results': []}
 
 
 @pytest.fixture
-def client():
+def sync_client():
     """Synchronous NetDocClient instance.
 
     Used for testing pure attributes, static methods, and initialization logic
@@ -33,11 +33,11 @@ def client():
     Returns:
         NetDocClient: Client configured with test BASE URL and TOKEN.
     """
-    return NetDocClient(base_url=BASE, token=TOKEN)
+    return NetDocSyncClient(base_url=BASE, token=TOKEN)
 
 
 @pytest.fixture
-async def async_client():
+async def client():
     """Async NetDocClient instance opened as async context manager.
 
     Used for tests that make mocked HTTP calls via respx. The client is
@@ -49,9 +49,9 @@ async def async_client():
 
     Example:
         @respx.mock
-        async def test_something(async_client):
+        async def test_something(client):
             route = respx.get(...).mock(return_value=...)
-            await async_client.method_call()
+            await client.method_call()
             assert route.called
     """
     async with NetDocClient(base_url=BASE, token=TOKEN) as c:

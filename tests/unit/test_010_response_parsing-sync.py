@@ -17,12 +17,10 @@ from netdoc_sdk.models._generated_models import PaginatedSiteListList, SiteDetai
 BASE = 'http://fake-netdoc'
 TOKEN = 'test-token-abc'
 
-pytestmark = pytest.mark.asyncio
 
-
-class TestResponseParsing:
+class TestResponseParsingSyncClient:
     @respx.mock
-    async def test_list_endpoint_returns_paginated_model(self, client):
+    async def test_list_endpoint_returns_paginated_model(self, sync_client):
         respx.get(f'{BASE}/api/v1/sites/').mock(
             return_value=httpx.Response(
                 200,
@@ -46,13 +44,13 @@ class TestResponseParsing:
                 },
             )
         )
-        result = await client.sites_list()
+        result = sync_client.sites_list()
         assert isinstance(result, PaginatedSiteListList)
         assert result.count == 1
         assert result.results[0].name == 'milan'
 
     @respx.mock
-    async def test_retrieve_endpoint_returns_model_instance(self, client):
+    async def test_retrieve_endpoint_returns_model_instance(self, sync_client):
         site_id = str(uuid.uuid4())
         respx.get(f'{BASE}/api/v1/sites/1/').mock(
             return_value=httpx.Response(
@@ -70,20 +68,20 @@ class TestResponseParsing:
                 },
             )
         )
-        result = await client.sites_get('1')
+        result = sync_client.sites_get('1')
         assert isinstance(result, SiteDetail)
         assert result.id == site_id
         assert result.name == 'milan'
 
     @respx.mock
-    async def test_204_no_content_returns_none(self, client):
+    async def test_204_no_content_returns_none(self, sync_client):
         respx.delete(f'{BASE}/api/v1/sites/1/').mock(return_value=httpx.Response(204))
-        result = await client.sites_delete('1')
+        result = sync_client.sites_delete('1')
         assert result is None
 
     @respx.mock
-    async def test_empty_body_raises(self, client):
+    async def test_empty_body_raises(self, sync_client):
         # A 200 response with no body is unexpected and must raise ServerError.
         respx.get(f'{BASE}/api/v1/sites/').mock(return_value=httpx.Response(200, content=b''))
         with pytest.raises(ValidationError):
-            await client.sites_list()
+            sync_client.sites_list()

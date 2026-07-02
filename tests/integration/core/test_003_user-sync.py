@@ -2,10 +2,10 @@ import pytest
 
 
 @pytest.mark.django_db
-class TestUser:
+class TestUserSyncClient:
     @pytest.mark.django_db(transaction=True)
-    async def test_user(self, admin_client):
-        user = await admin_client.users_add(
+    def test_user(self, admin_sync_client):
+        user = admin_sync_client.users_add(
             username='test-user',
             password='test-password',
             is_active=True,
@@ -14,11 +14,11 @@ class TestUser:
             last_name='Last',
             email='first.last@example.com',
         )
-        res = await admin_client.users_list()
+        res = admin_sync_client.users_list()
         assert res.count == 2
-        await admin_client.users_get(user.id)
-        await admin_client.users_get(user.username)
-        await admin_client.users_update(
+        admin_sync_client.users_get(user.id)
+        admin_sync_client.users_get(user.username)
+        admin_sync_client.users_update(
             id=user.id,
             username='test-new-user',
             is_active=False,
@@ -27,4 +27,4 @@ class TestUser:
             last_name='Frist',
             email='last.first@example.com',
         )
-        await admin_client.users_delete(id=user.id)
+        admin_sync_client.users_delete(id=user.id)

@@ -2,10 +2,10 @@ import pytest
 
 
 @pytest.mark.django_db
-class TestLog:
+class TestLogSyncClient:
     @pytest.mark.django_db(transaction=True)
-    async def test_log(self, collector_client, superuser_client):
-        log = await collector_client.logs_add(
+    def test_log(self, collector_sync_client, superuser_sync_client):
+        log = collector_sync_client.logs_add(
             level='INFO',
             message='Test Log',
             correlation_id='a774c74b-71f8-4e51-9625-c611e907f729',
@@ -17,6 +17,6 @@ class TestLog:
             thread_name='MainThread',
         )
 
-        res = await superuser_client.logs_list()
+        res = superuser_sync_client.logs_list()
         assert res.count == 1
-        await superuser_client.logs_get(id=log.id)
+        superuser_sync_client.logs_get(id=log.id)
