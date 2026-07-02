@@ -3,14 +3,13 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
 from typing import Any
+
+from collections.abc import Mapping
 
 from pydantic import BaseModel
 
 from netdoc_sdk.models._generated_models import (
-    VLAN,
-    VRF,
     ARPEntry,
     AuditLogDetail,
     AuthToken,
@@ -26,8 +25,8 @@ from netdoc_sdk.models._generated_models import (
     DiscoverySchedule,
     EndpointConnectionDetail,
     EndpointDetail,
-    InterfaceDetail,
     IPAddress,
+    InterfaceDetail,
     LogRecordDetail,
     MACEntry,
     PaginatedARPEntryList,
@@ -43,8 +42,8 @@ from netdoc_sdk.models._generated_models import (
     PaginatedDiscoveryScheduleList,
     PaginatedEndpointConnectionListList,
     PaginatedEndpointListList,
-    PaginatedInterfaceListList,
     PaginatedIPAddressList,
+    PaginatedInterfaceListList,
     PaginatedLogRecordDetailList,
     PaginatedMACEntryList,
     PaginatedRawOutputListList,
@@ -63,6 +62,8 @@ from netdoc_sdk.models._generated_models import (
     TopologyGraph,
     TunnelConnectionDetail,
     UserDetail,
+    VLAN,
+    VRF,
 )
 
 JsonMapping = Mapping[str, Any] | BaseModel
@@ -75,6 +76,7 @@ class _GeneratedEndpoints:
     in _client_base.py when custom logic is required (e.g. special
     headers, dual expected_status, or non-standard request shapes).
     """
+
 
     def arp_entries_list(self, **params: Any) -> PaginatedARPEntryList:
         """List ARP entries"""
@@ -90,7 +92,7 @@ class _GeneratedEndpoints:
         """Get ARP entry details"""
         return self._request(
             'GET',
-            f'arp-entries/{id}/',
+            f"arp-entries/{id}/",
             expected_status=200,
             response_model=ARPEntry,
         )
@@ -109,7 +111,7 @@ class _GeneratedEndpoints:
         """Get audit log details"""
         return self._request(
             'GET',
-            f'audit-logs/{id}/',
+            f"audit-logs/{id}/",
             expected_status=200,
             response_model=AuditLogDetail,
         )
@@ -124,9 +126,7 @@ class _GeneratedEndpoints:
             response_model=PaginatedCanonicalDeviceListList,
         )
 
-    def canonical_devices_add(
-        self, data: JsonMapping | None = None, **fields: Any
-    ) -> CanonicalDeviceDetail:
+    def canonical_devices_add(self, data: JsonMapping | None = None, **fields: Any) -> CanonicalDeviceDetail:
         """Create canonical device"""
         return self._request(
             'POST',
@@ -140,18 +140,16 @@ class _GeneratedEndpoints:
         """Get canonical device details"""
         return self._request(
             'GET',
-            f'canonical-devices/{id}/',
+            f"canonical-devices/{id}/",
             expected_status=200,
             response_model=CanonicalDeviceDetail,
         )
 
-    def canonical_devices_update(
-        self, id: str, data: JsonMapping | None = None, **fields: Any
-    ) -> CanonicalDeviceDetail:
+    def canonical_devices_update(self, id: str, data: JsonMapping | None = None, **fields: Any) -> CanonicalDeviceDetail:
         """Update canonical device"""
         return self._request(
             'PATCH',
-            f'canonical-devices/{id}/',
+            f"canonical-devices/{id}/",
             json=self._serialize_body(data, **fields),
             expected_status=200,
             response_model=CanonicalDeviceDetail,
@@ -161,15 +159,15 @@ class _GeneratedEndpoints:
         """Delete canonical device"""
         return self._request(
             'DELETE',
-            f'canonical-devices/{id}/',
+            f"canonical-devices/{id}/",
             expected_status=204,
         )
 
-    def canonical_devices_history_list(self, id: str, **params: Any) -> PaginatedDeviceListList:
+    def canonical_devices_history(self, id: str, **params: Any) -> PaginatedDeviceListList:
         """Get device history"""
         return self._request(
             'GET',
-            f'canonical-devices/{id}/history/',
+            f"canonical-devices/{id}/history/",
             params=params,
             expected_status=200,
             response_model=PaginatedDeviceListList,
@@ -189,16 +187,16 @@ class _GeneratedEndpoints:
         """Get canonical endpoint details"""
         return self._request(
             'GET',
-            f'canonical-endpoints/{id}/',
+            f"canonical-endpoints/{id}/",
             expected_status=200,
             response_model=CanonicalEndpoint,
         )
 
-    def canonical_endpoints_history_list(self, id: str, **params: Any) -> PaginatedEndpointListList:
+    def canonical_endpoints_history(self, id: str, **params: Any) -> PaginatedEndpointListList:
         """Get endpoint history"""
         return self._request(
             'GET',
-            f'canonical-endpoints/{id}/history/',
+            f"canonical-endpoints/{id}/history/",
             params=params,
             expected_status=200,
             response_model=PaginatedEndpointListList,
@@ -218,18 +216,16 @@ class _GeneratedEndpoints:
         """Get collector details"""
         return self._request(
             'GET',
-            f'collectors/{id}/',
+            f"collectors/{id}/",
             expected_status=200,
             response_model=CollectorDetail,
         )
 
-    def collectors_update(
-        self, id: str, data: JsonMapping | None = None, **fields: Any
-    ) -> CollectorDetail:
+    def collectors_update(self, id: str, data: JsonMapping | None = None, **fields: Any) -> CollectorDetail:
         """Update collector"""
         return self._request(
             'PATCH',
-            f'collectors/{id}/',
+            f"collectors/{id}/",
             json=self._serialize_body(data, **fields),
             expected_status=200,
             response_model=CollectorDetail,
@@ -239,14 +235,12 @@ class _GeneratedEndpoints:
         """Delete collector"""
         return self._request(
             'DELETE',
-            f'collectors/{id}/',
+            f"collectors/{id}/",
             expected_status=204,
         )
 
-    def collectors_heartbeat_add(
-        self, data: JsonMapping | None = None, **fields: Any
-    ) -> CollectorDetail:
-        """collectors_heartbeat_add"""
+    def collectors_heartbeat(self, data: JsonMapping | None = None, **fields: Any) -> CollectorDetail:
+        """collectors_heartbeat"""
         return self._request(
             'POST',
             'collectors/heartbeat/',
@@ -279,18 +273,16 @@ class _GeneratedEndpoints:
         """Get credential details"""
         return self._request(
             'GET',
-            f'credentials/{id}/',
+            f"credentials/{id}/",
             expected_status=200,
             response_model=CredentialDetail,
         )
 
-    def credentials_update(
-        self, id: str, data: JsonMapping | None = None, **fields: Any
-    ) -> CredentialDetail:
+    def credentials_update(self, id: str, data: JsonMapping | None = None, **fields: Any) -> CredentialDetail:
         """Update credential"""
         return self._request(
             'PATCH',
-            f'credentials/{id}/',
+            f"credentials/{id}/",
             json=self._serialize_body(data, **fields),
             expected_status=200,
             response_model=CredentialDetail,
@@ -300,7 +292,7 @@ class _GeneratedEndpoints:
         """Delete credential"""
         return self._request(
             'DELETE',
-            f'credentials/{id}/',
+            f"credentials/{id}/",
             expected_status=204,
         )
 
@@ -318,7 +310,7 @@ class _GeneratedEndpoints:
         """Get device connection details"""
         return self._request(
             'GET',
-            f'device-connections/{id}/',
+            f"device-connections/{id}/",
             expected_status=200,
             response_model=DeviceConnectionDetail,
         )
@@ -337,7 +329,7 @@ class _GeneratedEndpoints:
         """Get device details"""
         return self._request(
             'GET',
-            f'devices/{id}/',
+            f"devices/{id}/",
             params=params,
             expected_status=200,
             response_model=DeviceDetail,
@@ -347,7 +339,7 @@ class _GeneratedEndpoints:
         """List device interfaces"""
         return self._request(
             'GET',
-            f'devices/{id}/interfaces/',
+            f"devices/{id}/interfaces/",
             params=params,
             expected_status=200,
             response_model=PaginatedInterfaceListList,
@@ -357,7 +349,7 @@ class _GeneratedEndpoints:
         """List device routes"""
         return self._request(
             'GET',
-            f'devices/{id}/routes/',
+            f"devices/{id}/routes/",
             params=params,
             expected_status=200,
             response_model=PaginatedRouteEntryList,
@@ -387,18 +379,16 @@ class _GeneratedEndpoints:
         """discoveries_get"""
         return self._request(
             'GET',
-            f'discoveries/{id}/',
+            f"discoveries/{id}/",
             expected_status=200,
             response_model=DiscoveryRunDetail,
         )
 
-    def discoveries_cancel_add(
-        self, id: str, data: JsonMapping | None = None, **fields: Any
-    ) -> None:
+    def discoveries_cancel(self, id: str, data: JsonMapping | None = None, **fields: Any) -> None:
         """Cancel a discovery"""
         return self._request(
             'POST',
-            f'discoveries/{id}/cancel/',
+            f"discoveries/{id}/cancel/",
             json=self._serialize_body(data, **fields),
             expected_status=204,
         )
@@ -407,48 +397,46 @@ class _GeneratedEndpoints:
         """Get jobs"""
         return self._request(
             'GET',
-            f'discoveries/{id}/jobs/',
+            f"discoveries/{id}/jobs/",
             params=params,
             expected_status=200,
             response_model=PaginatedDiscoveryJobDetailList,
         )
 
-    def discovery_jobs_complete_add(
-        self, id: str, data: JsonMapping | None = None, **fields: Any
-    ) -> None:
+    def discovery_jobs_complete(self, id: str, claim_token: str, data: JsonMapping | None = None, **fields: Any) -> None:
         """Close a job"""
+        headers = {'X-Claim-Token': claim_token}
         return self._request(
             'POST',
-            f'discovery-jobs/{id}/complete/',
+            f"discovery-jobs/{id}/complete/",
+            headers=headers,
             json=self._serialize_body(data, **fields),
             expected_status=204,
         )
 
-    def discovery_jobs_logs_list(self, id: str, **params: Any) -> PaginatedRawOutputListList:
+    def discovery_jobs_logs(self, id: str, **params: Any) -> PaginatedRawOutputListList:
         """Get logs"""
         return self._request(
             'GET',
-            f'discovery-jobs/{id}/logs/',
+            f"discovery-jobs/{id}/logs/",
             params=params,
             expected_status=200,
             response_model=PaginatedRawOutputListList,
         )
 
-    def discovery_jobs_push_discovered_device_add(
-        self, id: str, data: JsonMapping | None = None, **fields: Any
-    ) -> DiscoveryJobStatus:
+    def discovery_jobs_push_discovered_device(self, id: str, claim_token: str, data: JsonMapping | None = None, **fields: Any) -> DiscoveryJobStatus:
         """Push a discovered device"""
+        headers = {'X-Claim-Token': claim_token}
         return self._request(
             'POST',
-            f'discovery-jobs/{id}/push-discovered-device/',
+            f"discovery-jobs/{id}/push-discovered-device/",
+            headers=headers,
             json=self._serialize_body(data, **fields),
             expected_status=200,
             response_model=DiscoveryJobStatus,
         )
 
-    def discovery_jobs_claim_add(
-        self, data: JsonMapping | None = None, **fields: Any
-    ) -> DiscoveryJobClaim:
+    def discovery_jobs_claim(self, data: JsonMapping | None = None, **fields: Any) -> DiscoveryJobClaim:
         """Claim a job"""
         return self._request(
             'POST',
@@ -468,9 +456,7 @@ class _GeneratedEndpoints:
             response_model=PaginatedDiscoveryScheduleList,
         )
 
-    def discovery_schedules_add(
-        self, data: JsonMapping | None = None, **fields: Any
-    ) -> DiscoverySchedule:
+    def discovery_schedules_add(self, data: JsonMapping | None = None, **fields: Any) -> DiscoverySchedule:
         """discovery_schedules_add"""
         return self._request(
             'POST',
@@ -484,18 +470,16 @@ class _GeneratedEndpoints:
         """discovery_schedules_get"""
         return self._request(
             'GET',
-            f'discovery-schedules/{id}/',
+            f"discovery-schedules/{id}/",
             expected_status=200,
             response_model=DiscoverySchedule,
         )
 
-    def discovery_schedules_update(
-        self, id: str, data: JsonMapping | None = None, **fields: Any
-    ) -> DiscoverySchedule:
+    def discovery_schedules_update(self, id: str, data: JsonMapping | None = None, **fields: Any) -> DiscoverySchedule:
         """discovery_schedules_update"""
         return self._request(
             'PATCH',
-            f'discovery-schedules/{id}/',
+            f"discovery-schedules/{id}/",
             json=self._serialize_body(data, **fields),
             expected_status=200,
             response_model=DiscoverySchedule,
@@ -505,7 +489,7 @@ class _GeneratedEndpoints:
         """discovery_schedules_delete"""
         return self._request(
             'DELETE',
-            f'discovery-schedules/{id}/',
+            f"discovery-schedules/{id}/",
             expected_status=204,
         )
 
@@ -523,7 +507,7 @@ class _GeneratedEndpoints:
         """Get endpoint connection details"""
         return self._request(
             'GET',
-            f'endpoint-connections/{id}/',
+            f"endpoint-connections/{id}/",
             expected_status=200,
             response_model=EndpointConnectionDetail,
         )
@@ -542,7 +526,7 @@ class _GeneratedEndpoints:
         """Get endpoint details"""
         return self._request(
             'GET',
-            f'endpoints/{id}/',
+            f"endpoints/{id}/",
             expected_status=200,
             response_model=EndpointDetail,
         )
@@ -551,7 +535,7 @@ class _GeneratedEndpoints:
         """Get endpoints by device"""
         return self._request(
             'GET',
-            f'endpoints/by-device/{device_id}/',
+            f"endpoints/by-device/{device_id}/",
             params=params,
             expected_status=200,
             response_model=PaginatedEndpointListList,
@@ -581,7 +565,7 @@ class _GeneratedEndpoints:
         """Get interface details"""
         return self._request(
             'GET',
-            f'interfaces/{id}/',
+            f"interfaces/{id}/",
             expected_status=200,
             response_model=InterfaceDetail,
         )
@@ -600,7 +584,7 @@ class _GeneratedEndpoints:
         """Get IP address details"""
         return self._request(
             'GET',
-            f'ip-addresses/{id}/',
+            f"ip-addresses/{id}/",
             expected_status=200,
             response_model=IPAddress,
         )
@@ -629,7 +613,7 @@ class _GeneratedEndpoints:
         """Get audit log details"""
         return self._request(
             'GET',
-            f'logs/{id}/',
+            f"logs/{id}/",
             expected_status=200,
             response_model=LogRecordDetail,
         )
@@ -648,7 +632,7 @@ class _GeneratedEndpoints:
         """Get MAC address details"""
         return self._request(
             'GET',
-            f'mac-entries/{id}/',
+            f"mac-entries/{id}/",
             expected_status=200,
             response_model=MACEntry,
         )
@@ -667,7 +651,7 @@ class _GeneratedEndpoints:
         """Get route entry details"""
         return self._request(
             'GET',
-            f'routes/{id}/',
+            f"routes/{id}/",
             expected_status=200,
             response_model=RouteEntry,
         )
@@ -696,7 +680,7 @@ class _GeneratedEndpoints:
         """Get site details"""
         return self._request(
             'GET',
-            f'sites/{id}/',
+            f"sites/{id}/",
             expected_status=200,
             response_model=SiteDetail,
         )
@@ -705,7 +689,7 @@ class _GeneratedEndpoints:
         """Update site"""
         return self._request(
             'PATCH',
-            f'sites/{id}/',
+            f"sites/{id}/",
             json=self._serialize_body(data, **fields),
             expected_status=200,
             response_model=SiteDetail,
@@ -715,7 +699,7 @@ class _GeneratedEndpoints:
         """Delete site"""
         return self._request(
             'DELETE',
-            f'sites/{id}/',
+            f"sites/{id}/",
             expected_status=204,
         )
 
@@ -733,18 +717,16 @@ class _GeneratedEndpoints:
         """Get snapshot details"""
         return self._request(
             'GET',
-            f'snapshots/{id}/',
+            f"snapshots/{id}/",
             expected_status=200,
             response_model=SnapshotDetail,
         )
 
-    def snapshots_update(
-        self, id: str, data: JsonMapping | None = None, **fields: Any
-    ) -> SnapshotDetail:
+    def snapshots_update(self, id: str, data: JsonMapping | None = None, **fields: Any) -> SnapshotDetail:
         """Update snapshot"""
         return self._request(
             'PATCH',
-            f'snapshots/{id}/',
+            f"snapshots/{id}/",
             json=self._serialize_body(data, **fields),
             expected_status=200,
             response_model=SnapshotDetail,
@@ -754,44 +736,40 @@ class _GeneratedEndpoints:
         """Delete snapshot"""
         return self._request(
             'DELETE',
-            f'snapshots/{id}/',
+            f"snapshots/{id}/",
             expected_status=204,
         )
 
-    def snapshots_pin_add(
-        self, id: str, data: JsonMapping | None = None, **fields: Any
-    ) -> TenantDetail:
+    def snapshots_pin(self, id: str, data: JsonMapping | None = None, **fields: Any) -> TenantDetail:
         """Pin snapshot"""
         return self._request(
             'POST',
-            f'snapshots/{id}/pin/',
+            f"snapshots/{id}/pin/",
             json=self._serialize_body(data, **fields),
             expected_status=200,
             response_model=TenantDetail,
         )
 
-    def snapshots_stats_get(self, id: str) -> SnapshotDetail:
+    def snapshots_stats(self, id: str) -> SnapshotDetail:
         """Get snapshot statistics"""
         return self._request(
             'GET',
-            f'snapshots/{id}/stats/',
+            f"snapshots/{id}/stats/",
             expected_status=200,
             response_model=SnapshotDetail,
         )
 
-    def snapshots_unpin_add(
-        self, id: str, data: JsonMapping | None = None, **fields: Any
-    ) -> TenantDetail:
+    def snapshots_unpin(self, id: str, data: JsonMapping | None = None, **fields: Any) -> TenantDetail:
         """Unpin snapshot"""
         return self._request(
             'POST',
-            f'snapshots/{id}/unpin/',
+            f"snapshots/{id}/unpin/",
             json=self._serialize_body(data, **fields),
             expected_status=200,
             response_model=TenantDetail,
         )
 
-    def snapshots_latest_get(self) -> SnapshotDetail:
+    def snapshots_latest(self) -> SnapshotDetail:
         """Latest snapshot"""
         return self._request(
             'GET',
@@ -824,18 +802,16 @@ class _GeneratedEndpoints:
         """Get tenant details"""
         return self._request(
             'GET',
-            f'tenants/{id}/',
+            f"tenants/{id}/",
             expected_status=200,
             response_model=TenantDetail,
         )
 
-    def tenants_update(
-        self, id: str, data: JsonMapping | None = None, **fields: Any
-    ) -> TenantDetail:
+    def tenants_update(self, id: str, data: JsonMapping | None = None, **fields: Any) -> TenantDetail:
         """Update tenant"""
         return self._request(
             'PATCH',
-            f'tenants/{id}/',
+            f"tenants/{id}/",
             json=self._serialize_body(data, **fields),
             expected_status=200,
             response_model=TenantDetail,
@@ -845,11 +821,11 @@ class _GeneratedEndpoints:
         """Delete tenant"""
         return self._request(
             'DELETE',
-            f'tenants/{id}/',
+            f"tenants/{id}/",
             expected_status=204,
         )
 
-    def tenants_current_get(self) -> TenantDetail:
+    def tenants_current(self) -> TenantDetail:
         """Get current user's tenant details"""
         return self._request(
             'GET',
@@ -901,7 +877,7 @@ class _GeneratedEndpoints:
         """Get tunnel connection details"""
         return self._request(
             'GET',
-            f'tunnel-connections/{id}/',
+            f"tunnel-connections/{id}/",
             expected_status=200,
             response_model=TunnelConnectionDetail,
         )
@@ -930,7 +906,7 @@ class _GeneratedEndpoints:
         """Get user details"""
         return self._request(
             'GET',
-            f'users/{id}/',
+            f"users/{id}/",
             expected_status=200,
             response_model=UserDetail,
         )
@@ -939,7 +915,7 @@ class _GeneratedEndpoints:
         """Update user"""
         return self._request(
             'PATCH',
-            f'users/{id}/',
+            f"users/{id}/",
             json=self._serialize_body(data, **fields),
             expected_status=200,
             response_model=UserDetail,
@@ -949,7 +925,7 @@ class _GeneratedEndpoints:
         """Delete tenant"""
         return self._request(
             'DELETE',
-            f'users/{id}/',
+            f"users/{id}/",
             expected_status=204,
         )
 
@@ -986,7 +962,7 @@ class _GeneratedEndpoints:
         """Get VLAN details"""
         return self._request(
             'GET',
-            f'vlans/{id}/',
+            f"vlans/{id}/",
             expected_status=200,
             response_model=VLAN,
         )
@@ -1005,7 +981,7 @@ class _GeneratedEndpoints:
         """Get VRF details"""
         return self._request(
             'GET',
-            f'vrfs/{id}/',
+            f"vrfs/{id}/",
             expected_status=200,
             response_model=VRF,
         )

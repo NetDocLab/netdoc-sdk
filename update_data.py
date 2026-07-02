@@ -27,6 +27,24 @@ GENERATED_HEADER = """\
 # Run: python scripts/generate.py
 """
 
+# Explicit full overrides — applied after any suffix/prefix normalization.
+# Use for action endpoints where the generated name is redundant or verbose.
+_OPERATION_ID_OVERRIDES = {
+    'canonical_devices_history_list': 'canonical_devices_history',
+    'canonical_endpoints_history_list': 'canonical_endpoints_history',
+    'collectors_heartbeat_add': 'collectors_heartbeat',
+    'discoveries_cancel_add': 'discoveries_cancel',
+    'discovery_jobs_claim_add': 'discovery_jobs_claim',
+    'discovery_jobs_complete_add': 'discovery_jobs_complete',
+    'discovery_jobs_logs_list': 'discovery_jobs_logs',
+    'discovery_jobs_push_discovered_device_add': 'discovery_jobs_push_discovered_device',
+    'snapshots_latest_get': 'snapshots_latest',
+    'snapshots_pin_add': 'snapshots_pin',
+    'snapshots_stats_get': 'snapshots_stats',
+    'snapshots_unpin_add': 'snapshots_unpin',
+    'tenants_current_get': 'tenants_current',
+}
+
 # Mapping from OpenAPI operationId suffix → SDK method suffix
 _OPERATION_SUFFIX_MAP = {
     'create': 'add',
@@ -47,13 +65,21 @@ def _normalize_operation_id(operation_id: str) -> str:
         canonical_devices_destroy       → canonical_devices_delete
         canonical_devices_list          → canonical_devices_list  (unchanged)
     """
+    result = operation_id
+
+    # Step 1 — CRUD suffix remapping
     for openapi_suffix, sdk_suffix in _OPERATION_SUFFIX_MAP.items():
         # Match suffix at end of string, preceded by underscore
         if operation_id == openapi_suffix:
-            return sdk_suffix
+            result = sdk_suffix
         if operation_id.endswith(f'_{openapi_suffix}'):
-            return operation_id[: -len(openapi_suffix)] + sdk_suffix
-    return operation_id
+            result = operation_id[: -len(openapi_suffix)] + sdk_suffix
+        
+    # Step 2 — explicit override
+    if result in _OPERATION_ID_OVERRIDES:
+        result = _OPERATION_ID_OVERRIDES[result]
+    
+    return result
 
 
 # ---------------------------------------------------------------------------
@@ -114,6 +140,14 @@ def _resolve_expected_status(responses: dict, http_method: str) -> int:
     return 200
 
 
+def _extract_header_params(parameters: list[dict]) -> list[str]:
+    """Return names of required custom headers declared in the operation."""
+    return [
+        p['name'] for p in parameters
+        if p.get('in') == 'header' and p.get('required', False)
+    ]
+
+
 def _build_method(
     operation_id: str,
     http_method: str,
@@ -123,36 +157,50 @@ def _build_method(
     parameters: list[dict],
 ) -> str:
     path_params = _extract_path_params(path)
+    header_params = _extract_header_params(parameters)
     relative_path = _strip_api_prefix(path)
 
-    has_body = http_method in ('post', 'patch', 'put') and http_method != 'get'
-    has_query = http_method == 'get' and any(p.get('in') == 'query' for p in parameters)
+    has_body = http_method in ('post', 'patch', 'put')
+    has_query = http_method == 'get' and any(
+        p.get('in') == 'query' for p in parameters
+    )
 
     return_type = _resolve_response_model(responses)
     expected_status = _resolve_expected_status(responses, http_method)
-
-    # Only produce a 204 return type of None when there is truly no body response
     if '204' in responses and '200' not in responses and '201' not in responses:
         return_type = 'None'
 
-    # Signature
+    # Build signature params
     sig_params = ['self']
     sig_params += [f'{p}: str' for p in path_params]
+    # Header params become explicit keyword arguments
+    sig_params += [
+        f'{_header_to_arg(h)}: str' for h in header_params
+    ]
     if has_body:
         sig_params.append('data: JsonMapping | None = None, **fields: Any')
     elif has_query:
         sig_params.append('**params: Any')
 
-    # URL expression
-    url = f'f"{relative_path}"' if path_params else f'"{relative_path}"'
-
     lines = [
         f'    def {operation_id}({", ".join(sig_params)}) -> {return_type}:',
         f'        """{summary}"""',
-        '        return self._request(',
-        f'            {http_method.upper()!r},',
-        f'            {url},',
     ]
+
+    # Build headers dict if needed
+    if header_params:
+        header_dict = '{' + ', '.join(
+            f'{h!r}: {_header_to_arg(h)}' for h in header_params
+        ) + '}'
+        lines.append(f'        headers = {header_dict}')
+
+    lines += [
+        f'        return self._request(',
+        f'            {http_method.upper()!r},',
+        f'            {f"f\"{relative_path}\"" if path_params else repr(relative_path)},',
+    ]
+    if header_params:
+        lines.append('            headers=headers,')
     if has_query:
         lines.append('            params=params,')
     if has_body:
@@ -163,6 +211,11 @@ def _build_method(
     lines.append('        )')
 
     return '\n'.join(lines)
+
+
+def _header_to_arg(header_name: str) -> str:
+    """Convert 'X-Claim-Token' to 'claim_token'."""
+    return re.sub(r'^x[-_]', '', header_name.lower()).replace('-', '_')
 
 
 def generate_endpoints() -> None:
@@ -191,7 +244,11 @@ def generate_endpoints() -> None:
             summary = operation.get('summary', operation_id)
             parameters = operation.get('parameters', [])
             responses = operation.get('responses', {})
+            header_params = _extract_header_params(parameters)
 
+            if header_params:
+                print(f'  [headers] {operation_id}: {header_params}')
+               
             method_src = _build_method(
                 operation_id=operation_id,
                 http_method=http_method,
