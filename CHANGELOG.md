@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.6.0](https://github.com/NetDocLab/netdoc-sdk/compare/v0.5.0...v0.6.0) (2026-07-02)
+
+
+### Bug Fixes
+
+* improve endpoint names ([1b15594](https://github.com/NetDocLab/netdoc-sdk/commit/1b155940e19fd56e3ab9d4d2417c6185d499bfca))
+* update API and tests (fix Enums) ([2c28cd6](https://github.com/NetDocLab/netdoc-sdk/commit/2c28cd650e05e30bf9ba662e639de61092789960))
+
 ## [0.5.0](https://github.com/NetDocLab/netdoc-sdk/compare/v0.4.1...v0.5.0) (2026-07-01)
 
 
