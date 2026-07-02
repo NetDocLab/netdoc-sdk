@@ -1,15 +1,19 @@
-"""Synchronous HTTP client for the NetDoc API."""
+"""Synchronous and asynchronous HTTP clients for the NetDoc API."""
+
+from __future__ import annotations
 
 import asyncio
 import logging
 import time
-from collections.abc import Iterable, Mapping
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import httpx
 
 from netdoc_sdk._client_base import _NetDocClientBase
 from netdoc_sdk.exceptions import ConnectionError
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable, Mapping
 
 logger = logging.getLogger('netdoc_sdk')
 
@@ -21,6 +25,8 @@ class NetDocClient(_NetDocClientBase):
     All endpoint methods inherited from ``_NetDocClientBase`` must be
     ``await``-ed by the caller.
     """
+
+    _client: httpx.AsyncClient | None = None
 
     @property
     def client(self) -> httpx.AsyncClient:
@@ -40,15 +46,15 @@ class NetDocClient(_NetDocClientBase):
 
     async def close(self) -> None:
         """Close the underlying HTTP connection pool."""
-        if self._client:
+        if self._client is not None:
             await self._client.aclose()
             self._client = None
 
-    async def __aenter__(self) -> 'NetDocClient':
+    async def __aenter__(self) -> NetDocClient:
         self._client = self._make_client()
         return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
+    async def __aexit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         await self.close()
 
     @classmethod
@@ -58,7 +64,7 @@ class NetDocClient(_NetDocClientBase):
         username: str,
         password: str,
         **kwargs: Any,
-    ) -> 'NetDocClient':
+    ) -> NetDocClient:
         """Authenticate with username/password and return a token-authenticated client."""
         async with cls(base_url=base_url, **kwargs) as bootstrap:
             token = await bootstrap.tokens_add(username=username, password=password)
@@ -111,7 +117,10 @@ class NetDocClient(_NetDocClientBase):
 
             self._raise_for_error(response)
 
-        return self._parse_response(response, response_model, expected)
+        if response:
+            return self._parse_response(response, response_model, expected)
+
+        raise ValueError('Should not be here - guaranteed by range(max_retries + 1) >= 1')
 
 
 class NetDocSyncClient(_NetDocClientBase):
@@ -122,6 +131,8 @@ class NetDocSyncClient(_NetDocClientBase):
     All endpoint methods inherited from ``_NetDocClientBase`` return values
     directly; no ``await`` is needed.
     """
+
+    _client: httpx.Client | None = None
 
     @property
     def client(self) -> httpx.Client:
@@ -141,15 +152,15 @@ class NetDocSyncClient(_NetDocClientBase):
 
     def close(self) -> None:
         """Close the underlying HTTP connection pool."""
-        if self._client:
+        if self._client is not None:
             self._client.close()
             self._client = None
 
-    def __enter__(self) -> NetDocClient:
+    def __enter__(self) -> NetDocSyncClient:
         self._client = self._make_client()
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         self.close()
 
     @classmethod
@@ -159,7 +170,7 @@ class NetDocSyncClient(_NetDocClientBase):
         username: str,
         password: str,
         **kwargs: Any,
-    ) -> NetDocClient:
+    ) -> NetDocSyncClient:
         """Authenticate with username/password and return a token-authenticated client."""
         with cls(base_url=base_url, **kwargs) as bootstrap:
             token = bootstrap.tokens_add(username=username, password=password)
@@ -212,4 +223,7 @@ class NetDocSyncClient(_NetDocClientBase):
 
             self._raise_for_error(response)
 
-        return self._parse_response(response, response_model, expected)
+        if response:
+            return self._parse_response(response, response_model, expected)
+
+        raise ValueError('Should not be here - guaranteed by range(max_retries + 1) >= 1')
