@@ -7,27 +7,27 @@ from netdoc_sdk.client import NetDocSyncClient as NetDocClient
 class TestCanonicalDeviceSyncClient:
     @pytest.mark.django_db(transaction=True)
     def test_collector(self, admin_sync_client, live_server):
-        collector_username = 'test-collector-user'
-        collector_password = 'test-password'
+        collectors_username = 'test-collector-user'
+        collectors_password = 'test-password'
 
         # Add collector user
-        admin_sync_client.user_add(
-            username=collector_username, password=collector_password, role='collector'
+        admin_sync_client.users_add(
+            username=collectors_username, password=collectors_password, role='collector'
         )
-        collector_client = NetDocClient.from_credentials(
+        collectors_client = NetDocClient.from_credentials(
             base_url=live_server.url,
-            username=collector_username,
-            password=collector_password,
+            username=collectors_username,
+            password=collectors_password,
         )
 
         # Create collector (heartbeat)
-        collector = collector_client.collector_heartbeat(
+        collector = collectors_client.collectors_heartbeat_add(
             name='collector@host.example.com', version='0.1.0'
         )
 
         # Test functions
-        res = admin_sync_client.collector_list()
+        res = admin_sync_client.collectors_list()
         assert res.count == 1
-        admin_sync_client.collector_get(id=collector.id)
-        admin_sync_client.collector_update(id=collector.id, is_active=False)
-        admin_sync_client.collector_delete(id=collector.id)
+        admin_sync_client.collectors_get(id=collector.id)
+        admin_sync_client.collectors_update(id=collector.id, is_active=False)
+        admin_sync_client.collectors_delete(id=collector.id)
