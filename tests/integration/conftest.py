@@ -239,7 +239,7 @@ def admin_sync_client_by_password(db, live_server):
     )
 
     # Authenticate via credentials and return client as async context
-    client = NetDocClient.from_credentials(
+    client = NetDocSyncClient.from_credentials(
         base_url=live_server.url,
         username=username,
         password=password,
