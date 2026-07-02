@@ -263,8 +263,9 @@ def generate_endpoints() -> None:
 
     import_block = (
         'from __future__ import annotations\n\n'
+        'from abc import abstractmethod\n'
         'from typing import Any\n\n'
-        'from collections.abc import Mapping\n\n'
+        'from collections.abc import Iterable, Mapping\n\n'
         'from pydantic import BaseModel\n\n'
     )
     if valid_imports:
@@ -282,6 +283,12 @@ def generate_endpoints() -> None:
         '    in _client_base.py when custom logic is required (e.g. special',
         '    headers, dual expected_status, or non-standard request shapes).',
         '    """',
+        '',
+        '    @abstractmethod',
+        '    def _request(self, method: str, path: str, *, content: bytes | str | None = None, expected_status: int | Iterable[int] | None = None, headers: Mapping[str, str] | None = None, json: Any | None = None, params: Mapping[str, Any] | None = None, response_model: Any = None) -> Any: ...',
+        '',
+        '    @abstractmethod',
+        '    def _serialize_body(self, body: JsonMapping | None = None, **fields: Any) -> dict[str, Any] | None: ...',
         '',
     ]
 

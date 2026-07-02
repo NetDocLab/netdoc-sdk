@@ -3,7 +3,8 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from abc import abstractmethod
+from collections.abc import Iterable, Mapping
 from typing import Any
 
 from pydantic import BaseModel
@@ -75,6 +76,25 @@ class _GeneratedEndpoints:
     in _client_base.py when custom logic is required (e.g. special
     headers, dual expected_status, or non-standard request shapes).
     """
+
+    @abstractmethod
+    def _request(
+        self,
+        method: str,
+        path: str,
+        *,
+        content: bytes | str | None = None,
+        expected_status: int | Iterable[int] | None = None,
+        headers: Mapping[str, str] | None = None,
+        json: Any | None = None,
+        params: Mapping[str, Any] | None = None,
+        response_model: Any = None,
+    ) -> Any: ...
+
+    @abstractmethod
+    def _serialize_body(
+        self, body: JsonMapping | None = None, **fields: Any
+    ) -> dict[str, Any] | None: ...
 
     def arp_entries_list(self, **params: Any) -> PaginatedARPEntryList:
         """List ARP entries"""
