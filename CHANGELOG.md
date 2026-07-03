@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.1](https://github.com/NetDocLab/netdoc-sdk/compare/v0.6.0...v0.6.1) (2026-07-03)
+
+
+### Bug Fixes
+
+* support return of 204 and 200 on the same endpoint ([734a367](https://github.com/NetDocLab/netdoc-sdk/commit/734a3675caf91a4136f1f5b759beed6966a474c3))
+
 ## [0.6.0](https://github.com/NetDocLab/netdoc-sdk/compare/v0.5.0...v0.6.0) (2026-07-02)
 
 
