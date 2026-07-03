@@ -29,5 +29,10 @@ class TestCanonicalDeviceSyncClient:
         res = admin_sync_client.collectors_list()
         assert res.count == 1
         admin_sync_client.collectors_get(id=collector.id)
-        admin_sync_client.collectors_update(id=collector.id, is_active=False)
+        admin_sync_client.collectors_update(id=collector.id, is_active=True)
+
+        # Empty claim
+        collector_client.discovery_jobs_claim()
+
+        # Delete
         admin_sync_client.collectors_delete(id=collector.id)

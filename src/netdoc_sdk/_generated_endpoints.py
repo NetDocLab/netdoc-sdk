@@ -470,14 +470,14 @@ class _GeneratedEndpoints:
 
     def discovery_jobs_claim(
         self, data: JsonMapping | None = None, **fields: Any
-    ) -> DiscoveryJobClaim:
+    ) -> DiscoveryJobClaim | None:
         """Claim a job"""
         return self._request(
             'POST',
             'discovery-jobs/claim/',
             json=self._serialize_body(data, **fields),
-            expected_status=200,
-            response_model=DiscoveryJobClaim,
+            expected_status=[200, 204],
+            response_model=DiscoveryJobClaim | None,
         )
 
     def discovery_schedules_list(self, **params: Any) -> PaginatedDiscoveryScheduleList:
@@ -813,13 +813,13 @@ class _GeneratedEndpoints:
             response_model=TenantDetail,
         )
 
-    def snapshots_latest(self) -> SnapshotDetail:
+    def snapshots_latest(self) -> SnapshotDetail | None:
         """Latest snapshot"""
         return self._request(
             'GET',
             'snapshots/latest/',
-            expected_status=200,
-            response_model=SnapshotDetail,
+            expected_status=[200, 204],
+            response_model=SnapshotDetail | None,
         )
 
     def tenants_list(self, **params: Any) -> PaginatedTenantListList:

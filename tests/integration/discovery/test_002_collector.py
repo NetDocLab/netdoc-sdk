@@ -29,5 +29,10 @@ class TestCanonicalDevice:
         res = await admin_client.collectors_list()
         assert res.count == 1
         await admin_client.collectors_get(id=collector.id)
-        await admin_client.collectors_update(id=collector.id, is_active=False)
+        await admin_client.collectors_update(id=collector.id, is_active=True)
+
+        # Empty claim
+        await collector_client.discovery_jobs_claim()
+
+        # Delete
         await admin_client.collectors_delete(id=collector.id)
