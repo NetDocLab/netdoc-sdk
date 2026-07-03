@@ -132,12 +132,16 @@ def _resolve_response_model(responses: dict) -> str:
     return 'None'
 
 
-def _resolve_expected_status(responses: dict, http_method: str) -> int:
-    """Return the primary expected HTTP status code for an operation."""
-    for status in ('201', '200', '204'):
-        if status in responses:
-            return int(status)
-    return 200
+def _resolve_expected_status(responses: dict) -> int | list[int]:
+    """Return expected status code(s) for an operation.
+
+    Returns a list when the endpoint legitimately returns multiple success
+    codes (e.g. 200 with body or 204 with no body).
+    """
+    success_codes = [int(s) for s in ('200', '201', '204') if s in responses]
+    if len(success_codes) > 1:
+        return success_codes
+    return success_codes[0] if success_codes else 200
 
 
 def _extract_header_params(parameters: list[dict]) -> list[str]:
@@ -161,9 +165,16 @@ def _build_method(
     has_query = http_method == 'get' and any(p.get('in') == 'query' for p in parameters)
 
     return_type = _resolve_response_model(responses)
-    expected_status = _resolve_expected_status(responses, http_method)
-    if '204' in responses and '200' not in responses and '201' not in responses:
-        return_type = 'None'
+    expected_status = _resolve_expected_status(responses)
+
+    # When both 200 and 204 are valid, the response may be None
+    has_204 = '204' in responses
+    has_200_or_201 = '200' in responses or '201' in responses
+    if has_204 and has_200_or_201 and return_type != 'None':
+        return_type = f'{return_type} | None'
+
+    # Format expected_status for the method body
+    expected_status_repr = repr(expected_status)  # [200, 204] or 200
 
     # Build signature params
     sig_params = ['self']
@@ -196,7 +207,7 @@ def _build_method(
         lines.append('            params=params,')
     if has_body:
         lines.append('            json=self._serialize_body(data, **fields),')
-    lines.append(f'            expected_status={expected_status},')
+    lines.append(f'            expected_status={expected_status_repr},')
     if return_type != 'None':
         lines.append(f'            response_model={return_type},')
     lines.append('        )')
