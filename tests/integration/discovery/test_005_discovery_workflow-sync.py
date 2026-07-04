@@ -778,18 +778,15 @@ class TestDiscoveryRunSyncClient:
                 {
                     'level': 'INFO',
                     'message': f"Running netmiko command 'show version' on {canonical_device.label}",
-                    'correlation_id': '80983d98-383f-40ef-b6d1-3c480e577191',
-                    'object_type': 'apps.discovery.models.DiscoveryJob',
-                    'object_id': job_id,
                     'context': {'cmdline': 'poetry run netdoc-collector'},
                     'exception_type': 'RawOutput',
+                    'traceback': 'Internal Server Error: /admin/discovery/rawoutput/ Traceback (most recent call last)',
                     'module': 'log',
                     'func_name': 'log_message',
                     'line_no': 249,
                     'hostname': 'collector.example.com',
                     'process': 13223,
                     'thread_name': 'Thread-106 (process_request_thread)',
-                    'traceback': 'Internal Server Error: /admin/discovery/rawoutput/ Traceback (most recent call last)',
                 }
             ],
             'raw_payload': {
