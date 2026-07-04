@@ -774,6 +774,24 @@ class TestDiscoveryRunSyncClient:
         # Push discovered devices
         payload = {
             'canonical_device': canonical_device.id,
+            'logs': [
+                {
+                    'level': 'INFO',
+                    'message': f"Running netmiko command 'show version' on {canonical_device.label}",
+                    'correlation_id': '80983d98-383f-40ef-b6d1-3c480e577191',
+                    'object_type': 'apps.discovery.models.DiscoveryJob',
+                    'object_id': job_id,
+                    'context': {'cmdline': 'poetry run netdoc-collector'},
+                    'exception_type': 'RawOutput',
+                    'module': 'log',
+                    'func_name': 'log_message',
+                    'line_no': 249,
+                    'hostname': 'collector.example.com',
+                    'process': 13223,
+                    'thread_name': 'Thread-106 (process_request_thread)',
+                    'traceback': 'Internal Server Error: /admin/discovery/rawoutput/ Traceback (most recent call last)',
+                }
+            ],
             'raw_payload': {
                 'raw_outputs': {
                     'show version': RAW_SHOW_VERSION,
@@ -793,23 +811,6 @@ class TestDiscoveryRunSyncClient:
         # Complete job
         payload = {
             'status': 'completed',
-            'log_messages': [
-                {
-                    'severity': 'INFO',
-                    'timestamp': '2026-05-17T09:36:45.244045+00:00',
-                    'message': "Running netmiko command 'show ip route vrf Mgmt-vrf' on mgmtswitch1.example.com",
-                },
-                {
-                    'severity': 'WARNING',
-                    'timestamp': '2026-05-17T09:36:45.387987+00:00',
-                    'message': "Cannot parse command 'show ip route vrf Mgmt-vrf'",
-                },
-                {
-                    'severity': 'INFO',
-                    'timestamp': '2026-05-17T09:36:45.390002+00:00',
-                    'message': 'Discovery completed (failed on 0 hosts)',
-                },
-            ],
         }
         collector_client.discovery_jobs_complete(id=job_id, claim_token=claim_token, **payload)
 
@@ -823,9 +824,13 @@ class TestDiscoveryRunSyncClient:
         assert jobs.results[0].status.value == 'completed'
 
         # Get logs
-        logs = admin_sync_client.discovery_jobs_logs(id=job_id)
+        logs = admin_sync_client.logs_list()
         assert logs.count == 1
-        assert logs.results[0].status.value == 'parsed'
+
+        # Get raw logs
+        raw_logs = admin_sync_client.discovery_jobs_logs(id=job_id)
+        assert raw_logs.count == 1
+        assert raw_logs.results[0].status.value == 'parsed'
 
         # Verify raw logs
         raw_output = RawOutput.objects.unfiltered().first()
