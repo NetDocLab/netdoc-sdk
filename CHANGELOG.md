@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.2](https://github.com/NetDocLab/netdoc-sdk/compare/v0.6.1...v0.6.2) (2026-07-04)
+
+
+### Bug Fixes
+
+* support logs while pushing devices ([76c398c](https://github.com/NetDocLab/netdoc-sdk/commit/76c398c02827dc33fdfe7348555e69e36a521be2))
+
 ## [0.6.1](https://github.com/NetDocLab/netdoc-sdk/compare/v0.6.0...v0.6.1) (2026-07-03)
 
 
