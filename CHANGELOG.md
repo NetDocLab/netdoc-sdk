@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.4](https://github.com/NetDocLab/netdoc-sdk/compare/v0.6.3...v0.6.4) (2026-07-04)
+
+
+### Bug Fixes
+
+* update models for collector task logs ([5965d80](https://github.com/NetDocLab/netdoc-sdk/commit/5965d80bb4f10ee2dad15e046f76906bd4a95967))
+
 ## [0.6.3](https://github.com/NetDocLab/netdoc-sdk/compare/v0.6.2...v0.6.3) (2026-07-04)
 
 
