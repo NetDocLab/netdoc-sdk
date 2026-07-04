@@ -10,6 +10,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   tests:
+    if: "${{ !contains(github.event.pull_request.labels.*.name, 'autorelease: pending') }}"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout (SDK)
@@ -45,7 +46,11 @@ jobs:
       - name: Run tests on SDK (make coverage)
         run: make coverage
         working-directory: netdoc-sdk
+      - name: Test build process
+        run: poetry build
+        working-directory: netdoc-sdk
   snyk:
+    if: "${{ !contains(github.event.pull_request.labels.*.name, 'autorelease: pending') }}"
     needs: tests
     runs-on: ubuntu-latest
     steps:
