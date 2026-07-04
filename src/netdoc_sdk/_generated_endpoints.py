@@ -637,16 +637,6 @@ class _GeneratedEndpoints:
             response_model=PaginatedLogRecordDetailList,
         )
 
-    def logs_add(self, data: JsonMapping | None = None, **fields: Any) -> LogRecordDetail:
-        """logs_add"""
-        return self._request(
-            'POST',
-            'logs/',
-            json=self._serialize_body(data, **fields),
-            expected_status=201,
-            response_model=LogRecordDetail,
-        )
-
     def logs_get(self, id: str) -> LogRecordDetail:
         """Get audit log details"""
         return self._request(
