@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.5](https://github.com/NetDocLab/netdoc-sdk/compare/v0.6.4...v0.6.5) (2026-07-05)
+
+
+### Bug Fixes
+
+* get rid of log_messages ([006facf](https://github.com/NetDocLab/netdoc-sdk/commit/006facfb62b232677604ab16d9548b75e7aa1ef3))
+
 ## [0.6.4](https://github.com/NetDocLab/netdoc-sdk/compare/v0.6.3...v0.6.4) (2026-07-04)
 
 
