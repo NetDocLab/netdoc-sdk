@@ -807,7 +807,24 @@ class TestDiscoveryRun:
         )
 
         # Complete job
-        payload = {'status': 'completed'}
+        payload = {
+            'status': 'completed',
+            'logs': [
+                {
+                    'level': 'INFO',
+                    'message': 'Closing job',
+                    'context': {'cmdline': 'poetry run netdoc-collector'},
+                    'exception_type': 'DiscoveryJob',
+                    'traceback': 'Internal Server Error: /admin/discoveries/ Traceback (most recent call last)',
+                    'module': 'log',
+                    'func_name': 'log_message',
+                    'line_no': 24,
+                    'hostname': 'collector.example.com',
+                    'process': 132,
+                    'thread_name': 'Thread-109 (process_request_thread)',
+                }
+            ],
+        }
         await collector_client.discovery_jobs_complete(
             id=job_id, claim_token=claim_token, **payload
         )
@@ -823,7 +840,7 @@ class TestDiscoveryRun:
 
         # Get logs
         logs = await admin_client.logs_list()
-        assert logs.count == 1
+        assert logs.count == 2
 
         # Get raw logs
         raw_logs = await admin_client.discovery_jobs_logs(id=job_id)
