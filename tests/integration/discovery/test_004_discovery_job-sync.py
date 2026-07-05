@@ -792,22 +792,20 @@ class TestDiscoveryRunSyncClient:
         # Complete job
         payload = {
             'status': 'completed',
-            'log_messages': [
+            'logs': [
                 {
-                    'severity': 'INFO',
-                    'timestamp': '2026-05-17T09:36:45.244045+00:00',
-                    'message': "Running netmiko command 'show ip route vrf Mgmt-vrf' on mgmtswitch1.example.com",
-                },
-                {
-                    'severity': 'WARNING',
-                    'timestamp': '2026-05-17T09:36:45.387987+00:00',
-                    'message': "Cannot parse command 'show ip route vrf Mgmt-vrf'",
-                },
-                {
-                    'severity': 'INFO',
-                    'timestamp': '2026-05-17T09:36:45.390002+00:00',
-                    'message': 'Discovery completed (failed on 0 hosts)',
-                },
+                    'level': 'INFO',
+                    'message': 'Closing job',
+                    'context': {'cmdline': 'poetry run netdoc-collector'},
+                    'exception_type': 'DiscoveryJob',
+                    'traceback': 'Internal Server Error: /admin/discoveries/ Traceback (most recent call last)',
+                    'module': 'log',
+                    'func_name': 'log_message',
+                    'line_no': 24,
+                    'hostname': 'collector.example.com',
+                    'process': 132,
+                    'thread_name': 'Thread-109 (process_request_thread)',
+                }
             ],
         }
         collector_client.discovery_jobs_complete(id=job_id, claim_token=claim_token, **payload)
