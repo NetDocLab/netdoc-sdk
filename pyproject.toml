@@ -62,6 +62,7 @@ respx = "^0.23.1"
 # Testing (integration tests)
 djangorestframework = ">=3.14,<4.0"
 netdoc = {path = "../netdoc", develop = true}
+psycopg = {extras = ["binary", "pool"], version = "^3.3.4"}
 pytest-django = "^4.12.0"
 
 # Code quality
