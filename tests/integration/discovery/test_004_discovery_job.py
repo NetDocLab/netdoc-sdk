@@ -718,9 +718,8 @@ PARSED_SHOW_INTERFACES = [
 ]
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db(databases=['default', 'logs'])
 class TestDiscoveryRun:
-    @pytest.mark.django_db(transaction=True)
     async def test_discoveries_job(self, admin_client, live_server):
         collector_username = 'test-collector-user'
         collector_password = 'test-password'
