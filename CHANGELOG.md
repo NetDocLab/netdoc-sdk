@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.6.6](https://github.com/NetDocLab/netdoc-sdk/compare/v0.6.5...v0.6.6) (2026-07-08)
+
+
+### Bug Fixes
+
+* linting ([9a775bc](https://github.com/NetDocLab/netdoc-sdk/commit/9a775bc1b1f8b1fc3ef0a445a808a578e01872f6))
+* update API and tests ([6b0cd28](https://github.com/NetDocLab/netdoc-sdk/commit/6b0cd28a21ff506daadc839b0d41b33279c67ec3))
+
+
+### Documentation
+
+* adjust comment ([73ae391](https://github.com/NetDocLab/netdoc-sdk/commit/73ae391adcf4125744811372543bd43abee84df0))
+
 ## [0.6.5](https://github.com/NetDocLab/netdoc-sdk/compare/v0.6.4...v0.6.5) (2026-07-05)
 
 
