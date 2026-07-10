@@ -52,6 +52,7 @@ class _NetDocClientBase(_GeneratedEndpoints):
         max_retries: int = 5,
         timeout: float = 30.0,
         transport: Any | None = None,
+        verify: bool = True,
     ) -> None:
         self.base_url = self._normalize_base_url(base_url)
         self.client_kwargs = dict(client_kwargs or {})
@@ -62,6 +63,10 @@ class _NetDocClientBase(_GeneratedEndpoints):
         self.timeout = timeout
         self.token = token
         self.transport = transport
+        self.verify = verify
+
+        if self.verify is False:
+            logger.warning('TLS certificate verification is disabled for %s', self.base_url)
 
     # ------------------------------------------------------------------
     # Helpers — pure logic, no I/O
