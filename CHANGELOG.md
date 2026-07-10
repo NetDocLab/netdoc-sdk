@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.7](https://github.com/NetDocLab/netdoc-sdk/compare/v0.6.6...v0.6.7) (2026-07-10)
+
+
+### Bug Fixes
+
+* support disable cert validation ([3adeae2](https://github.com/NetDocLab/netdoc-sdk/commit/3adeae2365f1c0c188613881087c556d5b979883))
+
 ## [0.6.6](https://github.com/NetDocLab/netdoc-sdk/compare/v0.6.5...v0.6.6) (2026-07-08)
 
 
