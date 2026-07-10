@@ -42,6 +42,7 @@ class NetDocClient(_NetDocClientBase):
             headers=self._build_headers(),
             timeout=self.timeout,
             transport=self.transport,
+            verify=self.verify,
             **self.client_kwargs,
         )
 
@@ -148,6 +149,7 @@ class NetDocSyncClient(_NetDocClientBase):
             headers=self._build_headers(),
             timeout=self.timeout,
             transport=self.transport,
+            verify=self.verify,
             **self.client_kwargs,
         )
 
