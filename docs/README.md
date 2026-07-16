@@ -459,7 +459,7 @@ The package is organized around a small set of clearly named modules:
 - **Strong typing** - Type hints are used throughout the client and model layers.
 - **Clear separation of concerns** - HTTP transport, request handling, and data models are kept separate.
 
-For detailed information about the source code structure, internal implementation, and development practices, see **[Source Code Reference](docs/reference/netdoc_sdk.md)**.
+For detailed information about the source code structure, internal implementation, and development practices, see **[Source Code Reference](reference/netdoc_sdk.md)**.
 
 ### Key Modules
 
@@ -474,7 +474,7 @@ For detailed information about the source code structure, internal implementatio
 
 - **Contributing Code:** See [CONTRIBUTING.md](CONTRIBUTING.md) for development workflow, coding standards, and PR expectations.
 - **Running Tests:** See the test suite under [tests](tests) for examples and regression coverage.
-- **Source Architecture:** See [docs/source-code.md](docs/reference/netdoc_sdk.md) for implementation details.
+- **Source Architecture:** See [docs/source-code.md](reference/netdoc_sdk.md) for implementation details.
 
 ## Requirements
 

@@ -52,12 +52,12 @@ NetDoc API
 
 ### 1. Client layer
 
-The public client classes live in [src/netdoc_sdk/client.py](../src/netdoc_sdk/client.py). They provide the main entry points for applications:
+The public client classes live in `src/netdoc_sdk/client.py`. They provide the main entry points for applications:
 
 - `NetDocClient` for asyncio-based usage
 - `NetDocSyncClient` for synchronous environments
 
-Both classes inherit shared logic from [_client_base.py](../src/netdoc_sdk/_client_base.py), including:
+Both classes inherit shared logic from `src/netdoc_sdk/_client_base.py`, including:
 
 - base URL normalization
 - header construction
@@ -67,7 +67,7 @@ Both classes inherit shared logic from [_client_base.py](../src/netdoc_sdk/_clie
 
 ### 2. Shared request base
 
-The shared base class in [_client_base.py](../src/netdoc_sdk/_client_base.py) is responsible for the request lifecycle. It ensures that each call:
+The shared base class in `src/netdoc_sdk/_client_base.py` is responsible for the request lifecycle. It ensures that each call:
 
 1. builds the correct API path,
 2. includes authentication and tenant headers,
@@ -78,7 +78,7 @@ The shared base class in [_client_base.py](../src/netdoc_sdk/_client_base.py) is
 
 ### 3. Exceptions
 
-The exception hierarchy in [src/netdoc_sdk/exceptions.py](../src/netdoc_sdk/exceptions.py) keeps failures explicit and inspectable. Common cases include:
+The exception hierarchy in `src/netdoc_sdk/exceptions.py` keeps failures explicit and inspectable. Common cases include:
 
 - `AuthenticationError` for 401 responses
 - `PermissionDeniedError` for 403 responses
@@ -90,7 +90,7 @@ The exception hierarchy in [src/netdoc_sdk/exceptions.py](../src/netdoc_sdk/exce
 
 ### 4. Pydantic models
 
-The models package in [src/netdoc_sdk/models](../src/netdoc_sdk/models) contains request and response schemas. The shared base class in [src/netdoc_sdk/models/core.py](../src/netdoc_sdk/models/core.py) is responsible for tolerating additional API fields while logging unexpected values.
+The models package in `src/netdoc_sdk/models` contains request and response schemas. The shared base class in `src/netdoc_sdk/models/core.py` is responsible for tolerating additional API fields while logging unexpected values.
 
 ---
 
