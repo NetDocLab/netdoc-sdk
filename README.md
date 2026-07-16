@@ -4,7 +4,7 @@
 [![PyPI version](https://img.shields.io/pypi/v/netdoc-sdk.svg)](https://pypi.org/project/netdoc-sdk/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-Async Python SDK for the NetDoc `/api/v1` API. Provides a modern, type-safe interface for building network discoveries, managing inventory, and querying topology data.
+Async Python SDK for NetDoc's `/api/v1` API. It provides a type-safe client for network discovery, inventory management, and topology queries, with both asynchronous and synchronous interfaces.
 
 ## Table of Contents
 
@@ -37,7 +37,7 @@ pip install -e .
 
 ## Quick Start
 
-Basic usage with async context manager:
+Basic usage with the async client:
 
 ```python
 import asyncio
@@ -59,7 +59,7 @@ asyncio.run(main())
 
 ### Creating Network Topology
 
-Build and submit network snapshots using the fluent builder API:
+Build and submit network snapshots with the fluent builder API:
 
 ```python
 import asyncio
@@ -453,27 +453,28 @@ await client.close()
 
 ## Source Code
 
-The SDK source code is well-documented and organized:
+The package is organized around a small set of clearly named modules:
 
-- **Comprehensive docstrings** - All classes, functions, and modules have detailed docstrings
-- **Type hints** - Full typing throughout for IDE support and mypy checking
-- **Clean architecture** - Layered design with clear separation of concerns
+- **Readable docstrings** - Public modules and classes are documented in plain English.
+- **Strong typing** - Type hints are used throughout the client and model layers.
+- **Clear separation of concerns** - HTTP transport, request handling, and data models are kept separate.
 
-For detailed information about the source code structure, internal implementation, and development guidelines, see **[Source Code Reference](docs/source-code.md)**.
+For detailed information about the source code structure, internal implementation, and development practices, see **[Source Code Reference](docs/source-code.md)**.
 
 ### Key Modules
 
-| Module | Purpose | Lines |
-|--------|---------|-------|
-| `client.py` | Main async HTTP client | 773 |
-| `exceptions.py` | Exception hierarchy | 270+ |
-| `models/` | Pydantic request/response models | 612 |
+| Module | Purpose |
+|--------|---------|
+| `client.py` | Async and sync client implementations |
+| `_client_base.py` | Shared request lifecycle, authentication, and error handling |
+| `exceptions.py` | SDK-specific exception hierarchy |
+| `models/` | Pydantic request and response models |
 
 ### For Developers
 
-- **Contributing Code:** See [CONTRIBUTING.md](CONTRIBUTING.md) for development workflow, code standards, and PR process
-- **Running Tests:** See [tests/README.md](tests/README.md) for comprehensive test documentation
-- **Source Architecture:** See [docs/source-code.md](docs/source-code.md) for internal implementation details
+- **Contributing Code:** See [CONTRIBUTING.md](CONTRIBUTING.md) for development workflow, coding standards, and PR expectations.
+- **Running Tests:** See the test suite under [tests](tests) for examples and regression coverage.
+- **Source Architecture:** See [docs/source-code.md](docs/source-code.md) for implementation details.
 
 ## Requirements
 

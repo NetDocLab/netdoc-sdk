@@ -1,19 +1,19 @@
 """SDK-specific exceptions.
 
-This module defines a hierarchy of exceptions raised by the NetDocClient when
-API operations fail. All exceptions inherit from NetDocError and preserve
-HTTP status codes, error details, and raw response bodies for detailed error handling.
+This module defines the exception hierarchy raised by the NetDoc clients when
+API operations fail. All exceptions inherit from ``NetDocError`` and preserve
+HTTP status codes, error details, and raw response bodies for easier debugging.
 
 Exception Hierarchy:
     - NetDocError (base) - All SDK exceptions inherit from this
-    - AuthenticationError (401) - Token/credentials invalid or expired
+    - AuthenticationError (401) - Token or credentials are invalid or expired
     - ConnectionError - Network-level failures (not HTTP)
-    - MethodNotAllowedError (405) - HTTP method not supported by endpoint
-    - NotFoundError (404) - Resource does not exist
-    - PermissionDeniedError (403) - User lacks permission for operation
-    - RateLimitError (429) - Too many requests, see retry_after
-    - ServerError (5xx) - Server-side errors
-    - ValidationError (400) - Request data validation failed
+    - MethodNotAllowedError (405) - The endpoint does not support the requested method
+    - NotFoundError (404) - The requested resource does not exist
+    - PermissionDeniedError (403) - The caller lacks permission for the operation
+    - RateLimitError (429) - Too many requests were sent; retry after the delay
+    - ServerError (5xx) - The server encountered an error
+    - ValidationError (400) - The request payload failed validation
 
 Usage:
     from netdoc_sdk import NotFoundError, ValidationError

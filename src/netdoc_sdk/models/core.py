@@ -1,4 +1,4 @@
-"""Pydantic models matching the public NetDoc OpenAPI core contracts."""
+"""Shared Pydantic models for the public NetDoc API contracts."""
 
 import logging
 import os
@@ -20,7 +20,7 @@ class Severity(Enum):
 
 
 class APIModel(BaseModel):
-    """Base model that tolerates additive API fields logging them."""
+    """Base model that tolerates additional API fields and logs them."""
 
     model_config = ConfigDict(extra='forbid' if _STRICT_EXTRA else 'ignore', populate_by_name=True)
 
@@ -32,7 +32,7 @@ class APIModel(BaseModel):
             for key in values:
                 if key not in known:
                     logger.warning(
-                        'Unexpected field %r in %s response (SDK may be outdated)',
+                        'Unexpected field %r in %s response; the SDK may be outdated',
                         key,
                         cls.__name__,
                     )

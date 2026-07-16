@@ -1,49 +1,34 @@
-"""NetDoc SDK - Async Python client for the NetDoc API.
+"""Top-level package for the NetDoc SDK.
 
-This package provides a type-safe, async/await interface to the NetDoc
-network documentation API (v1). It handles authentication, HTTP communication,
-response parsing, and error handling.
+This package exposes a type-safe client for NetDoc's `/api/v1` API. It handles
+authentication, HTTP communication, response parsing, and error handling for both
+asynchronous and synchronous usage.
 
 Quick Start:
     from netdoc_sdk import NetDocClient
 
-    async with NetDocClient(base_url="...", token="...") as client:
+    async with NetDocClient(base_url="https://netdoc.example.com", token="...") as client:
         snapshots = await client.snapshots_list()
 
 Available Exports:
 
     Client:
-        - NetDocClient: Main async HTTP client
+        - NetDocClient: Async client for asyncio applications
+        - NetDocSyncClient: Synchronous client for blocking environments
 
     Exceptions:
-        - NetDocError: Base exception
-        - AuthenticationError: Token/credentials invalid (401)
-        - ConnectionError: Network communication failure
-        - NotFoundError: Resource does not exist (404)
-        - PermissionDeniedError: User lacks permission (403)
-        - ValidationError: Request validation failed (400)
-        - RateLimitError: Rate limit exceeded (429)
-        - ServerError: Server error (5xx)
-        - MethodNotAllowedError: HTTP method not allowed (405)
+        - NetDocError: Base exception for SDK failures
+        - AuthenticationError: Token or credentials are invalid (401)
+        - ConnectionError: The server could not be reached
+        - NotFoundError: The requested resource does not exist (404)
+        - PermissionDeniedError: Access is not allowed (403)
+        - ValidationError: The request payload is invalid (400)
+        - RateLimitError: The API rate limit was exceeded (429)
+        - ServerError: The API returned a server-side error (5xx)
+        - MethodNotAllowedError: The endpoint does not support the requested method (405)
 
     Models:
-        All Pydantic models for API responses are automatically exported:
-        - Snapshot-related: SnapshotDetail, PaginatedSnapshotList, ...
-        - Inventory-related: SiteDetail, CanonicalDeviceDetail, ...
-        - Discovery-related: CredentialDetail, DiscoveryJobDetail, ...
-        - Core-related: UserDetail, TenantDetail, TokenRequest, ...
-
-Usage:
-    Import the client:
-        from netdoc_sdk import NetDocClient
-
-    Import exception types:
-        from netdoc_sdk import NotFoundError, ValidationError
-
-    Import models:
-        from netdoc_sdk.models.snapshots import SnapshotDetail
-        or simply:
-        from netdoc_sdk import SnapshotDetail  # Auto-exported
+        Pydantic models for request and response payloads are exported automatically.
 
 See https://github.com/netdoclab/netdoc-sdk for documentation.
 """

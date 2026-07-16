@@ -1,25 +1,24 @@
 # Source Code Reference
 
-This guide explains the structure and implementation of the NetDoc SDK source code.
+This guide explains the structure of the NetDoc SDK and the role of its main modules.
 
 ## Overview
 
-The SDK is organized into clear modules:
+The package is intentionally small and focused. The public API is exposed through a thin client layer, while the generated endpoint layer provides the concrete operations for the NetDoc HTTP API.
 
 ```text
 src/netdoc_sdk/
-├── __init__.py       # Package exports
-├── client.py         # Main NetDocClient class (773 lines)
-├── exceptions.py     # Exception hierarchy (270+ lines)
-└── models/           # Pydantic models
-    ├── __init__.py   # Models documentation
-    ├── core.py       # User, tenant, token models (196 lines)
-    ├── discovery.py  # Credential, collector, job models (249 lines)
-    ├── inventory.py  # Site, device, interface models (131 lines)
-    └── snapshots.py  # Snapshot models (36 lines)
+├── __init__.py              # Package exports and top-level documentation
+├── _client_base.py          # Shared request lifecycle, headers, auth, and error handling
+├── client.py                # Async and sync client wrappers
+├── exceptions.py            # SDK-specific exception types
+└── models/
+    ├── __init__.py          # Model package exports
+    ├── core.py              # Shared base model and core enums
+    ├── _generated_models.py # Generated Pydantic models (do not edit manually)
 ```
 
-**Total:** 1,537 lines of production code with comprehensive docstrings and type hints.
+The non-generated implementation is concentrated in a handful of modules that are easy to read and extend.
 
 ---
 
@@ -28,375 +27,113 @@ src/netdoc_sdk/
 ### Layered Design
 
 ```text
-User Code
+User code
     ↓
-NetDocClient (public async methods)
+NetDocClient / NetDocSyncClient
     ↓
-_request() (HTTP abstraction)
+_client_base._NetDocClientBase
     ↓
-httpx.AsyncClient (HTTP transport)
+httpx.AsyncClient / httpx.Client
     ↓
-Server API
+NetDoc API
 ```
 
 ### Design Principles
 
-1. **Type Safety:** Full type hints throughout, Pydantic for runtime validation
-2. **Async-First:** All I/O operations are truly async (no blocking calls)
-3. **Error Clarity:** Rich exception hierarchy preserving HTTP context
-4. **Lazy Initialization:** Client only created when needed (context manager or `.client` property)
-5. **Simplicity:** No complex abstractions, straightforward request-response flow
+1. **Type safety:** The SDK uses type hints throughout and Pydantic models for request and response validation.
+2. **Async-first:** The primary client is designed for asyncio applications, while a sync wrapper is also provided.
+3. **Clear error handling:** HTTP problems are converted into SDK-specific exceptions with useful context.
+4. **Small surface area:** The base client handles common concerns once, and generated endpoint methods expose the API operations.
+5. **Readable implementation:** The code is organized to make it straightforward to follow request flow and response parsing.
 
 ---
 
 ## Core Components
 
-### 1. NetDocClient (client.py)
+### 1. Client layer
 
-The main client class that provides a complete async interface to the NetDoc API.
+The public client classes live in [src/netdoc_sdk/client.py](../src/netdoc_sdk/client.py). They provide the main entry points for applications:
 
-**Initialization:**
+- `NetDocClient` for asyncio-based usage
+- `NetDocSyncClient` for synchronous environments
 
-```python
-# Token-based authentication (recommended)
-client = NetDocClient(
-    base_url="https://netdoc.example.com",
-    token="your-api-token",
-)
+Both classes inherit shared logic from [_client_base.py](../src/netdoc_sdk/_client_base.py), including:
 
-# Password-based authentication
-client = await NetDocClient.from_credentials(
-    base_url="https://netdoc.example.com",
-    username="user",
-    password="pass",
-)
+- base URL normalization
+- header construction
+- request parameter cleanup
+- response parsing
+- exception translation
 
-# Multi-tenant (superuser)
-client = NetDocClient(
-    base_url="...",
-    token="admin-token",
-    tenant_id="tenant-uuid",
-)
-```
+### 2. Shared request base
 
-**Lifecycle Management:**
+The shared base class in [_client_base.py](../src/netdoc_sdk/_client_base.py) is responsible for the request lifecycle. It ensures that each call:
 
-```python
-# Recommended: use context manager
-async with NetDocClient(...) as client:
-    await client.snapshots_list()
-# Client automatically closed
+1. builds the correct API path,
+2. includes authentication and tenant headers,
+3. cleans query parameters,
+4. sends the request with `httpx`,
+5. maps non-success responses to SDK exceptions,
+6. deserializes successful payloads into Pydantic models.
 
-# Or manage manually
-client = NetDocClient(...)
-data = await client.snapshots_list()
-await client.close()
-```
+### 3. Exceptions
 
-**Key Methods:**
+The exception hierarchy in [src/netdoc_sdk/exceptions.py](../src/netdoc_sdk/exceptions.py) keeps failures explicit and inspectable. Common cases include:
 
-| Method | Type | Purpose |
-|--------|------|---------|
-| `__init__()` | Constructor | Initialize client with configuration |
-| `__aenter__()` / `__aexit__()` | Async context manager | Lifecycle management |
-| `from_credentials()` | Class method | Create client from username/password |
-| `client` property | Property | Lazy-initialize internal httpx.AsyncClient |
-| `close()` | Async method | Close and cleanup internal client |
-| `_request()` | Internal async | Low-level HTTP request with error handling |
-| `_normalize_base_url()` | Static | Normalize base URL formats |
-| `_clean_params()` | Static | Filter None values from query params |
-| `_serialize_body()` | Static | Merge and serialize request body |
+- `AuthenticationError` for 401 responses
+- `PermissionDeniedError` for 403 responses
+- `NotFoundError` for 404 responses
+- `ValidationError` for 400 responses
+- `RateLimitError` for 429 responses
+- `ServerError` for 5xx responses
+- `ConnectionError` for network-level failures
 
-**Public API Methods:**
+### 4. Pydantic models
 
-The client exposes every OpenAPI operationId. Examples:
-
-- Snapshots: `snapshots_list()`, `snapshots_create()`, `snapshots_retrieve()`, `snapshots_partial_update()`, `snapshots_destroy()`
-- Devices: `devices_list()`, `devices_create()`, `devices_retrieve()`, `devices_interfaces_list()`
-- Credentials: `credential_list()`, `credential_create()`, `credential_update()`
-- Users: `user_list()`, `user_create()`, `user_profile_read()`, `user_profile_update()`
-- Tokens: `token_list()`, `token_add()`
-
-See README.md for complete API reference.
-
-### 2. Exception Hierarchy (exceptions.py)
-
-Rich exception types with HTTP context preservation:
-
-```python
-NetDocError (base)
-├── AuthenticationError (401)
-├── PermissionDeniedError (403)
-├── NotFoundError (404)
-├── MethodNotAllowedError (405)
-├── ValidationError (400)
-├── RateLimitError (429)
-├── ServerError (5xx)
-└── ConnectionError (network)
-```
-
-Each exception preserves:
-
-- `status_code`: HTTP status (or None for ConnectionError)
-- `detail`: Server error detail message
-- `body`: Full parsed response
-- `message`: Human-readable message
-
-Example:
-
-```python
-try:
-    await client.snapshots_retrieve("missing")
-except NotFoundError as e:
-    print(f"404 Not Found: {e.detail}")
-    print(f"Full response: {e.body}")
-except ValidationError as e:
-    print(f"Validation failed: {e.errors}")  # Per-field errors
-```
-
-### 3. Pydantic Models (models/)
-
-All models follow consistent patterns:
-
-**Base Classes:**
-
-```python
-class APIModel(BaseModel):
-    """Base for all models with extra field tolerance."""
-    # Forbids extra fields in tests, ignores in production
-    # Logs warnings for unexpected fields (API version mismatch)
-```
-
-**Model Types:**
-
-| Type | Example | Purpose |
-|------|---------|---------|
-| Detail (Read) | `SnapshotDetail`, `SiteDetail` | Full resource representation |
-| Create (Write) | `SnapshotCreate`, `SiteCreate` | Request payload for creation |
-| Update (Write) | `SnapshotUpdate`, `SiteUpdate` | Request payload for updates |
-| Paginated (List) | `PaginatedSnapshotList` | List responses with metadata |
-| Enum | `JobStatus`, `Severity` | Predefined values |
-
-**Key Features:**
-
-- Type hints for all fields
-- Automatic coercion (str → UUID, str → datetime)
-- `populate_by_name=True` for field aliases
-- `exclude_none=True` when serializing (don't send null fields)
-- `exclude_unset=True` for partial updates (only send changed fields)
-
-Example:
-
-```python
-from netdoc_sdk.models.snapshots import SnapshotDetail, SnapshotUpdate
-
-# Read: Full resource from API
-snapshot: SnapshotDetail = await client.snapshots_retrieve("id")
-print(snapshot.id, snapshot.label, snapshot.created_at)
-
-# Create: Build request
-from netdoc_sdk.models.snapshots import SnapshotCreate
-data = SnapshotCreate(label="nightly", description="Auto-generated")
-result = await client.snapshots_create(data)
-
-# Update: Partial fields only
-update = SnapshotUpdate(label="updated")
-await client.snapshots_partial_update("id", update)
-```
+The models package in [src/netdoc_sdk/models](../src/netdoc_sdk/models) contains request and response schemas. The shared base class in [src/netdoc_sdk/models/core.py](../src/netdoc_sdk/models/core.py) is responsible for tolerating additional API fields while logging unexpected values.
 
 ---
 
 ## Request Flow
 
-How a typical request is processed:
+A typical request follows this flow:
 
 ```text
-1. User calls: await client.snapshots_list(page_size=50)
-
-2. Generated method calls:
-   await self._request(
-       method='GET',
-       path='snapshots/',
-       params={'page_size': 50},
-       response_model=PaginatedSnapshotList,
-   )
-
-3. _request() method:
-   a) Clean query params (filter None values)
-   b) Build headers (auth, tenant, custom)
-   c) Send HTTP request via httpx
-   d) Handle status codes → raise exceptions
-   e) Parse response with Pydantic model
-   f) Return deserialized object
-
-4. User receives: PaginatedSnapshotList instance
-   - Fully typed
-   - Validated
-   - Ready to use
-```
-
----
-
-## Error Handling
-
-The SDK converts HTTP errors into specific exception types:
-
-| Status | Exception | When |
-|--------|-----------|------|
-| 400 | ValidationError | Request validation failed |
-| 401 | AuthenticationError | Token missing/invalid/expired |
-| 403 | PermissionDeniedError | User lacks permission |
-| 404 | NotFoundError | Resource doesn't exist |
-| 405 | MethodNotAllowedError | HTTP method not supported |
-| 429 | RateLimitError | Rate limit exceeded |
-| 500+ | ServerError | Server-side error |
-| Network | ConnectionError | Can't reach server |
-
-Example error handling:
-
-```python
-try:
-    await client.snapshots_retrieve("missing")
-except NotFoundError:
-    print("Snapshot not found")
-except PermissionDeniedError:
-    print("You don't have permission")
-except ServerError as e:
-    print(f"Server error {e.status_code}: {e.detail}")
-    # Might be transient, could retry with backoff
-except ConnectionError:
-    print("Network error, can't reach server")
-```
-
----
-
-## Configuration Options
-
-### NetDocClient Init Parameters
-
-```python
-NetDocClient(
-    base_url: str,                    # Server URL (required)
-    token: str | None = None,          # API token for auth
-
-    # Advanced options (keyword-only)
-    client_kwargs: dict | None = None, # Extra httpx.AsyncClient kwargs
-    cookies: dict | None = None,       # HTTP cookies to send
-    headers: dict | None = None,       # Custom headers
-    tenant_id: str | None = None,      # Tenant ID for multi-tenant
-    max_retries: int = 5,              # Max retry attempts
-    timeout: float = 30.0,             # Request timeout (seconds)
-    transport: httpx.AsyncBaseTransport | None = None,  # Custom transport
-)
-```
-
-**Common Configurations:**
-
-```python
-# Basic
-client = NetDocClient(base_url="...", token="...")
-
-# With custom headers
-client = NetDocClient(
-    base_url="...",
-    token="...",
-    headers={"X-Request-ID": "my-id"},
-)
-
-# With client customization
-client = NetDocClient(
-    base_url="...",
-    token="...",
-    timeout=60.0,  # Longer timeout
-    max_retries=10,  # More retries
-    client_kwargs={"limits": httpx.Limits(max_connections=10)},
-)
-
-# Multi-tenant (admin user)
-client = NetDocClient(
-    base_url="...",
-    token="admin-token",
-    tenant_id="tenant-uuid",
-)
+1. Application calls a public client method such as snapshots_list().
+2. The method delegates to the shared request implementation.
+3. The request layer builds headers and paths, then sends the HTTP call.
+4. Non-success responses are converted into SDK exceptions.
+5. Success responses are validated and returned as typed Pydantic models.
 ```
 
 ---
 
 ## Best Practices
 
-### 1. Always Use Context Manager
+### Use the context manager for the async client
 
 ```python
-# ✅ Good: Automatic cleanup
-async with NetDocClient(base_url, token) as client:
+async with NetDocClient(base_url="https://netdoc.example.com", token="token") as client:
     await client.snapshots_list()
-
-# ❌ Avoid: Manual cleanup is easy to forget
-client = NetDocClient(base_url, token)
-try:
-    await client.snapshots_list()
-finally:
-    await client.close()
 ```
 
-### 2. Handle Errors Specifically
+### Handle errors explicitly
 
 ```python
-# ✅ Good: Specific error handling
 try:
-    snapshot = await client.snapshots_retrieve("id")
+    await client.snapshots_retrieve("missing-id")
 except NotFoundError:
-    # Handle missing resource
-except ValidationError as e:
-    # Handle validation errors with detailed info
-except ServerError:
-    # Might retry
-except ConnectionError:
-    # Handle network issues
+    print("The requested resource was not found.")
+except ValidationError as exc:
+    print(exc.errors)
 ```
 
-### 3. Use Type Hints
+### Prefer typed models
 
 ```python
-# ✅ Good: IDE autocomplete and type checking
-async def process_snapshots(client: NetDocClient) -> list[str]:
-    snapshots: PaginatedSnapshotList = await client.snapshots_list()
-    return [s.label for s in snapshots.results]
-
-# ❌ Avoid: No type information
-async def process_snapshots(client):
-    snapshots = await client.snapshots_list()
-    return [s.label for s in snapshots.results]
+snapshot = await client.snapshots_retrieve("snapshot-id")
+print(snapshot.label)
 ```
-
-### 4. Pagination
-
-```python
-# ✅ Good: Handle pagination
-async for page in await client.snapshots_list(page_size=100):
-    # Process each page
-
-# ✅ Also good: Get specific page
-result = await client.snapshots_list(page=2, page_size=50)
-```
-
-### 5. Request Body Construction
-
-```python
-from netdoc_sdk.models.snapshots import SnapshotCreate
-
-# ✅ Good: Use model
-snapshot = SnapshotCreate(label="nightly")
-await client.snapshots_create(snapshot)
-
-# ✅ Also good: Use kwargs
-await client.snapshots_create(label="nightly")
-
-# ✅ Dict also works (less safe)
-await client.snapshots_create({"label": "nightly"})
-```
-
----
 
 ## Internal Implementation Details
 
