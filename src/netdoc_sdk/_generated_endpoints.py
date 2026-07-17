@@ -266,7 +266,7 @@ class _GeneratedEndpoints:
     def collectors_heartbeat(
         self, data: JsonMapping | None = None, **fields: Any
     ) -> CollectorDetail:
-        """collectors_heartbeat"""
+        """Send an heartbeat"""
         return self._request(
             'POST',
             'collectors/heartbeat/',

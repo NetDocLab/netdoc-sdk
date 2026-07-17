@@ -1,16 +1,14 @@
-"""Base class shared by the sync and async NetDoc clients.
+"""Shared base implementation for the sync and async NetDoc clients.
 
-All endpoint methods live here as plain ``def`` returning ``self._request(...)``.
-This makes them transparent with respect to sync/async: when ``_request`` is a
-regular method the call resolves immediately; when it is a coroutine the caller
-receives that coroutine and must ``await`` it.  Either way the method body is
-written exactly once.
+All endpoint methods are defined here as plain ``def`` calls that delegate to
+``self._request(...)``. This keeps the public API consistent whether the
+underlying transport is synchronous or asynchronous.
 
 Subclasses must implement:
-    - ``_request``       (sync or async)
-    - ``_make_client``   (returns httpx.Client or httpx.AsyncClient)
-    - context manager protocol (``__enter__``/``__exit__`` or async equivalents)
-    - ``from_credentials`` classmethod
+    - ``_request`` (sync or async)
+    - ``_make_client`` (returns ``httpx.Client`` or ``httpx.AsyncClient``)
+    - the context manager protocol (``__enter__``/``__exit__`` or async equivalents)
+    - ``from_credentials`` as a classmethod
 """
 
 import logging
@@ -144,12 +142,12 @@ class _NetDocClientBase(_GeneratedEndpoints):
         """Return the number of seconds to wait before retrying a 429 response."""
         default = 1.0
         if not value:
-            logger.warning('Retry-After header missing, using %.1fs', default)
+            logger.warning('Retry-After header missing; using %.1fs', default)
             return default
         try:
             return float(value)
         except (ValueError, TypeError):
-            logger.warning('Retry-After value %r is invalid, using %.1fs', value, default)
+            logger.warning('Retry-After value %r is invalid; using %.1fs', value, default)
             return default
 
     def _raise_for_error(self, response: httpx.Response) -> None:
@@ -190,10 +188,10 @@ class _NetDocClientBase(_GeneratedEndpoints):
         response_model: Any,
         expected: set[int],
     ) -> Any:
-        """Deserialise a successful response into the expected model.
+        """Deserialize a successful response into the expected model.
 
-        Extracted from ``_request`` so both sync and async implementations can
-        reuse the same deserialization and edge-case logic.
+        This logic is shared by both sync and async implementations so that the
+        same validation and edge-case handling is applied consistently.
         """
         from pydantic import TypeAdapter
 

@@ -1,4 +1,4 @@
-"""Synchronous and asynchronous HTTP clients for the NetDoc API."""
+"""Asynchronous and synchronous HTTP clients for the NetDoc API."""
 
 from __future__ import annotations
 
@@ -20,11 +20,11 @@ logger = logging.getLogger('netdoc_sdk')
 
 
 class NetDocClient(_NetDocClientBase):
-    """Async client for the NetDoc API.
+    """Asynchronous client for the NetDoc API.
 
-    Intended for use in asyncio contexts (async collectors, FastAPI, etc.).
-    All endpoint methods inherited from ``_NetDocClientBase`` must be
-    ``await``-ed by the caller.
+    Intended for use in asyncio environments such as async collectors, FastAPI
+    applications, and other non-blocking services. Endpoint methods inherited
+    from ``_NetDocClientBase`` must be awaited by the caller.
     """
 
     _client: httpx.AsyncClient | None = None
@@ -128,10 +128,10 @@ class NetDocClient(_NetDocClientBase):
 class NetDocSyncClient(_NetDocClientBase):
     """Synchronous client for the NetDoc API.
 
-    Intended for use in thread-based collectors (nornir + netmiko) and any
-    other context where an asyncio event loop is not available or desirable.
-    All endpoint methods inherited from ``_NetDocClientBase`` return values
-    directly; no ``await`` is needed.
+    Intended for use in thread-based collectors, scripts, and other contexts
+    where an asyncio event loop is not available or desirable. Endpoint methods
+    inherited from ``_NetDocClientBase`` return values directly and do not
+    require ``await``.
     """
 
     _client: httpx.Client | None = None
