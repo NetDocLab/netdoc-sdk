@@ -737,11 +737,13 @@ class TestDiscoveryRun:
         )
 
         # Create canonical device
+        site = await admin_client.sites_add(name='test-site')
         canonical_device = await admin_client.canonical_devices_add(
             label='r1.example.com',
             discovery_mode='netmiko:cisco:ios:ssh',
             is_discoverable=True,
             identifiers={'hostname': 'r1'},
+            site=site.id,
         )
 
         # Create collector (heartbeat)
