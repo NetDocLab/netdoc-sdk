@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.6.8](https://github.com/NetDocLab/netdoc-sdk/compare/v0.6.7...v0.6.8) (2026-07-17)
+
+
+### Bug Fixes
+
+* update api ([49a51ff](https://github.com/NetDocLab/netdoc-sdk/commit/49a51fffa8cad33dc4a59ec2da88bf6d482dc64d))
+* update openapi ([05494cd](https://github.com/NetDocLab/netdoc-sdk/commit/05494cdb7933c30b5dcb6e164920358774f25ea2))
+
 ## [0.6.7](https://github.com/NetDocLab/netdoc-sdk/compare/v0.6.6...v0.6.7) (2026-07-10)
 
 
