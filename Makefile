@@ -31,5 +31,6 @@ tests: ## Run tests (pytest only)
 	poetry run pytest tests/unit -v --tb=short
 	DJANGO_ENV=test poetry run pytest tests/integration -v --tb=short
 
-update: ## Update models and endpoints from openapi.yaml
+update: ## Update poetry, models and endpoints from openapi.yaml
+	poetry lock
 	poetry run python ./update_data.py
