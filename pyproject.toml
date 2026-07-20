@@ -46,6 +46,9 @@ build-backend = "hatchling.build"
 # Poetry
 # ---------------------------------------------------------------------------
 
+[tool.poetry]
+name = "netdoc-sdk"
+
 [tool.poetry.group.dev.dependencies]
 # Testing (unit tests)
 factory-boy = ">=3.3"
@@ -66,6 +69,7 @@ psycopg = {extras = ["binary", "pool"], version = "^3.3.4"}
 pytest-django = "^4.12.0"
 
 # Code quality
+cyclonedx-bom = "^7.3.0"
 mypy = ">=1.7"
 ruff = ">=0.1"
 
