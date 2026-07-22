@@ -31,6 +31,7 @@ tests: ## Run tests (pytest only)
 	poetry run pytest tests/unit -v --tb=short
 	DJANGO_ENV=test poetry run pytest tests/integration -v --tb=short
 
-update: ## Update poetry, models and endpoints from openapi.yaml
+update: ## Update poetry, SBOM, models and endpoints from openapi.yaml
 	poetry lock
 	poetry run python ./update_data.py
+	poetry run cyclonedx-py poetry --without dev -o sbom-cyclonedx.json
