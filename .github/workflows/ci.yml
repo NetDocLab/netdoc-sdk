@@ -10,6 +10,7 @@ env:
   DJANGO_ENCRYPTION_KEY: django-insecure-CHANGE-ME-IN-PRODUCTION-ERR=
   CELERY_BROKER_URL: not-used-in-tests
   SECURE_SSL_REDIRECT: false
+  SDK_STRICT: true
 on:
   pull_request:
     types: [opened, synchronize, reopened]
