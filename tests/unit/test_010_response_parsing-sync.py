@@ -33,6 +33,7 @@ class TestResponseParsingSyncClient:
                             'id': str(uuid.uuid4()),
                             'name': 'milan',
                             'site_type': 'branch',
+                            'is_default': True,
                             'address': '',
                             'city': '',
                             'region': '',
