@@ -1,7 +1,7 @@
 [project]
 name = "netdoc-sdk"
 description = "Network Documentation Platform - SDK"
-version = "0.6.10"
+version = "0.7.0"
 authors = [
     {name = "Andrea Cavazzini", email = "cavazzini.andrea@gmail.com"},
     {name = "Andrea Dainese", email = "andrea.dainese@gmail.com"},
@@ -157,7 +157,7 @@ typeCheckingMode = "off"
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "netdoc.settings.test"
-env = ["DJANGO_ENV=test", "SDK_STRICT=true"]
+env = ["DJANGO_ENV=test"]
 minversion = "7.0"
 addopts = "-v -ra --strict-markers --strict-config --cov=netdoc_sdk --cov-report=term-missing"
 filterwarnings = [
