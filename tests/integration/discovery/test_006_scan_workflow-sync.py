@@ -1,8 +1,7 @@
 import pytest
 from apps.discovery.models import RawOutput
-from asgiref.sync import sync_to_async
 
-from netdoc_sdk.client import NetDocClient
+from netdoc_sdk.client import NetDocSyncClient as NetDocClient
 
 RAW_SHOW_VERSION = """
 Cisco IOS Software, Catalyst 4500 L3 Switch Software (cat4500e-ENTSERVICESK9-M), Version 12.2(54)SG1, RELEASE SOFTWARE (fc1)
@@ -721,50 +720,60 @@ PARSED_SHOW_INTERFACES = [
 
 
 @pytest.mark.django_db(databases=['default', 'logs'])
-class TestDiscoveryRun:
-    async def test_discoveries_job(self, admin_client, live_server):
+class TestScanWorkflowSyncClient:
+    def test_workflow_existent(self, admin_sync_client, live_server):
         collector_username = 'test-collector-user'
         collector_password = 'test-password'
 
         # Add collector user
-        await admin_client.users_add(
+        admin_sync_client.users_add(
             username=collector_username, password=collector_password, role='collector'
         )
-        collector_client = await NetDocClient.from_credentials(
+        collector_client = NetDocClient.from_credentials(
             base_url=live_server.url,
             username=collector_username,
             password=collector_password,
         )
 
         # Create canonical device
-        site = await admin_client.sites_add(name='test-site')
-        canonical_device = await admin_client.canonical_devices_add(
-            label='r1.example.com',
+        credential = admin_sync_client.credentials_add(
+            label='test', username='admin', password='cisco'
+        )
+        site = admin_sync_client.sites_add(name='test-site')
+        canonical_device = admin_sync_client.canonical_devices_add(
+            label='router1.example.com',
             discovery_mode='netmiko:cisco:ios:ssh',
             is_discoverable=True,
-            identifiers={'hostname': 'r1'},
+            identifiers={'hostname': 'router1'},
             site=site.id,
+            credential=credential.id,
         )
 
         # Create collector (heartbeat)
-        collector = await collector_client.collectors_heartbeat(
-            name='collector@host.example.com', version='0.1.0'
+        collector = collector_client.collectors_heartbeat(
+            name='collector@host.example.com',
+            version='0.1.0',
         )
 
         # Activate collector
-        await admin_client.collectors_update(collector.id, is_active=True)
+        admin_sync_client.collectors_update(
+            collector.id,
+            is_active=True,
+            scan_networks=True,
+            network_ranges=['10.0.1.0/24', '10.0.2.0/24'],
+        )
 
         # Create run
-        discoveries_run = await admin_client.discoveries_add()
-        res = await admin_client.discoveries_list()
+        discoveries_run = admin_sync_client.discoveries_add()
+        res = admin_sync_client.discoveries_list()
         assert res.count == 1
-        await admin_client.discoveries_get(id=discoveries_run.id)
+        admin_sync_client.discoveries_get(id=discoveries_run.id)
 
         # Verify jobs
-        await admin_client.discoveries_jobs_list(id=discoveries_run.id)
+        admin_sync_client.discoveries_jobs_list(id=discoveries_run.id)
 
         # Claim job
-        res = await collector_client.discovery_jobs_claim()
+        res = collector_client.discovery_jobs_claim()
         claim_token = res.claim_token
         idempotency_key = res.idempotency_key
         job_id = res.id
@@ -772,28 +781,10 @@ class TestDiscoveryRun:
         # Verify inventory
         inventory = res.inventory
         assert len(inventory['all']['hosts']) == 1
-        assert len(res.known_ip_addresses) == 0
-        assert len(res.network_ranges) == 0
-        assert len(res.credentials) == 0
 
         # Push discovered devices
-        payload = {
+        discovery_payload = {
             'canonical_device': canonical_device.id,
-            'logs': [
-                {
-                    'level': 'INFO',
-                    'message': f"Running netmiko command 'show version' on {canonical_device.label}",
-                    'context': {'cmdline': 'poetry run netdoc-collector'},
-                    'exception_type': 'RawOutput',
-                    'traceback': 'Internal Server Error: /admin/discovery/rawoutput/ Traceback (most recent call last)',
-                    'module': 'log',
-                    'func_name': 'log_message',
-                    'line_no': 249,
-                    'hostname': 'collector.example.com',
-                    'process': 13223,
-                    'thread_name': 'Thread-106 (process_request_thread)',
-                }
-            ],
             'raw_payload': {
                 'raw_outputs': {
                     'show version': RAW_SHOW_VERSION,
@@ -806,69 +797,186 @@ class TestDiscoveryRun:
             },
             'idempotency_key': idempotency_key,
         }
-        await collector_client.discovery_jobs_push_discovered_device(
+        scan_payload = {
+            'raw_payload': {
+                'raw_outputs': {
+                    'show version': RAW_SHOW_VERSION,
+                    'show interfaces': RAW_SHOW_INTERFACES,
+                },
+                'parsed_outputs': {
+                    'show version': PARSED_SHOW_VERSION,
+                    'show interfaces': PARSED_SHOW_INTERFACES,
+                },
+            },
+            'idempotency_key': idempotency_key,
+            'discovery_mode': 'netmiko:cisco:ios:ssh',
+            'discovery_address': '10.0.3.254',
+            'credential': str(credential.id),
+        }
+        collector_client.discovery_jobs_push_discovered_device(
+            id=job_id, claim_token=claim_token, **discovery_payload
+        )
+        collector_client.discovery_jobs_push_discovered_device(
+            id=job_id, claim_token=claim_token, **scan_payload
+        )
+
+        # Complete job
+        payload = {
+            'status': 'completed',
+        }
+        collector_client.discovery_jobs_complete(id=job_id, claim_token=claim_token, **payload)
+
+        # Verify run
+        run = admin_sync_client.discoveries_get(id=discoveries_run.id)
+        assert run.status.value == 'completed'
+
+        # Verify jobs
+        jobs = admin_sync_client.discoveries_jobs_list(id=discoveries_run.id)
+        assert jobs.count == 1
+        assert jobs.results[0].status.value == 'completed'
+
+        # Verify raw logs
+        raw_outputs = RawOutput.objects.unfiltered().all()
+        assert len(raw_outputs) == 2
+
+        discovery_raw_output = raw_outputs.first()
+        raw_payload = discovery_raw_output.raw_payload
+        assert raw_payload is not None
+        assert discovery_raw_output.status == 'parsed'
+        # Check canonical device
+        assert discovery_raw_output.canonical_device is not None
+        # Check raw output
+        assert 'raw_outputs' in raw_payload
+        assert 'show version' in raw_payload['raw_outputs']
+        assert len(raw_payload['raw_outputs']['show version']) > 10
+        # Check parsed output
+        assert 'parsed_outputs' in raw_payload
+        assert 'show version' in raw_payload['parsed_outputs']
+
+        scan_raw_output = raw_outputs.last()
+        raw_payload = scan_raw_output.raw_payload
+        assert raw_payload is not None
+        assert scan_raw_output.status == 'duplicated'
+        # Check canonical device
+        assert scan_raw_output.canonical_device is None
+
+        # Verify devices
+        devices = admin_sync_client.devices_list()
+        assert devices.count == 1
+
+        # Verify canonical devices
+        canonical_devices = admin_sync_client.canonical_devices_list()
+        assert canonical_devices.count == 1
+        canonical_device = canonical_devices.results[0]
+        assert '10.0.3.254' in canonical_device.secondary_ip_addresses
+
+    def test_workflow_new(self, admin_sync_client, live_server):
+        collector_username = 'test-collector-user'
+        collector_password = 'test-password'
+
+        # Add collector user
+        admin_sync_client.users_add(
+            username=collector_username, password=collector_password, role='collector'
+        )
+        collector_client = NetDocClient.from_credentials(
+            base_url=live_server.url,
+            username=collector_username,
+            password=collector_password,
+        )
+
+        # Create credential
+        credential = admin_sync_client.credentials_add(
+            label='test', username='admin', password='cisco'
+        )
+        admin_sync_client.sites_add(name='test-site')
+
+        # Create collector (heartbeat)
+        collector = collector_client.collectors_heartbeat(
+            name='collector@host.example.com',
+            version='0.1.0',
+        )
+
+        # Activate collector
+        admin_sync_client.collectors_update(
+            collector.id,
+            is_active=True,
+            scan_networks=True,
+            network_ranges=['10.0.1.0/24', '10.0.2.0/24'],
+        )
+
+        # Create run
+        discoveries_run = admin_sync_client.discoveries_add()
+        res = admin_sync_client.discoveries_list()
+        assert res.count == 1
+        admin_sync_client.discoveries_get(id=discoveries_run.id)
+
+        # Verify jobs
+        admin_sync_client.discoveries_jobs_list(id=discoveries_run.id)
+
+        # Claim job
+        res = collector_client.discovery_jobs_claim()
+        claim_token = res.claim_token
+        idempotency_key = res.idempotency_key
+        job_id = res.id
+
+        # Push discovered devices
+        payload = {
+            'raw_payload': {
+                'raw_outputs': {
+                    'show version': RAW_SHOW_VERSION,
+                    'show interfaces': RAW_SHOW_INTERFACES,
+                },
+                'parsed_outputs': {
+                    'show version': PARSED_SHOW_VERSION,
+                    'show interfaces': PARSED_SHOW_INTERFACES,
+                },
+            },
+            'idempotency_key': idempotency_key,
+            'discovery_mode': 'netmiko:cisco:ios:ssh',
+            'discovery_address': '10.0.3.254',
+            'credential': str(credential.id),
+        }
+        collector_client.discovery_jobs_push_discovered_device(
             id=job_id, claim_token=claim_token, **payload
         )
 
         # Complete job
         payload = {
             'status': 'completed',
-            'logs': [
-                {
-                    'level': 'INFO',
-                    'message': 'Closing job',
-                    'context': {'cmdline': 'poetry run netdoc-collector'},
-                    'exception_type': 'DiscoveryJob',
-                    'traceback': 'Internal Server Error: /admin/discoveries/ Traceback (most recent call last)',
-                    'module': 'log',
-                    'func_name': 'log_message',
-                    'line_no': 24,
-                    'hostname': 'collector.example.com',
-                    'process': 132,
-                    'thread_name': 'Thread-109 (process_request_thread)',
-                }
-            ],
         }
-        await collector_client.discovery_jobs_complete(
-            id=job_id, claim_token=claim_token, **payload
-        )
+        collector_client.discovery_jobs_complete(id=job_id, claim_token=claim_token, **payload)
 
         # Verify run
-        run = await admin_client.discoveries_get(id=discoveries_run.id)
+        run = admin_sync_client.discoveries_get(id=discoveries_run.id)
         assert run.status.value == 'completed'
 
         # Verify jobs
-        jobs = await admin_client.discoveries_jobs_list(id=discoveries_run.id)
+        jobs = admin_sync_client.discoveries_jobs_list(id=discoveries_run.id)
         assert jobs.count == 1
         assert jobs.results[0].status.value == 'completed'
 
-        # Get logs
-        logs = await admin_client.logs_list()
-        assert logs.count == 2
-
-        # Get raw logs
-        raw_logs = await admin_client.discovery_jobs_logs(id=job_id)
-        assert raw_logs.count == 1
-        assert raw_logs.results[0].status.value == 'parsed'
-
         # Verify raw logs
-        raw_output = await sync_to_async(RawOutput.objects.unfiltered().first)()
-        assert raw_output is not None
-        assert raw_output.status == 'parsed'
+        raw_outputs = RawOutput.objects.unfiltered().all()
+        raw_output = raw_outputs.first()
         raw_payload = raw_output.raw_payload
-
+        assert raw_payload is not None
+        assert raw_output.status == 'parsed'
+        # Check canonical device
+        assert raw_output.canonical_device is None
         # Check raw output
         assert 'raw_outputs' in raw_payload
         assert 'show version' in raw_payload['raw_outputs']
         assert len(raw_payload['raw_outputs']['show version']) > 10
-
         # Check parsed output
         assert 'parsed_outputs' in raw_payload
         assert 'show version' in raw_payload['parsed_outputs']
 
-        # Get snapshot list
-        snapshots = await admin_client.snapshots_list()
-        assert snapshots.count == 1
+        # Verify devices
+        devices = admin_sync_client.devices_list()
+        assert devices.count == 1
 
-        # Get single snapshot
-        await admin_client.snapshots_get(snapshots.results[0].id)
+        # Verify canonical devices
+        canonical_devices = admin_sync_client.canonical_devices_list()
+        assert canonical_devices.count == 1
+        canonical_device = canonical_devices.results[0]
+        assert '10.0.3.254' in canonical_device.mgmt_address

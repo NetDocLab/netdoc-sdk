@@ -771,6 +771,9 @@ class TestDiscoveryRunSyncClient:
         # Verify inventory
         inventory = res.inventory
         assert len(inventory['all']['hosts']) == 1
+        assert len(res.known_ip_addresses) == 0
+        assert len(res.network_ranges) == 0
+        assert len(res.credentials) == 0
 
         # Push discovered devices
         payload = {
@@ -809,6 +812,21 @@ class TestDiscoveryRunSyncClient:
         # Complete job
         payload = {
             'status': 'completed',
+            'logs': [
+                {
+                    'level': 'INFO',
+                    'message': 'Closing job',
+                    'context': {'cmdline': 'poetry run netdoc-collector'},
+                    'exception_type': 'DiscoveryJob',
+                    'traceback': 'Internal Server Error: /admin/discoveries/ Traceback (most recent call last)',
+                    'module': 'log',
+                    'func_name': 'log_message',
+                    'line_no': 24,
+                    'hostname': 'collector.example.com',
+                    'process': 132,
+                    'thread_name': 'Thread-109 (process_request_thread)',
+                }
+            ],
         }
         collector_client.discovery_jobs_complete(id=job_id, claim_token=claim_token, **payload)
 
@@ -823,7 +841,7 @@ class TestDiscoveryRunSyncClient:
 
         # Get logs
         logs = admin_sync_client.logs_list()
-        assert logs.count == 1
+        assert logs.count == 2
 
         # Get raw logs
         raw_logs = admin_sync_client.discovery_jobs_logs(id=job_id)
