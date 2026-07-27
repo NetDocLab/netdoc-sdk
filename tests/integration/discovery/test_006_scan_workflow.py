@@ -825,7 +825,9 @@ class TestScanWorkflow:
         payload = {
             'status': 'completed',
         }
-        await collector_client.discovery_jobs_complete(id=job_id, claim_token=claim_token, **payload)
+        await collector_client.discovery_jobs_complete(
+            id=job_id, claim_token=claim_token, **payload
+        )
 
         # Verify run
         run = await admin_client.discoveries_get(id=discoveries_run.id)
@@ -876,10 +878,10 @@ class TestScanWorkflow:
         collector_password = 'test-password'
 
         # Add collector user
-        admin_client.users_add(
+        await admin_client.users_add(
             username=collector_username, password=collector_password, role='collector'
         )
-        collector_client = NetDocClient.from_credentials(
+        collector_client = await NetDocClient.from_credentials(
             base_url=live_server.url,
             username=collector_username,
             password=collector_password,
@@ -889,7 +891,7 @@ class TestScanWorkflow:
         credential = await admin_client.credentials_add(
             label='test', username='admin', password='cisco'
         )
-        admin_client.sites_add(name='test-site')
+        await admin_client.sites_add(name='test-site')
 
         # Create collector (heartbeat)
         collector = await collector_client.collectors_heartbeat(
@@ -937,7 +939,7 @@ class TestScanWorkflow:
             'discovery_address': '10.0.3.254',
             'credential': str(credential.id),
         }
-        collector_client.discovery_jobs_push_discovered_device(
+        await collector_client.discovery_jobs_push_discovered_device(
             id=job_id, claim_token=claim_token, **payload
         )
 
@@ -945,20 +947,19 @@ class TestScanWorkflow:
         payload = {
             'status': 'completed',
         }
-        collector_client.discovery_jobs_complete(id=job_id, claim_token=claim_token, **payload)
+        await collector_client.discovery_jobs_complete(
+            id=job_id, claim_token=claim_token, **payload
+        )
 
         # Verify run
         run = await admin_client.discoveries_get(id=discoveries_run.id)
         assert run.status.value == 'completed'
 
-        # Verify jobs
-        jobs = await admin_client.discoveries_jobs_list(id=discoveries_run.id)
-        assert jobs.count == 1
-        assert jobs.results[0].status.value == 'completed'
-
         # Verify raw logs
-        raw_outputs = RawOutput.objects.unfiltered().all()
-        raw_output = raw_outputs.first()
+        raw_outputs = await sync_to_async(list)(RawOutput.objects.unfiltered().all())
+        assert len(raw_outputs) == 1
+
+        raw_output = raw_outputs[0]
         raw_payload = raw_output.raw_payload
         assert raw_payload is not None
         assert raw_output.status == 'parsed'

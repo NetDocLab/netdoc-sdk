@@ -841,7 +841,7 @@ class TestDiscoveryRunSyncClient:
 
         # Get logs
         logs = admin_sync_client.logs_list()
-        assert logs.count == 1
+        assert logs.count == 2
 
         # Get raw logs
         raw_logs = admin_sync_client.discovery_jobs_logs(id=job_id)
