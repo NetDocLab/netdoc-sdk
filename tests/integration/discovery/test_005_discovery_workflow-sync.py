@@ -812,6 +812,21 @@ class TestDiscoveryRunSyncClient:
         # Complete job
         payload = {
             'status': 'completed',
+            'logs': [
+                {
+                    'level': 'INFO',
+                    'message': 'Closing job',
+                    'context': {'cmdline': 'poetry run netdoc-collector'},
+                    'exception_type': 'DiscoveryJob',
+                    'traceback': 'Internal Server Error: /admin/discoveries/ Traceback (most recent call last)',
+                    'module': 'log',
+                    'func_name': 'log_message',
+                    'line_no': 24,
+                    'hostname': 'collector.example.com',
+                    'process': 132,
+                    'thread_name': 'Thread-109 (process_request_thread)',
+                }
+            ],
         }
         collector_client.discovery_jobs_complete(id=job_id, claim_token=claim_token, **payload)
 
