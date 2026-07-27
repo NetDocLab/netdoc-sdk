@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.7.0](https://github.com/NetDocLab/netdoc-sdk/compare/v0.6.10...v0.7.0) (2026-07-27)
+
+
+### Bug Fixes
+
+* linting ([593dbd6](https://github.com/NetDocLab/netdoc-sdk/commit/593dbd69add1073f5818f2fe13c172a8b0953ba6))
+* update SDK to support scan ([a358d04](https://github.com/NetDocLab/netdoc-sdk/commit/a358d04c34c0345acb05f6f74edd782a6c6010c7))
+
 ## [0.6.10](https://github.com/NetDocLab/netdoc-sdk/compare/v0.6.9...v0.6.10) (2026-07-22)
 
 
