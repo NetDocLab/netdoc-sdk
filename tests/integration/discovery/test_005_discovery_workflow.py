@@ -772,6 +772,9 @@ class TestDiscoveryRun:
         # Verify inventory
         inventory = res.inventory
         assert len(inventory['all']['hosts']) == 1
+        assert len(res.known_ip_addresses) == 0
+        assert len(res.network_ranges) == 0
+        assert len(res.credentials) == 0
 
         # Push discovered devices
         payload = {
