@@ -34,4 +34,4 @@ tests: ## Run tests (pytest only)
 update: ## Update poetry, SBOM, models and endpoints from openapi.yaml
 	poetry lock
 	poetry run python ./update_data.py
-	poetry run cyclonedx-py poetry --without dev -o sbom-cyclonedx.json
+	poetry run cyclonedx-py poetry --with main -o sbom-cyclonedx.json
