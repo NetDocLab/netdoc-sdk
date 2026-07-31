@@ -1,7 +1,7 @@
 [project]
 name = "netdoc-sdk"
 description = "Network Documentation Platform - SDK"
-version = "0.7.0"
+version = "0.7.1"
 authors = [
     {name = "Andrea Cavazzini", email = "cavazzini.andrea@gmail.com"},
     {name = "Andrea Dainese", email = "andrea.dainese@gmail.com"},
