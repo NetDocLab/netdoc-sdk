@@ -54,6 +54,13 @@ _OPERATION_SUFFIX_MAP = {
     # 'list' stays as-is
 }
 
+# Success status codes that may carry a JSON body, in lookup priority order.
+# The first code found with a JSON schema determines the response model.
+_BODY_SUCCESS_CODES = ('201', '200', '202')
+
+# All success status codes the generator recognises (204 never has a body).
+_SUCCESS_CODES = ('200', '201', '202', '204')
+
 
 def _normalize_operation_id(operation_id: str) -> str:
     """Remap OpenAPI operationId suffixes to SDK naming conventions.
@@ -121,8 +128,12 @@ def _strip_api_prefix(path: str) -> str:
 
 
 def _resolve_response_model(responses: dict) -> str:
-    """Return the Python type name for the successful response, or 'None'."""
-    for status in ('201', '200'):
+    """Return the Python type name for the successful response, or 'None'.
+
+    Body-bearing success codes are checked in _BODY_SUCCESS_CODES order;
+    the first one declaring a JSON schema wins.
+    """
+    for status in _BODY_SUCCESS_CODES:
         content = responses.get(status, {}).get('content', {}).get('application/json', {})
         schema = content.get('schema', {})
         if '$ref' in schema:
@@ -136,9 +147,9 @@ def _resolve_expected_status(responses: dict) -> int | list[int]:
     """Return expected status code(s) for an operation.
 
     Returns a list when the endpoint legitimately returns multiple success
-    codes (e.g. 200 with body or 204 with no body).
+    codes (e.g. 200 with body, 202 accepted, or 204 with no body).
     """
-    success_codes = [int(s) for s in ('200', '201', '204') if s in responses]
+    success_codes = [int(s) for s in _SUCCESS_CODES if s in responses]
     if len(success_codes) > 1:
         return success_codes
     return success_codes[0] if success_codes else 200
@@ -167,10 +178,10 @@ def _build_method(
     return_type = _resolve_response_model(responses)
     expected_status = _resolve_expected_status(responses)
 
-    # When both 200 and 204 are valid, the response may be None
+    # When 204 coexists with a body-bearing success code, the response may be None
     has_204 = '204' in responses
-    has_200_or_201 = '200' in responses or '201' in responses
-    if has_204 and has_200_or_201 and return_type != 'None':
+    has_body_code = any(s in responses for s in _BODY_SUCCESS_CODES)
+    if has_204 and has_body_code and return_type != 'None':
         return_type = f'{return_type} | None'
 
     # Format expected_status for the method body

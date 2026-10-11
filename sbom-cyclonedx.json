@@ -65,7 +65,7 @@
       "version": "0.7.0"
     },
     {
-      "bom-ref": "anyio@4.13.0",
+      "bom-ref": "anyio@4.14.2",
       "description": "High-level concurrency and networking framework on top of asyncio or Trio",
       "externalReferences": [
         {
@@ -73,28 +73,28 @@
           "hashes": [
             {
               "alg": "SHA-256",
-              "content": "08b310f9e24a9594186fd75b4f73f4a4152069e3853f1ed8bfbf58369f4ad708"
+              "content": "9f505dda5ac9f0c8309b5e8bd445a8c2bf7246f3ce950121e45ea15bc41d1494"
             }
           ],
           "type": "distribution",
-          "url": "https://pypi.org/simple/anyio/#anyio-4.13.0-py3-none-any.whl"
+          "url": "https://pypi.org/simple/anyio/#anyio-4.14.2-py3-none-any.whl"
         },
         {
           "comment": "from legacy-api",
           "hashes": [
             {
               "alg": "SHA-256",
-              "content": "334b70e641fd2221c1505b3890c69882fe4a2df910cba14d97019b90b24439dc"
+              "content": "cfa139f3ed1a23ee8f88a145ddb5ac7605b8bbfd8592baacd7ce3d8bb4313c7f"
             }
           ],
           "type": "distribution",
-          "url": "https://pypi.org/simple/anyio/#anyio-4.13.0.tar.gz"
+          "url": "https://pypi.org/simple/anyio/#anyio-4.14.2.tar.gz"
         }
       ],
       "name": "anyio",
-      "purl": "pkg:pypi/anyio@4.13.0",
+      "purl": "pkg:pypi/anyio@4.14.2",
       "type": "library",
-      "version": "4.13.0"
+      "version": "4.14.2"
     },
     {
       "bom-ref": "argcomplete@3.7.0",
@@ -18100,7 +18100,7 @@
         "idna@3.13",
         "typing-extensions@4.15.0"
       ],
-      "ref": "anyio@4.13.0"
+      "ref": "anyio@4.14.2"
     },
     {
       "ref": "argcomplete@3.7.0"
@@ -18341,7 +18341,7 @@
     },
     {
       "dependsOn": [
-        "anyio@4.13.0",
+        "anyio@4.14.2",
         "certifi@2026.4.22",
         "httpcore@1.0.9",
         "idna@3.13"
@@ -18603,6 +18603,7 @@
     },
     {
       "dependsOn": [
+        "anyio@4.14.2",
         "celery@5.6.3",
         "click@8.4.1",
         "cryptography@50.0.0",
@@ -18948,7 +18949,7 @@
       "name": "netdoc-sdk",
       "type": "application"
     },
-    "timestamp": "2026-10-11T07:00:30.553162+00:00",
+    "timestamp": "2026-10-11T08:11:42.027911+00:00",
     "tools": {
       "components": [
         {
@@ -19052,7 +19053,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:46238623-d40b-4f66-bc11-d927503af89a",
+  "serialNumber": "urn:uuid:eb28ad54-7abd-44e7-b94b-62fb2ddf6c3b",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",
