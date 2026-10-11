@@ -5161,7 +5161,7 @@
       "version": "11.11.0"
     },
     {
-      "bom-ref": "datamodel-code-generator@0.66.3",
+      "bom-ref": "datamodel-code-generator@0.81.0",
       "description": "Datamodel Code Generator",
       "externalReferences": [
         {
@@ -5169,22 +5169,22 @@
           "hashes": [
             {
               "alg": "SHA-256",
-              "content": "7c1b44910951efea0e109f64243acb9721f6f7cd45b15635df17bd0829b24244"
+              "content": "82ff0c295685065a83c530ce42ec03fc75b7ca01e72083eb8232d68f7637013a"
             }
           ],
           "type": "distribution",
-          "url": "https://pypi.org/simple/datamodel-code-generator/#datamodel_code_generator-0.66.3-py3-none-any.whl"
+          "url": "https://pypi.org/simple/datamodel-code-generator/#datamodel_code_generator-0.81.0-py3-none-any.whl"
         },
         {
           "comment": "from legacy-api",
           "hashes": [
             {
               "alg": "SHA-256",
-              "content": "739f36b42d8131359a82cb25b704444581114e14611344538a61465d1743c6ec"
+              "content": "3b4d1639cc7430f7e34fddc3827fb5d3eb0a4f5394750890c46ba2a9d56e3ee2"
             }
           ],
           "type": "distribution",
-          "url": "https://pypi.org/simple/datamodel-code-generator/#datamodel_code_generator-0.66.3.tar.gz"
+          "url": "https://pypi.org/simple/datamodel-code-generator/#datamodel_code_generator-0.81.0.tar.gz"
         }
       ],
       "name": "datamodel-code-generator",
@@ -5198,9 +5198,9 @@
           "value": "http"
         }
       ],
-      "purl": "pkg:pypi/datamodel-code-generator@0.66.3",
+      "purl": "pkg:pypi/datamodel-code-generator@0.81.0",
       "type": "library",
-      "version": "0.66.3"
+      "version": "0.81.0"
     },
     {
       "bom-ref": "decorator@5.2.1",
@@ -5888,7 +5888,7 @@
       "version": "2.6.19"
     },
     {
-      "bom-ref": "idna@3.13",
+      "bom-ref": "idna@3.20",
       "description": "Internationalized Domain Names in Applications (IDNA)",
       "externalReferences": [
         {
@@ -5896,28 +5896,28 @@
           "hashes": [
             {
               "alg": "SHA-256",
-              "content": "892ea0cde124a99ce773decba204c5552b69c3c67ffd5f232eb7696135bc8bb3"
+              "content": "ab7ae7122974553370f0bdb919e1a960b2cd1bc1ef0276416d896db81c14582c"
             }
           ],
           "type": "distribution",
-          "url": "https://pypi.org/simple/idna/#idna-3.13-py3-none-any.whl"
+          "url": "https://pypi.org/simple/idna/#idna-3.20-py3-none-any.whl"
         },
         {
           "comment": "from legacy-api",
           "hashes": [
             {
               "alg": "SHA-256",
-              "content": "585ea8fe5d69b9181ec1afba340451fba6ba764af97026f92a91d4eef164a242"
+              "content": "a7db850025b95ded1eae8a46181a1a6c56c92c96f0e2b005d9ff8dc0210cab44"
             }
           ],
           "type": "distribution",
-          "url": "https://pypi.org/simple/idna/#idna-3.13.tar.gz"
+          "url": "https://pypi.org/simple/idna/#idna-3.20.tar.gz"
         }
       ],
       "name": "idna",
-      "purl": "pkg:pypi/idna@3.13",
+      "purl": "pkg:pypi/idna@3.20",
       "type": "library",
-      "version": "3.13"
+      "version": "3.20"
     },
     {
       "bom-ref": "inflect@7.5.0",
@@ -10089,7 +10089,7 @@
       "version": "0.2.2"
     },
     {
-      "bom-ref": "mkdocs-material@9.7.6",
+      "bom-ref": "mkdocs-material@9.7.7",
       "description": "Documentation that simply works",
       "externalReferences": [
         {
@@ -10097,22 +10097,22 @@
           "hashes": [
             {
               "alg": "SHA-256",
-              "content": "71b84353921b8ea1ba84fe11c50912cc512da8fe0881038fcc9a0761c0e635ba"
+              "content": "8ea9bb1737a5b524a5f9dcf2e1b4ebda8274ae3008aa7845720a97083bef708f"
             }
           ],
           "type": "distribution",
-          "url": "https://pypi.org/simple/mkdocs-material/#mkdocs_material-9.7.6-py3-none-any.whl"
+          "url": "https://pypi.org/simple/mkdocs-material/#mkdocs_material-9.7.7-py3-none-any.whl"
         },
         {
           "comment": "from legacy-api",
           "hashes": [
             {
               "alg": "SHA-256",
-              "content": "00bdde50574f776d328b1862fe65daeaf581ec309bd150f7bff345a098c64a69"
+              "content": "c0649c065b1b0512d60aad8c10f947f8e455284475239b364b610f2deb4d0855"
             }
           ],
           "type": "distribution",
-          "url": "https://pypi.org/simple/mkdocs-material/#mkdocs_material-9.7.6.tar.gz"
+          "url": "https://pypi.org/simple/mkdocs-material/#mkdocs_material-9.7.7.tar.gz"
         }
       ],
       "name": "mkdocs-material",
@@ -10122,9 +10122,9 @@
           "value": "dev"
         }
       ],
-      "purl": "pkg:pypi/mkdocs-material@9.7.6",
+      "purl": "pkg:pypi/mkdocs-material@9.7.7",
       "type": "library",
-      "version": "9.7.6"
+      "version": "9.7.7"
     },
     {
       "bom-ref": "mkdocs-material-extensions@1.3.1",
@@ -13701,7 +13701,7 @@
       "version": "2.20.0"
     },
     {
-      "bom-ref": "pymdown-extensions@10.21.2",
+      "bom-ref": "pymdown-extensions@11.0.1",
       "description": "Extension pack for Python Markdown.",
       "externalReferences": [
         {
@@ -13709,28 +13709,28 @@
           "hashes": [
             {
               "alg": "SHA-256",
-              "content": "5c0fd2a2bea14eb39af8ff284f1066d898ab2187d81b889b75d46d4348c01638"
+              "content": "db3943a62bab7e03af1364f0c4083e64b91fb097675a4b6cceccfbe9a77e5eb2"
             }
           ],
           "type": "distribution",
-          "url": "https://pypi.org/simple/pymdown-extensions/#pymdown_extensions-10.21.2-py3-none-any.whl"
+          "url": "https://pypi.org/simple/pymdown-extensions/#pymdown_extensions-11.0.1-py3-none-any.whl"
         },
         {
           "comment": "from legacy-api",
           "hashes": [
             {
               "alg": "SHA-256",
-              "content": "c3f55a5b8a1d0edf6699e35dcbea71d978d34ff3fa79f3d807b8a5b3fa90fbdc"
+              "content": "dd2905ae6fc5b75582fafb139a1266ffc754705efa902aa50067fa7ff4f94ec0"
             }
           ],
           "type": "distribution",
-          "url": "https://pypi.org/simple/pymdown-extensions/#pymdown_extensions-10.21.2.tar.gz"
+          "url": "https://pypi.org/simple/pymdown-extensions/#pymdown_extensions-11.0.1.tar.gz"
         }
       ],
       "name": "pymdown-extensions",
-      "purl": "pkg:pypi/pymdown-extensions@10.21.2",
+      "purl": "pkg:pypi/pymdown-extensions@11.0.1",
       "type": "library",
-      "version": "10.21.2"
+      "version": "11.0.1"
     },
     {
       "bom-ref": "pyparsing@3.3.2",
@@ -14019,7 +14019,7 @@
       "version": "3.8"
     },
     {
-      "bom-ref": "python-discovery@1.2.2",
+      "bom-ref": "python-discovery@1.6.2",
       "description": "Python interpreter discovery",
       "externalReferences": [
         {
@@ -14027,28 +14027,28 @@
           "hashes": [
             {
               "alg": "SHA-256",
-              "content": "e1ae95d9af875e78f15e19aed0c6137ab1bb49c200f21f5061786490c9585c7a"
+              "content": "f0c697f95a3aaec4174a6e5e58f5885e25768684bafc76f1afde384709ebdcf2"
             }
           ],
           "type": "distribution",
-          "url": "https://pypi.org/simple/python-discovery/#python_discovery-1.2.2-py3-none-any.whl"
+          "url": "https://pypi.org/simple/python-discovery/#python_discovery-1.6.2-py3-none-any.whl"
         },
         {
           "comment": "from legacy-api",
           "hashes": [
             {
               "alg": "SHA-256",
-              "content": "876e9c57139eb757cb5878cbdd9ae5379e5d96266c99ef731119e04fffe533bb"
+              "content": "cd1738ca1d37c86ef9d0b654dd46fcee1e41c97c6add12575e8501ced39afdb4"
             }
           ],
           "type": "distribution",
-          "url": "https://pypi.org/simple/python-discovery/#python_discovery-1.2.2.tar.gz"
+          "url": "https://pypi.org/simple/python-discovery/#python_discovery-1.6.2.tar.gz"
         }
       ],
       "name": "python-discovery",
-      "purl": "pkg:pypi/python-discovery@1.2.2",
+      "purl": "pkg:pypi/python-discovery@1.6.2",
       "type": "library",
-      "version": "1.2.2"
+      "version": "1.6.2"
     },
     {
       "bom-ref": "python-dotenv@1.2.2",
@@ -17227,7 +17227,7 @@
       "version": "2.4.0"
     },
     {
-      "bom-ref": "sqlparse@0.5.5",
+      "bom-ref": "sqlparse@0.6.0",
       "description": "A non-validating SQL parser.",
       "externalReferences": [
         {
@@ -17235,28 +17235,28 @@
           "hashes": [
             {
               "alg": "SHA-256",
-              "content": "12a08b3bf3eec877c519589833aed092e2444e68240a3577e8e26148acc7b1ba"
+              "content": "b861c0288ce2fa56209a9a6412d2e066ac664b3873b89c26c9d8415e8e32996f"
             }
           ],
           "type": "distribution",
-          "url": "https://pypi.org/simple/sqlparse/#sqlparse-0.5.5-py3-none-any.whl"
+          "url": "https://pypi.org/simple/sqlparse/#sqlparse-0.6.0-py3-none-any.whl"
         },
         {
           "comment": "from legacy-api",
           "hashes": [
             {
               "alg": "SHA-256",
-              "content": "e20d4a9b0b8585fdf63b10d30066c7c94c5d7a7ec47c889a2d83a3caa93ff28e"
+              "content": "113c35c75365ab9cc9c7231d68c6428fb11c085fc8e9eb1ad659b7ddbf6cd2b9"
             }
           ],
           "type": "distribution",
-          "url": "https://pypi.org/simple/sqlparse/#sqlparse-0.5.5.tar.gz"
+          "url": "https://pypi.org/simple/sqlparse/#sqlparse-0.6.0.tar.gz"
         }
       ],
       "name": "sqlparse",
-      "purl": "pkg:pypi/sqlparse@0.5.5",
+      "purl": "pkg:pypi/sqlparse@0.6.0",
       "type": "library",
-      "version": "0.5.5"
+      "version": "0.6.0"
     },
     {
       "bom-ref": "stack-data@0.6.3",
@@ -17355,7 +17355,7 @@
       "version": "4.5.2"
     },
     {
-      "bom-ref": "typing-extensions@4.15.0",
+      "bom-ref": "typing-extensions@4.16.0",
       "description": "Backported and Experimental Type Hints for Python 3.9+",
       "externalReferences": [
         {
@@ -17363,28 +17363,28 @@
           "hashes": [
             {
               "alg": "SHA-256",
-              "content": "f0fa19c6845758ab08074a0cfa8b7aecb71c999ca73d62883bc25cc018c4e548"
+              "content": "481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8"
             }
           ],
           "type": "distribution",
-          "url": "https://pypi.org/simple/typing-extensions/#typing_extensions-4.15.0-py3-none-any.whl"
+          "url": "https://pypi.org/simple/typing-extensions/#typing_extensions-4.16.0-py3-none-any.whl"
         },
         {
           "comment": "from legacy-api",
           "hashes": [
             {
               "alg": "SHA-256",
-              "content": "0cea48d173cc12fa28ecabc3b837ea3cf6f38c6d1136f85cbaaf598984861466"
+              "content": "dc983d19a509c94dba722ee6abd33940f7c05a89e243c47e907eb4db6f1a43e5"
             }
           ],
           "type": "distribution",
-          "url": "https://pypi.org/simple/typing-extensions/#typing_extensions-4.15.0.tar.gz"
+          "url": "https://pypi.org/simple/typing-extensions/#typing_extensions-4.16.0.tar.gz"
         }
       ],
       "name": "typing-extensions",
-      "purl": "pkg:pypi/typing-extensions@4.15.0",
+      "purl": "pkg:pypi/typing-extensions@4.16.0",
       "type": "library",
-      "version": "4.15.0"
+      "version": "4.16.0"
     },
     {
       "bom-ref": "typing-inspection@0.4.2",
@@ -17547,7 +17547,7 @@
       "version": "4.2.0"
     },
     {
-      "bom-ref": "urllib3@2.6.3",
+      "bom-ref": "urllib3@2.8.0",
       "description": "HTTP library with thread-safe connection pooling, file post, and more.",
       "externalReferences": [
         {
@@ -17555,28 +17555,28 @@
           "hashes": [
             {
               "alg": "SHA-256",
-              "content": "bf272323e553dfb2e87d9bfd225ca7b0f467b919d7bbd355436d3fd37cb0acd4"
+              "content": "0cf3cae568d36aa9576b28dfb35f11328f1cb974ca7647d9475ebb86c75ac6e3"
             }
           ],
           "type": "distribution",
-          "url": "https://pypi.org/simple/urllib3/#urllib3-2.6.3-py3-none-any.whl"
+          "url": "https://pypi.org/simple/urllib3/#urllib3-2.8.0-py3-none-any.whl"
         },
         {
           "comment": "from legacy-api",
           "hashes": [
             {
               "alg": "SHA-256",
-              "content": "1b62b6884944a57dbe321509ab94fd4d3b307075e0c2eae991ac71ee15ad38ed"
+              "content": "63bf2ead4c879426ebf22ef2a781eeb4aa3b4ae798a0435506f8687fd5bb9b63"
             }
           ],
           "type": "distribution",
-          "url": "https://pypi.org/simple/urllib3/#urllib3-2.6.3.tar.gz"
+          "url": "https://pypi.org/simple/urllib3/#urllib3-2.8.0.tar.gz"
         }
       ],
       "name": "urllib3",
-      "purl": "pkg:pypi/urllib3@2.6.3",
+      "purl": "pkg:pypi/urllib3@2.8.0",
       "type": "library",
-      "version": "2.6.3"
+      "version": "2.8.0"
     },
     {
       "bom-ref": "vine@5.1.0",
@@ -17611,7 +17611,7 @@
       "version": "5.1.0"
     },
     {
-      "bom-ref": "virtualenv@21.3.0",
+      "bom-ref": "virtualenv@21.7.13",
       "description": "Virtual Python Environment builder",
       "externalReferences": [
         {
@@ -17619,28 +17619,28 @@
           "hashes": [
             {
               "alg": "SHA-256",
-              "content": "4d28ee41f6d9ec8f1f00cd472b9ffbcedda1b3d3b9a575b5c94a2d004fd51bd7"
+              "content": "1bea5af7463f59c4719db48fe739579a2a4f569c96f26c086edda85c96da9f59"
             }
           ],
           "type": "distribution",
-          "url": "https://pypi.org/simple/virtualenv/#virtualenv-21.3.0-py3-none-any.whl"
+          "url": "https://pypi.org/simple/virtualenv/#virtualenv-21.7.13-py3-none-any.whl"
         },
         {
           "comment": "from legacy-api",
           "hashes": [
             {
               "alg": "SHA-256",
-              "content": "733750db978ec95c2d8eb4feadaa57091002bce404cb39ba69899cf7bd28944e"
+              "content": "0355558b6f33619aab31347e43643b0ebc97f61ea3acf617b2b69e1f8a843d11"
             }
           ],
           "type": "distribution",
-          "url": "https://pypi.org/simple/virtualenv/#virtualenv-21.3.0.tar.gz"
+          "url": "https://pypi.org/simple/virtualenv/#virtualenv-21.7.13.tar.gz"
         }
       ],
       "name": "virtualenv",
-      "purl": "pkg:pypi/virtualenv@21.3.0",
+      "purl": "pkg:pypi/virtualenv@21.7.13",
       "type": "library",
-      "version": "21.3.0"
+      "version": "21.7.13"
     },
     {
       "bom-ref": "watchdog@6.0.0",
@@ -18097,8 +18097,8 @@
     },
     {
       "dependsOn": [
-        "idna@3.13",
-        "typing-extensions@4.15.0"
+        "idna@3.20",
+        "typing-extensions@4.16.0"
       ],
       "ref": "anyio@4.14.2"
     },
@@ -18232,7 +18232,7 @@
         "py-serializable@2.1.0",
         "referencing@0.37.0",
         "sortedcontainers@2.4.0",
-        "typing-extensions@4.15.0"
+        "typing-extensions@4.16.0"
       ],
       "ref": "cyclonedx-python-lib@11.11.0"
     },
@@ -18246,9 +18246,10 @@
         "isort@8.0.1",
         "jinja2@3.1.6",
         "pydantic@2.13.4",
-        "pyyaml@6.0.3"
+        "pyyaml@6.0.3",
+        "typing-extensions@4.16.0"
       ],
-      "ref": "datamodel-code-generator@0.66.3"
+      "ref": "datamodel-code-generator@0.81.0"
     },
     {
       "ref": "decorator@5.2.1"
@@ -18268,7 +18269,7 @@
     {
       "dependsOn": [
         "asgiref@3.11.1",
-        "sqlparse@0.5.5",
+        "sqlparse@0.6.0",
         "tzdata@2026.2"
       ],
       "ref": "django@6.0.8"
@@ -18344,7 +18345,7 @@
         "anyio@4.14.2",
         "certifi@2026.4.22",
         "httpcore@1.0.9",
-        "idna@3.13"
+        "idna@3.20"
       ],
       "ref": "httpx@0.28.1"
     },
@@ -18358,7 +18359,7 @@
       "ref": "identify@2.6.19"
     },
     {
-      "ref": "idna@3.13"
+      "ref": "idna@3.20"
     },
     {
       "dependsOn": [
@@ -18429,7 +18430,7 @@
       "dependsOn": [
         "attrs@26.1.0",
         "fqdn@1.5.1",
-        "idna@3.13",
+        "idna@3.20",
         "isoduration@20.11.0",
         "jsonpointer@3.1.1",
         "jsonschema-specifications@2025.9.1",
@@ -18512,10 +18513,10 @@
         "mkdocs@1.6.1",
         "paginate@0.5.7",
         "pygments@2.20.0",
-        "pymdown-extensions@10.21.2",
+        "pymdown-extensions@11.0.1",
         "requests@2.33.1"
       ],
-      "ref": "mkdocs-material@9.7.6"
+      "ref": "mkdocs-material@9.7.7"
     },
     {
       "dependsOn": [
@@ -18551,7 +18552,7 @@
         "mkdocs-autorefs@1.4.4",
         "mkdocs@1.6.1",
         "mkdocstrings-python@2.0.3",
-        "pymdown-extensions@10.21.2"
+        "pymdown-extensions@11.0.1"
       ],
       "ref": "mkdocstrings@1.0.4"
     },
@@ -18566,21 +18567,21 @@
         "librt@0.9.0",
         "mypy-extensions@1.1.0",
         "pathspec@1.1.1",
-        "typing-extensions@4.15.0"
+        "typing-extensions@4.16.0"
       ],
       "ref": "mypy@1.20.2"
     },
     {
       "dependsOn": [
         "cyclonedx-bom@7.3.0",
-        "datamodel-code-generator@0.66.3",
+        "datamodel-code-generator@0.81.0",
         "djangorestframework@3.18.0",
         "factory-boy@3.3.3",
         "faker@40.15.0",
         "hypothesis@6.152.4",
         "ipython@9.13.0",
         "jinja2@3.1.6",
-        "mkdocs-material@9.7.6",
+        "mkdocs-material@9.7.7",
         "mkdocs@1.6.1",
         "mkdocstrings@1.0.4",
         "mypy@1.20.2",
@@ -18667,7 +18668,7 @@
         "identify@2.6.19",
         "nodeenv@1.10.0",
         "pyyaml@6.0.3",
-        "virtualenv@21.3.0"
+        "virtualenv@21.7.13"
       ],
       "ref": "pre-commit@4.6.0"
     },
@@ -18685,7 +18686,7 @@
     },
     {
       "dependsOn": [
-        "typing-extensions@4.15.0"
+        "typing-extensions@4.16.0"
       ],
       "ref": "psycopg-pool@3.3.1"
     },
@@ -18693,7 +18694,7 @@
       "dependsOn": [
         "psycopg-binary@3.3.4",
         "psycopg-pool@3.3.1",
-        "typing-extensions@4.15.0",
+        "typing-extensions@4.16.0",
         "tzdata@2026.2"
       ],
       "ref": "psycopg@3.3.4"
@@ -18715,7 +18716,7 @@
     },
     {
       "dependsOn": [
-        "typing-extensions@4.15.0"
+        "typing-extensions@4.16.0"
       ],
       "ref": "pydantic-core@2.46.4"
     },
@@ -18723,7 +18724,7 @@
       "dependsOn": [
         "annotated-types@0.7.0",
         "pydantic-core@2.46.4",
-        "typing-extensions@4.15.0",
+        "typing-extensions@4.16.0",
         "typing-inspection@0.4.2"
       ],
       "ref": "pydantic@2.13.4"
@@ -18736,7 +18737,7 @@
         "markdown@3.10.2",
         "pyyaml@6.0.3"
       ],
-      "ref": "pymdown-extensions@10.21.2"
+      "ref": "pymdown-extensions@11.0.1"
     },
     {
       "ref": "pyparsing@3.3.2"
@@ -18744,7 +18745,7 @@
     {
       "dependsOn": [
         "pytest@9.0.3",
-        "typing-extensions@4.15.0"
+        "typing-extensions@4.16.0"
       ],
       "ref": "pytest-asyncio@1.3.0"
     },
@@ -18790,10 +18791,9 @@
     },
     {
       "dependsOn": [
-        "filelock@3.29.0",
-        "platformdirs@4.9.6"
+        "filelock@3.29.0"
       ],
-      "ref": "python-discovery@1.2.2"
+      "ref": "python-discovery@1.6.2"
     },
     {
       "ref": "python-dotenv@1.2.2"
@@ -18817,7 +18817,7 @@
       "dependsOn": [
         "attrs@26.1.0",
         "rpds-py@0.30.0",
-        "typing-extensions@4.15.0"
+        "typing-extensions@4.16.0"
       ],
       "ref": "referencing@0.37.0"
     },
@@ -18825,8 +18825,8 @@
       "dependsOn": [
         "certifi@2026.4.22",
         "charset-normalizer@3.4.7",
-        "idna@3.13",
-        "urllib3@2.6.3"
+        "idna@3.20",
+        "urllib3@2.8.0"
       ],
       "ref": "requests@2.33.1"
     },
@@ -18834,7 +18834,7 @@
       "dependsOn": [
         "pyyaml@6.0.3",
         "requests@2.33.1",
-        "urllib3@2.6.3"
+        "urllib3@2.8.0"
       ],
       "ref": "responses@0.26.0"
     },
@@ -18872,7 +18872,7 @@
       "ref": "sortedcontainers@2.4.0"
     },
     {
-      "ref": "sqlparse@0.5.5"
+      "ref": "sqlparse@0.6.0"
     },
     {
       "dependsOn": [
@@ -18887,16 +18887,16 @@
     },
     {
       "dependsOn": [
-        "typing-extensions@4.15.0"
+        "typing-extensions@4.16.0"
       ],
       "ref": "typeguard@4.5.2"
     },
     {
-      "ref": "typing-extensions@4.15.0"
+      "ref": "typing-extensions@4.16.0"
     },
     {
       "dependsOn": [
-        "typing-extensions@4.15.0"
+        "typing-extensions@4.16.0"
       ],
       "ref": "typing-inspection@0.4.2"
     },
@@ -18916,7 +18916,7 @@
       "ref": "uritemplate@4.2.0"
     },
     {
-      "ref": "urllib3@2.6.3"
+      "ref": "urllib3@2.8.0"
     },
     {
       "ref": "vine@5.1.0"
@@ -18926,9 +18926,9 @@
         "distlib@0.4.0",
         "filelock@3.29.0",
         "platformdirs@4.9.6",
-        "python-discovery@1.2.2"
+        "python-discovery@1.6.2"
       ],
-      "ref": "virtualenv@21.3.0"
+      "ref": "virtualenv@21.7.13"
     },
     {
       "ref": "watchdog@6.0.0"
@@ -18949,7 +18949,7 @@
       "name": "netdoc-sdk",
       "type": "application"
     },
-    "timestamp": "2026-10-11T08:11:42.027911+00:00",
+    "timestamp": "2026-10-11T10:13:55.000103+00:00",
     "tools": {
       "components": [
         {
@@ -19053,7 +19053,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:eb28ad54-7abd-44e7-b94b-62fb2ddf6c3b",
+  "serialNumber": "urn:uuid:25f1604c-cbdc-40b2-b95a-004716f6db47",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",
