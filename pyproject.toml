@@ -74,7 +74,7 @@ mypy = ">=1.7"
 ruff = ">=0.1"
 
 # Development tools
-datamodel-code-generator = {extras = ["http"], version = "^0.66.3"}
+datamodel-code-generator = {extras = ["http"], version = ">=0.66.3,<0.82.0"}
 ipython = ">=8.18"
 jinja2 = ">=3.0"
 netutils = "1.17.2"
