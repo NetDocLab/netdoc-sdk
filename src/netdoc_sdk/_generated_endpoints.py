@@ -19,13 +19,11 @@ from netdoc_sdk.models._generated_models import (
     CanonicalEndpoint,
     CollectorDetail,
     CredentialDetail,
-    DeviceConnectionDetail,
     DeviceDetail,
     DiscoveryJobClaim,
     DiscoveryJobStatus,
     DiscoveryRunDetail,
     DiscoverySchedule,
-    EndpointConnectionDetail,
     EndpointDetail,
     InterfaceDetail,
     IPAddress,
@@ -37,12 +35,10 @@ from netdoc_sdk.models._generated_models import (
     PaginatedCanonicalEndpointList,
     PaginatedCollectorListList,
     PaginatedCredentialListList,
-    PaginatedDeviceConnectionListList,
     PaginatedDeviceListList,
     PaginatedDiscoveryJobDetailList,
     PaginatedDiscoveryRunDetailList,
     PaginatedDiscoveryScheduleList,
-    PaginatedEndpointConnectionListList,
     PaginatedEndpointListList,
     PaginatedInterfaceListList,
     PaginatedIPAddressList,
@@ -53,7 +49,6 @@ from netdoc_sdk.models._generated_models import (
     PaginatedSiteListList,
     PaginatedSnapshotListList,
     PaginatedTenantListList,
-    PaginatedTunnelConnectionListList,
     PaginatedUserListList,
     PaginatedVLANList,
     PaginatedVRFList,
@@ -61,8 +56,8 @@ from netdoc_sdk.models._generated_models import (
     SiteDetail,
     SnapshotDetail,
     TenantDetail,
-    TopologyGraph,
-    TunnelConnectionDetail,
+    TopologyBuild,
+    TopologyProjection,
     UserDetail,
 )
 
@@ -324,25 +319,6 @@ class _GeneratedEndpoints:
             expected_status=204,
         )
 
-    def device_connections_list(self, **params: Any) -> PaginatedDeviceConnectionListList:
-        """List device connections"""
-        return self._request(
-            'GET',
-            'device-connections/',
-            params=params,
-            expected_status=200,
-            response_model=PaginatedDeviceConnectionListList,
-        )
-
-    def device_connections_get(self, id: str) -> DeviceConnectionDetail:
-        """Get device connection details"""
-        return self._request(
-            'GET',
-            f'device-connections/{id}/',
-            expected_status=200,
-            response_model=DeviceConnectionDetail,
-        )
-
     def devices_list(self, **params: Any) -> PaginatedDeviceListList:
         """List devices"""
         return self._request(
@@ -529,25 +505,6 @@ class _GeneratedEndpoints:
             'DELETE',
             f'discovery-schedules/{id}/',
             expected_status=204,
-        )
-
-    def endpoint_connections_list(self, **params: Any) -> PaginatedEndpointConnectionListList:
-        """List endpoint connections"""
-        return self._request(
-            'GET',
-            'endpoint-connections/',
-            params=params,
-            expected_status=200,
-            response_model=PaginatedEndpointConnectionListList,
-        )
-
-    def endpoint_connections_get(self, id: str) -> EndpointConnectionDetail:
-        """Get endpoint connection details"""
-        return self._request(
-            'GET',
-            f'endpoint-connections/{id}/',
-            expected_status=200,
-            response_model=EndpointConnectionDetail,
         )
 
     def endpoints_list(self, **params: Any) -> PaginatedEndpointListList:
@@ -880,42 +837,24 @@ class _GeneratedEndpoints:
             response_model=AuthToken,
         )
 
-    def topology_list(self, **params: Any) -> list[TopologyGraph]:
-        """Get topology graph"""
+    def topology_list(self, **params: Any) -> TopologyProjection:
+        """Get the active Topology Projection"""
         return self._request(
             'GET',
             'topology/',
             params=params,
             expected_status=200,
-            response_model=list[TopologyGraph],
+            response_model=TopologyProjection,
         )
 
-    def topology_l2_domain_get(self, **params: Any) -> None:
-        """Get L2 domain"""
+    def topology_build_add(self, data: JsonMapping | None = None, **fields: Any) -> TopologyBuild:
+        """Trigger a Topology Projection (re)build"""
         return self._request(
-            'GET',
-            'topology/l2_domain/',
-            params=params,
-            expected_status=200,
-        )
-
-    def tunnel_connections_list(self, **params: Any) -> PaginatedTunnelConnectionListList:
-        """List tunnel connections"""
-        return self._request(
-            'GET',
-            'tunnel-connections/',
-            params=params,
-            expected_status=200,
-            response_model=PaginatedTunnelConnectionListList,
-        )
-
-    def tunnel_connections_get(self, id: str) -> TunnelConnectionDetail:
-        """Get tunnel connection details"""
-        return self._request(
-            'GET',
-            f'tunnel-connections/{id}/',
-            expected_status=200,
-            response_model=TunnelConnectionDetail,
+            'POST',
+            'topology/build/',
+            json=self._serialize_body(data, **fields),
+            expected_status=202,
+            response_model=TopologyBuild,
         )
 
     def users_list(self, **params: Any) -> PaginatedUserListList:
