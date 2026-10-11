@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.4](https://github.com/NetDocLab/netdoc-sdk/compare/v0.7.3...v0.7.4) (2026-10-11)
+
+
+### Bug Fixes
+
+* update dependabot config ([127b03e](https://github.com/NetDocLab/netdoc-sdk/commit/127b03e9cc1e5b888eb4f2eb9f48a8777a62df5e))
+
 ## [0.7.3](https://github.com/NetDocLab/netdoc-sdk/compare/v0.7.2...v0.7.3) (2026-10-11)
 
 
