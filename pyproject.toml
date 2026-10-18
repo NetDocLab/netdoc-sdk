@@ -1,7 +1,7 @@
 [project]
 name = "netdoc-sdk"
 description = "Network Documentation Platform - SDK"
-version = "0.7.2"
+version = "0.7.3"
 authors = [
     {name = "Andrea Cavazzini", email = "cavazzini.andrea@gmail.com"},
     {name = "Andrea Dainese", email = "andrea.dainese@gmail.com"},
@@ -74,7 +74,7 @@ mypy = ">=1.7"
 ruff = ">=0.1"
 
 # Development tools
-datamodel-code-generator = {extras = ["http"], version = "^0.66.3"}
+datamodel-code-generator = {extras = ["http"], version = ">=0.66.3,<0.82.0"}
 ipython = ">=8.18"
 jinja2 = ">=3.0"
 netutils = "1.17.2"

@@ -21,7 +21,7 @@ concurrency:
 jobs:
   tests:
     if: "${{ !contains(github.event.pull_request.labels.*.name, 'autorelease: pending') }}"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: "Updating APT cache"
         run: "sudo apt-get update"
@@ -78,7 +78,7 @@ jobs:
   snyk:
     if: "${{ !contains(github.event.pull_request.labels.*.name, 'autorelease: pending') }}"
     needs: tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6

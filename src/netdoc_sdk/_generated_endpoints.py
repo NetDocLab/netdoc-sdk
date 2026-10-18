@@ -1,4 +1,4 @@
-# GENERATED FILE — do not edit manually.
+# GENERATED FILE â€” do not edit manually.
 # Run: python scripts/generate.py
 
 from __future__ import annotations
@@ -55,6 +55,7 @@ from netdoc_sdk.models._generated_models import (
     SiteDetail,
     SnapshotDetail,
     TenantDetail,
+    TopologyBuild,
     TopologyProjection,
     UserDetail,
     VLAN,
@@ -65,7 +66,7 @@ JsonMapping = Mapping[str, Any] | BaseModel
 
 
 class _GeneratedEndpoints:
-    """Auto-generated endpoint methods — do not edit manually.
+    """Auto-generated endpoint methods â€” do not edit manually.
 
     Inherited by _NetDocClientBase. Override individual methods
     in _client_base.py when custom logic is required (e.g. special
@@ -807,13 +808,14 @@ class _GeneratedEndpoints:
             response_model=TopologyProjection,
         )
 
-    def topology_build_add(self, data: JsonMapping | None = None, **fields: Any) -> None:
+    def topology_build_add(self, data: JsonMapping | None = None, **fields: Any) -> TopologyBuild:
         """Trigger a Topology Projection (re)build"""
         return self._request(
             'POST',
             'topology/build/',
             json=self._serialize_body(data, **fields),
-            expected_status=200,
+            expected_status=202,
+            response_model=TopologyBuild,
         )
 
     def users_list(self, **params: Any) -> PaginatedUserListList:

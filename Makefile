@@ -14,7 +14,7 @@ check: ## Run all pre-commit tests
 	poetry run pre-commit run --all-files
 
 coverage: ## Run tests and show coverage report
-	DJANGO_ENV=test poetry run pytest tests --cov=netdoc_sdk --cov-report=term-missing --cov-fail-under=80
+	DJANGO_ENV=test poetry run pytest tests --cov=src --cov-report=term-missing --cov-fail-under=80
 
 doc:  ## build the documentation into site/
 	poetry run mkdocs build --strict
@@ -34,4 +34,4 @@ tests: ## Run tests (pytest only)
 update: ## Update poetry, SBOM, models and endpoints from openapi.yaml
 	poetry lock
 	poetry run python ./update_data.py
-	poetry run cyclonedx-py poetry --with main -o sbom-cyclonedx.json
+	poetry run cyclonedx-py poetry --only main -o sbom-cyclonedx.json
