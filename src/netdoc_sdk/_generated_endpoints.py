@@ -1,17 +1,16 @@
-# GENERATED FILE ï¿½ do not edit manually.
+# GENERATED FILE — do not edit manually.
 # Run: python scripts/generate.py
 
 from __future__ import annotations
 
 from abc import abstractmethod
-from collections.abc import Iterable, Mapping
 from typing import Any
+
+from collections.abc import Iterable, Mapping
 
 from pydantic import BaseModel
 
 from netdoc_sdk.models._generated_models import (
-    VLAN,
-    VRF,
     ARPEntry,
     AuditLogDetail,
     AuthToken,
@@ -25,8 +24,8 @@ from netdoc_sdk.models._generated_models import (
     DiscoveryRunDetail,
     DiscoverySchedule,
     EndpointDetail,
-    InterfaceDetail,
     IPAddress,
+    InterfaceDetail,
     LogRecordDetail,
     MACEntry,
     PaginatedARPEntryList,
@@ -40,8 +39,8 @@ from netdoc_sdk.models._generated_models import (
     PaginatedDiscoveryRunDetailList,
     PaginatedDiscoveryScheduleList,
     PaginatedEndpointListList,
-    PaginatedInterfaceListList,
     PaginatedIPAddressList,
+    PaginatedInterfaceListList,
     PaginatedLogRecordDetailList,
     PaginatedMACEntryList,
     PaginatedRawOutputListList,
@@ -58,13 +57,15 @@ from netdoc_sdk.models._generated_models import (
     TenantDetail,
     TopologyProjection,
     UserDetail,
+    VLAN,
+    VRF,
 )
 
 JsonMapping = Mapping[str, Any] | BaseModel
 
 
 class _GeneratedEndpoints:
-    """Auto-generated endpoint methods ï¿½ do not edit manually.
+    """Auto-generated endpoint methods — do not edit manually.
 
     Inherited by _NetDocClientBase. Override individual methods
     in _client_base.py when custom logic is required (e.g. special
