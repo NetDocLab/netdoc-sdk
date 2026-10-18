@@ -23,7 +23,7 @@ MODELS_OUTPUT = REPO_ROOT / 'src/netdoc_sdk/models/_generated_models.py'
 ENDPOINTS_OUTPUT = REPO_ROOT / 'src/netdoc_sdk/_generated_endpoints.py'
 
 GENERATED_HEADER = """\
-# GENERATED FILE — do not edit manually.
+# GENERATED FILE - do not edit manually.
 # Run: python scripts/generate.py
 """
 

@@ -1,4 +1,4 @@
-# GENERATED FILE — do not edit manually.
+# GENERATED FILE - do not edit manually.
 # Run: python scripts/generate.py
 
 from __future__ import annotations
@@ -66,7 +66,7 @@ JsonMapping = Mapping[str, Any] | BaseModel
 
 
 class _GeneratedEndpoints:
-    """Auto-generated endpoint methods — do not edit manually.
+    """Auto-generated endpoint methods � do not edit manually.
 
     Inherited by _NetDocClientBase. Override individual methods
     in _client_base.py when custom logic is required (e.g. special
