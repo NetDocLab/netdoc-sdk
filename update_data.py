@@ -299,7 +299,7 @@ def generate_endpoints() -> None:
 
     class_lines = [
         'class _GeneratedEndpoints:',
-        '    """Auto-generated endpoint methods — do not edit manually.',
+        '    """Auto-generated endpoint methods - do not edit manually.',
         '',
         '    Inherited by _NetDocClientBase. Override individual methods',
         '    in _client_base.py when custom logic is required (e.g. special',

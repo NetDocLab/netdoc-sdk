@@ -4,13 +4,14 @@
 from __future__ import annotations
 
 from abc import abstractmethod
-from typing import Any
-
 from collections.abc import Iterable, Mapping
+from typing import Any
 
 from pydantic import BaseModel
 
 from netdoc_sdk.models._generated_models import (
+    VLAN,
+    VRF,
     ARPEntry,
     AuditLogDetail,
     AuthToken,
@@ -24,8 +25,8 @@ from netdoc_sdk.models._generated_models import (
     DiscoveryRunDetail,
     DiscoverySchedule,
     EndpointDetail,
-    IPAddress,
     InterfaceDetail,
+    IPAddress,
     LogRecordDetail,
     MACEntry,
     PaginatedARPEntryList,
@@ -39,8 +40,8 @@ from netdoc_sdk.models._generated_models import (
     PaginatedDiscoveryRunDetailList,
     PaginatedDiscoveryScheduleList,
     PaginatedEndpointListList,
-    PaginatedIPAddressList,
     PaginatedInterfaceListList,
+    PaginatedIPAddressList,
     PaginatedLogRecordDetailList,
     PaginatedMACEntryList,
     PaginatedRawOutputListList,
@@ -58,15 +59,13 @@ from netdoc_sdk.models._generated_models import (
     TopologyBuild,
     TopologyProjection,
     UserDetail,
-    VLAN,
-    VRF,
 )
 
 JsonMapping = Mapping[str, Any] | BaseModel
 
 
 class _GeneratedEndpoints:
-    """Auto-generated endpoint methods — do not edit manually.
+    """Auto-generated endpoint methods - do not edit manually.
 
     Inherited by _NetDocClientBase. Override individual methods
     in _client_base.py when custom logic is required (e.g. special
