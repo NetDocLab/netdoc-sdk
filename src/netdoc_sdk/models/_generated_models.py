@@ -1932,7 +1932,7 @@ class RawOutputList(APIModel):
     status: Annotated[
         RawOutputStatusEnum,
         Field(
-            description='Status\n\n* `failed` - Failed\n* `ignored_after_cancel` - Ignored after cancel\n* `parsed` - Parsed\n* `queued` - Queued\n* `received` - Received\n* `stale` - Stale\n* `duplicated` - Duplicated',
+            description='Status\n\n* `failed` - Failed\n* `ignored_after_cancel` - Ignored after cancel\n* `parsed` - Parsed\n* `processing` - Processing\n* `queued` - Queued\n* `received` - Received\n* `stale` - Stale\n* `duplicated` - Duplicated',
             title='Parsing status.',
         ),
     ]
@@ -1996,7 +1996,7 @@ class SiteDetail(APIModel):
     site_type: Annotated[
         SiteTypeEnum | None,
         Field(
-            description='Physical or logical site category.\n\n* `datacenter` - Datacenter\n* `campus` - Campus\n* `cloud` - Cloud\n* `branch` - Branch\n* `other` - Other'
+            description='Physical or logical site category.\n\n* `datacenter` - Datacenter\n* `campus` - Campus\n* `cloud` - Cloud\n* `branch` - Branch\n* `other` - Other\n* `default` - Default\n* `logical_group` - Logical Group'
         ),
     ] = None
     is_default: Annotated[
@@ -2204,6 +2204,13 @@ class UserDetail(APIModel):
     created_at: Annotated[AwareDatetime, Field(description='When the user was created.')]
     updated_at: Annotated[AwareDatetime, Field(description='When the user was last updated.')]
     last_login: AwareDatetime | None = None
+    is_superuser: Annotated[
+        bool,
+        Field(
+            description='Designates that this user has all permissions without explicitly assigning them.',
+            title='Superuser status',
+        ),
+    ]
 
 
 class UserDetailRequest(APIModel):
