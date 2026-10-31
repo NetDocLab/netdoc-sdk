@@ -58,6 +58,8 @@ jobs:
         run: pip install --no-cache-dir poetry
       - name: Display Poetry version
         run: poetry --version
+      - name: Lock Poetry dependencies
+        run: poetry lock
       - name: Configure Poetry
         run: poetry config virtualenvs.in-project true
       - name: Install SDK
