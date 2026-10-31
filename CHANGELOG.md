@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.7.4](https://github.com/NetDocLab/netdoc-sdk/compare/v0.7.3...v0.7.4) (2026-10-31)
+
+
+### Bug Fixes
+
+* fixed ci actions order ([ae51d21](https://github.com/NetDocLab/netdoc-sdk/commit/ae51d21619f4092cf89fb183e36a3bb01c114305))
+* removed incompatible UTF-8 char and re-generated files ([220b1aa](https://github.com/NetDocLab/netdoc-sdk/commit/220b1aab4c9e60bc22cc09f16943d8ef345c26ac))
+* removed incompatible UTF-8 char and re-generated files ([d4b34bc](https://github.com/NetDocLab/netdoc-sdk/commit/d4b34bc57a4ad08fd4206262be0d30b0ee3c1cac))
+* update dependabot config ([127b03e](https://github.com/NetDocLab/netdoc-sdk/commit/127b03e9cc1e5b888eb4f2eb9f48a8777a62df5e))
+* updated ci pipeline ([c4f1152](https://github.com/NetDocLab/netdoc-sdk/commit/c4f1152947232745744ca5535e4aa67febeae548))
+* updated models ([c756e23](https://github.com/NetDocLab/netdoc-sdk/commit/c756e237ba308eada75eec8452d999e34c0fae0c))
+* updated tests ([3fb12f0](https://github.com/NetDocLab/netdoc-sdk/commit/3fb12f0a9f40c9b9ff80456e29d27065d1ec4168))
+* updated tests to reflect new Site structure ([04da740](https://github.com/NetDocLab/netdoc-sdk/commit/04da7402c8c9a1494cf8ee64c97ec326f35e3131))
+
 ## [0.7.3](https://github.com/NetDocLab/netdoc-sdk/compare/v0.7.2...v0.7.3) (2026-10-11)
 
 
