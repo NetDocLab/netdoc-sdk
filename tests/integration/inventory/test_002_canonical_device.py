@@ -5,7 +5,9 @@ import pytest
 class TestCanonicalDevice:
     @pytest.mark.django_db(transaction=True)
     async def test_canonical_device(self, admin_client):
-        site = await admin_client.sites_add(name='test-site')
+        site = await admin_client.sites_add(
+            name='test-site', matching_rule='', sibling_order=0, parent_site=None
+        )
         canonical_device = await admin_client.canonical_devices_add(
             label='test-canonical-device',
             identifiers={'hostname': 'r1'},

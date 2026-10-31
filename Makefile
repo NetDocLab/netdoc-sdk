@@ -2,6 +2,7 @@
 .PHONY: install uninstall check coverage doc fmt lint tests update
 
 install:
+	poetry lock --no-interaction --no-ansi
 	poetry install --no-interaction --no-ansi
 	poetry run pre-commit install
 	poetry run pre-commit install --hook-type commit-msg

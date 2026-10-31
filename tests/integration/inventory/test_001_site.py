@@ -5,9 +5,11 @@ import pytest
 class TestSite:
     @pytest.mark.django_db(transaction=True)
     async def test_site(self, admin_client):
-        site = await admin_client.sites_add(name='test-site')
+        site = await admin_client.sites_add(
+            name='test-site', matching_rule='', sibling_order=0, parent_site=None
+        )
         res = await admin_client.sites_list()
-        assert res.count == 1
+        assert res.count == 2
         await admin_client.sites_get(id=site.id)
         await admin_client.sites_update(id=site.id, name='test-new-site')
         await admin_client.sites_delete(id=site.id)
