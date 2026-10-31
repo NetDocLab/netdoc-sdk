@@ -42,6 +42,9 @@ class TestResponseParsing:
                             'country': '',
                             'created_at': '2026-05-23 06:37:34.246550Z',
                             'updated_at': '2026-05-23 06:37:34.246550Z',
+                            'child_sites': [],
+                            'matching_rule': '',
+                            'sibling_order': 0,
                         }
                     ],
                 },
@@ -68,6 +71,10 @@ class TestResponseParsing:
                     'country': '',
                     'created_at': '2026-05-23 06:37:34.246550Z',
                     'updated_at': '2026-05-23 06:37:34.246550Z',
+                    'child_sites': [],
+                    'matching_rule': '',
+                    'sibling_order': 0,
+                    'is_default': False,
                 },
             )
         )
