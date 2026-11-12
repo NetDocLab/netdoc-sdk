@@ -57,7 +57,9 @@ from netdoc_sdk.models._generated_models import (
     SnapshotDetail,
     TenantDetail,
     TopologyBuild,
+    TopologyNode,
     TopologyProjection,
+    TopologyRelationship,
     UserDetail,
 )
 
@@ -688,6 +690,16 @@ class _GeneratedEndpoints:
             expected_status=204,
         )
 
+    def sites_child_sites_list(self, id: str, **params: Any) -> PaginatedSiteListList:
+        """Get child sites"""
+        return self._request(
+            'GET',
+            f'sites/{id}/child-sites/',
+            params=params,
+            expected_status=200,
+            response_model=PaginatedSiteListList,
+        )
+
     def snapshots_list(self, **params: Any) -> PaginatedSnapshotListList:
         """List snapshots"""
         return self._request(
@@ -855,6 +867,28 @@ class _GeneratedEndpoints:
             json=self._serialize_body(data, **fields),
             expected_status=202,
             response_model=TopologyBuild,
+        )
+
+    def topology_nodes_get(self, node_id: str, **params: Any) -> TopologyNode:
+        """Inspect one Topology Node"""
+        return self._request(
+            'GET',
+            f'topology/nodes/{node_id}/',
+            params=params,
+            expected_status=200,
+            response_model=TopologyNode,
+        )
+
+    def topology_relationships_get(
+        self, relationship_id: str, **params: Any
+    ) -> TopologyRelationship:
+        """Inspect one Topology Relationship"""
+        return self._request(
+            'GET',
+            f'topology/relationships/{relationship_id}/',
+            params=params,
+            expected_status=200,
+            response_model=TopologyRelationship,
         )
 
     def users_list(self, **params: Any) -> PaginatedUserListList:
